@@ -26,6 +26,8 @@ export default function EcommerceTabs() {
   const [cy, setCy] = useState(null);
   const [graphData, setGraphData] = useAtom(graphDataAtom);
 
+  const [selectedIndex, setSelectedIndex] = useState(0);
+
   const tabs = [
     { name: "Plotly Chart", icon: Squares2X2Icon },
     { name: "Spotify Chart", icon: BellIcon },
@@ -99,7 +101,7 @@ export default function EcommerceTabs() {
   }, []);
 
   return (
-    <Tab.Group>
+    <Tab.Group selectedIndex={selectedIndex} onChange={setSelectedIndex}>
       <Tab.List className="flex space-x-8 border-b border-gray-200 dark:border-gray-600">
         {tabs.map((tab) => (
           <Tab key={tab.name} as="button">
@@ -135,7 +137,101 @@ export default function EcommerceTabs() {
               <div style={{ height: `${topHeight}%` }} className="transition-all">
                 <div className="shadow p-4 h-full">
                 <EcommerceMetrics />
-                  <MonthlySalesChart onReady={setCy}/>
+                  <MonthlySalesChart onReady={setCy} selectedIndex = {selectedIndex}/>
+                </div>
+              </div>
+
+              {/* 상하 리사이즈 핸들 */}
+              <div
+                onMouseDown={startVerticalDrag}
+                className="h-1 cursor-row-resize bg-gray-100 dark:bg-gray-800"
+              />
+
+              {/* 하단: RecentOrders */}
+              <div style={{ height: `${100 - topHeight}%` }} className="transition-all">
+                <div className="bg-white dark:bg-gray-900 rounded shadow p-4 h-full">
+                  <RecentOrders />
+                </div>
+              </div>
+            </div>
+
+            {/* 좌우 리사이즈 핸들 */}
+            <div
+              onMouseDown={startHorizontalDrag}
+              className="w-1 cursor-col-resize bg-gray-200 dark:bg-gray-800"
+            />
+
+            {/* 오른쪽: MonthlyTarget */}
+            <div
+              style={{ width: `${100 - leftWidth}%` }}
+              className="bg-white dark:bg-gray-900 rounded shadow p-4 h-full"
+            > < DefaultInputs />
+              <MonthlyTarget />
+            </div>
+          </div>
+        </Tab.Panel>
+        <Tab.Panel>
+          <div
+            ref={containerRef}
+            className="flex w-[100%-90px] h-[100%-76px] relative   overflow-hidden"
+          >
+            {/* 왼쪽 전체 영역 */}
+            <div
+              style={{ width: `${leftWidth}%` }}
+              className="flex flex-col transition-all duration-100"
+            >
+              {/* 상단: MonthlySalesChart */}
+              <div style={{ height: `${topHeight}%` }} className="transition-all">
+                <div className="shadow p-4 h-full">
+                <EcommerceMetrics />
+                <MonthlySalesChart onReady={setCy} selectedIndex = {selectedIndex}/>
+                </div>
+              </div>
+
+              {/* 상하 리사이즈 핸들 */}
+              <div
+                onMouseDown={startVerticalDrag}
+                className="h-1 cursor-row-resize bg-gray-100 dark:bg-gray-800"
+              />
+
+              {/* 하단: RecentOrders */}
+              <div style={{ height: `${100 - topHeight}%` }} className="transition-all">
+                <div className="bg-white dark:bg-gray-900 rounded shadow p-4 h-full">
+                  <RecentOrders />
+                </div>
+              </div>
+            </div>
+
+            {/* 좌우 리사이즈 핸들 */}
+            <div
+              onMouseDown={startHorizontalDrag}
+              className="w-1 cursor-col-resize bg-gray-200 dark:bg-gray-800"
+            />
+
+            {/* 오른쪽: MonthlyTarget */}
+            <div
+              style={{ width: `${100 - leftWidth}%` }}
+              className="bg-white dark:bg-gray-900 rounded shadow p-4 h-full"
+            > < DefaultInputs />
+              <MonthlyTarget />
+            </div>
+          </div>
+        </Tab.Panel>
+        <Tab.Panel>
+          <div
+            ref={containerRef}
+            className="flex w-[100%-90px] h-[100%-76px] relative   overflow-hidden"
+          >
+            {/* 왼쪽 전체 영역 */}
+            <div
+              style={{ width: `${leftWidth}%` }}
+              className="flex flex-col transition-all duration-100"
+            >
+              {/* 상단: MonthlySalesChart */}
+              <div style={{ height: `${topHeight}%` }} className="transition-all">
+                <div className="shadow p-4 h-full">
+                <EcommerceMetrics />
+                <MonthlySalesChart onReady={setCy} selectedIndex = {selectedIndex}/>
                 </div>
               </div>
 
