@@ -25,6 +25,8 @@ function classNames(...classes: string[]) {
 export default function EcommerceTabs() {
   const [cy, setCy] = useState(null);
   const [graphData, setGraphData] = useAtom(graphDataAtom);
+  const [rawRecords, setRawRecords] = useState(null);
+  const [isSimple, setIsSimple] = useState(false);
 
   const [selectedIndex, setSelectedIndex] = useState(0);
 
@@ -90,8 +92,8 @@ export default function EcommerceTabs() {
     });
     const { data, rawRecords } = await res.json();
     setGraphData(data);
-    // setRawRecords(rawRecords);
-    // setIsSimple(isSimpleTable(rawRecords));
+    setRawRecords(rawRecords);
+    setIsSimple(isSimpleTable(rawRecords));
 
     cy?.elements().remove();
   };
@@ -99,6 +101,26 @@ export default function EcommerceTabs() {
   useEffect(() => {
     loadGraph(null); // 또는 loadGraph() 로 초기 데이터 로딩
   }, []);
+
+  function isSimpleTable(records) {
+    if (!records?.length) return true;
+    return records.every((record) =>
+      record._fields.every((field) => {
+        // 1. Neo4j Integer 객체
+        const isNeoInt =
+          typeof field === "object" &&
+          field !== null &&
+          Object.keys(field).length === 2 &&
+          typeof field.low === "number" &&
+          typeof field.high === "number";
+        // 2. 일반 숫자 또는 문자열
+        const isPrimitive =
+          typeof field === "number" || typeof field === "string";
+        // 3. 단순 타입 중 하나라도 해당되면 OK
+        return isNeoInt || isPrimitive;
+      })
+    );
+  }
 
   return (
     <Tab.Group selectedIndex={selectedIndex} onChange={setSelectedIndex}>
@@ -150,7 +172,7 @@ export default function EcommerceTabs() {
               {/* 하단: RecentOrders */}
               <div style={{ height: `${100 - topHeight}%` }} className="transition-all">
                 <div className="bg-white dark:bg-gray-900 rounded shadow p-4 h-full">
-                  <RecentOrders />
+                  <RecentOrders rawRecords={rawRecords}/>
                 </div>
               </div>
             </div>
@@ -197,7 +219,7 @@ export default function EcommerceTabs() {
               {/* 하단: RecentOrders */}
               <div style={{ height: `${100 - topHeight}%` }} className="transition-all">
                 <div className="bg-white dark:bg-gray-900 rounded shadow p-4 h-full">
-                  <RecentOrders />
+                  <RecentOrders rawRecords={rawRecords}/>
                 </div>
               </div>
             </div>
@@ -244,7 +266,7 @@ export default function EcommerceTabs() {
               {/* 하단: RecentOrders */}
               <div style={{ height: `${100 - topHeight}%` }} className="transition-all">
                 <div className="bg-white dark:bg-gray-900 rounded shadow p-4 h-full">
-                  <RecentOrders />
+                  <RecentOrders rawRecords={rawRecords}/>
                 </div>
               </div>
             </div>
