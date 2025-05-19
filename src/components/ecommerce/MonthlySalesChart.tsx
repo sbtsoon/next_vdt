@@ -1,7 +1,6 @@
 "use client";
 
 import cytoscape from "@/lib/cytoscapeWithExtensions";
-
 import { graphDataAtom } from "@/store/graphAtoms";
 import { useAtom } from "jotai";
 import { useEffect, useRef } from "react";
@@ -18,11 +17,6 @@ export const LAYOUT_MODES = Object.freeze({
 export default function MonthlySalesChart({ onReady, selectedIndex }) {
   const cyRef = useRef(null);
   const cyInstanceRef = useRef(null);
-  const layoutModeRef = useRef(LAYOUT_MODES.RADIAL);
-  const setLayoutModeWithRef = (mode) => {
-    layoutModeRef.current = mode;
-  };
-
   const [graphData] = useAtom(graphDataAtom);
 
   const hideNode = (node, layoutMode) => {
@@ -36,7 +30,6 @@ export default function MonthlySalesChart({ onReady, selectedIndex }) {
   const showNode = (node, layoutMode, duration = 800) => {
     node.show();
     node.data("isHidden", false);
-
     if (layoutMode === LAYOUT_MODES.MINDMAP) {
       requestAnimationFrame(() => {
         node.animate({ style: { opacity: 1 }, duration });
@@ -55,7 +48,6 @@ export default function MonthlySalesChart({ onReady, selectedIndex }) {
 
   const showEdge = (edge, layoutMode, duration = 800) => {
     edge.show();
-
     if (layoutMode === LAYOUT_MODES.MINDMAP) {
       requestAnimationFrame(() => {
         edge.animate({ style: { opacity: 1 }, duration });
@@ -128,9 +120,9 @@ export default function MonthlySalesChart({ onReady, selectedIndex }) {
         {
           content: "숨김",
           select: function (ele) {
-            hideNode(ele, layoutModeRef.current);
+            hideNode(ele, selectedIndex);
             ele.connectedEdges().forEach((edge) => {
-              hideEdge(edge, layoutModeRef.current);
+              hideEdge(edge, selectedIndex);
             });
           },
         },
@@ -155,19 +147,15 @@ export default function MonthlySalesChart({ onReady, selectedIndex }) {
 
                 if (isOutgoing) {
                   const next = target;
-                  const isRootNode = nodeId === rootId;
-                  if (!isRootNode) return;
-
-                  showEdge(edge, layoutModeRef.current);
-                  showNode(next, layoutModeRef.current);
+                  if (nodeId !== rootId) return;
+                  showEdge(edge, selectedIndex);
+                  showNode(next, selectedIndex);
                   queue.push({ node: next, from: nodeId });
                 } else {
                   const prev = source;
-                  const isRootTarget = target.id() === rootId;
-                  if (!isRootTarget && prev.data("isHidden")) return;
-
-                  showEdge(edge, layoutModeRef.current);
-                  showNode(prev, layoutModeRef.current);
+                  if (target.id() !== rootId && prev.data("isHidden")) return;
+                  showEdge(edge, selectedIndex);
+                  showNode(prev, selectedIndex);
                   queue.push({ node: prev, from: nodeId });
                 }
               });
@@ -183,7 +171,6 @@ export default function MonthlySalesChart({ onReady, selectedIndex }) {
           select: function (ele) {
             const visited = new Set();
             const queue = [ele];
-
             while (queue.length > 0) {
               const node = queue.shift();
               const nodeId = node.id();
@@ -196,8 +183,8 @@ export default function MonthlySalesChart({ onReady, selectedIndex }) {
 
               incomingEdges.forEach((edge) => {
                 const source = edge.source();
-                hideEdge(edge, layoutModeRef.current);
-                hideNode(source, layoutModeRef.current);
+                hideEdge(edge, selectedIndex);
+                hideNode(source, selectedIndex);
                 queue.push(source);
               });
             }
@@ -261,10 +248,9 @@ export default function MonthlySalesChart({ onReady, selectedIndex }) {
   };
 
   const applyRadialLayout = () => {
-    setLayoutModeWithRef(LAYOUT_MODES.RADIAL);
     const cy = cyInstanceRef.current;
-    cy.nodes().forEach((node) => showNode(node, layoutModeRef.current));
-    cy.edges().forEach((edge) => showEdge(edge, layoutModeRef.current));
+    cy.nodes().forEach((node) => showNode(node, selectedIndex));
+    cy.edges().forEach((edge) => showEdge(edge, selectedIndex));
     cy.layout({ name: "cose", animate: true, padding: 30 }).run();
 
     cy.style().selector("node").style({ shape: "ellipse", width: "20px", height: "20px" });
@@ -272,10 +258,9 @@ export default function MonthlySalesChart({ onReady, selectedIndex }) {
   };
 
   const applyDagreLayout = () => {
-    setLayoutModeWithRef(LAYOUT_MODES.DAGRE);
     const cy = cyInstanceRef.current;
-    cy.nodes().forEach((node) => showNode(node, layoutModeRef.current));
-    cy.edges().forEach((edge) => showEdge(edge, layoutModeRef.current));
+    cy.nodes().forEach((node) => showNode(node, selectedIndex));
+    cy.edges().forEach((edge) => showEdge(edge, selectedIndex));
     cy.layout({
       name: "dagre",
       rankDir: "RL",
@@ -291,12 +276,11 @@ export default function MonthlySalesChart({ onReady, selectedIndex }) {
   };
 
   const applyMindmapLayout = () => {
-    setLayoutModeWithRef(LAYOUT_MODES.MINDMAP);
     const cy = cyInstanceRef.current;
     if (!cy) return;
 
-    cy.nodes().forEach((node) => hideNode(node, layoutModeRef.current));
-    cy.edges().forEach((edge) => hideEdge(edge, layoutModeRef.current));
+    cy.nodes().forEach((node) => hideNode(node, selectedIndex));
+    cy.edges().forEach((edge) => hideEdge(edge, selectedIndex));
 
     const roots = cy.nodes().filter((node) => node.outgoers("edge").length === 0);
     if (roots.length === 0) {
