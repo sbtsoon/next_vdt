@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { useRef, useState, useEffect } from "react";
 import { Tab } from "@headlessui/react";
 import { EcommerceMetrics } from "@/components/ecommerce/EcommerceMetrics";
 import MonthlyTarget from "@/components/ecommerce/MonthlyTarget";
@@ -15,11 +15,17 @@ import {
   Squares2X2Icon,
 } from "@heroicons/react/24/outline";
 
+import { useAtom } from "jotai";
+import { graphDataAtom } from "@/store/graphAtoms";
+
 function classNames(...classes: string[]) {
   return classes.filter(Boolean).join(" ");
 }
 
 export default function EcommerceTabs() {
+  const [cy, setCy] = useState(null);
+  const [graphData, setGraphData] = useAtom(graphDataAtom);
+
   const tabs = [
     { name: "Plotly Chart", icon: Squares2X2Icon },
     { name: "Spotify Chart", icon: BellIcon },
@@ -74,6 +80,24 @@ export default function EcommerceTabs() {
     document.removeEventListener("mouseup", stopVerticalDrag);
   };
 
+  const loadGraph = async (query = null) => {
+    const res = await fetch(query ? "/api/query" : "/api/graph", {
+      method: query ? "POST" : "GET",
+      headers: { "Content-Type": "application/json" },
+      body: query ? JSON.stringify({ query }) : null,
+    });
+    const { data, rawRecords } = await res.json();
+    setGraphData(data);
+    // setRawRecords(rawRecords);
+    // setIsSimple(isSimpleTable(rawRecords));
+
+    cy?.elements().remove();
+  };
+
+  useEffect(() => {
+    loadGraph(null); // 또는 loadGraph() 로 초기 데이터 로딩
+  }, []);
+
   return (
     <Tab.Group>
       <Tab.List className="flex space-x-8 border-b border-gray-200 dark:border-gray-600">
@@ -111,7 +135,7 @@ export default function EcommerceTabs() {
               <div style={{ height: `${topHeight}%` }} className="transition-all">
                 <div className="shadow p-4 h-full">
                 <EcommerceMetrics />
-                  <MonthlySalesChart />
+                  <MonthlySalesChart onReady={setCy}/>
                 </div>
               </div>
 
