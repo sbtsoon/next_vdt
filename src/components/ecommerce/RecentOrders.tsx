@@ -70,12 +70,40 @@ const tableData: Product[] = [
   },
 ];
 
-export default function RecentOrders({rawRecords}) {
+export default function RecentOrders({ rawRecords, isSimple }) {
   if (!rawRecords || rawRecords.length === 0) {
-    return <p>no data</p>
-  };
-  
+    return <p>no data</p>;
+  }
+
   const headers = rawRecords[0].keys;
+
+  function parseNeo4jValue(value) {
+    if (
+      value &&
+      typeof value === "object" &&
+      "low" in value &&
+      "high" in value &&
+      typeof value.low === "number" &&
+      typeof value.high === "number"
+    ) {
+      return parseNeo4jInt(value);
+    }
+    if (Array.isArray(value)) {
+      return value.map(parseNeo4jValue);
+    }
+    if (value && typeof value === "object") {
+      const newObj = {};
+      for (const [key, val] of Object.entries(value)) {
+        newObj[key] = parseNeo4jValue(val);
+      }
+      return newObj;
+    }
+    return value;
+  }
+
+  function simplifyField(field) {
+    return parseNeo4jValue(field);
+  }
 
   return (
     <div className="overflow-hidden rounded-2xl border border-gray-200 bg-white px-4 pb-3 pt-4 dark:border-gray-800 dark:bg-white/[0.03] sm:px-6">
@@ -148,20 +176,42 @@ export default function RecentOrders({rawRecords}) {
           </TableHeader>
 
           {/* Table Body */}
-          <TableBody className="divide-y divide-gray-100 dark:divide-gray-800">
-            {rawRecords.map((record, rowIdx) => (
-              <TableRow key={rowIdx} className="">
-                {headers.map((key) => {
-                  const value = record._fields?.[record._fieldLookup?.[key]];
-                  return (
-                    <TableCell key={`${rowIdx}-${key}`} className="py-3 text-gray-500 text-theme-sm dark:text-gray-400">
-                      {typeof value === "string" ? value : parseNeo4jInt(value)}
+          {isSimple ? (
+            <TableBody className="divide-y divide-gray-100 dark:divide-gray-800">
+              {rawRecords.map((record, rowIdx) => (
+                <TableRow key={rowIdx}>
+                  {headers.map((key) => {
+                    const value = record._fields?.[record._fieldLookup?.[key]];
+                    return (
+                      <TableCell
+                        key={`${rowIdx}-${key}`}
+                        className="py-3 text-gray-500 text-theme-sm dark:text-gray-400"
+                      >
+                        {typeof value === "string"
+                          ? value
+                          : parseNeo4jInt(value)}
+                      </TableCell>
+                    );
+                  })}
+                </TableRow>
+              ))}
+            </TableBody>
+          ) : (
+            <TableBody className="divide-y divide-gray-100 dark:divide-gray-800">
+              {rawRecords.map((record, rowIdx) => (
+                <TableRow key={rowIdx}>
+                  {record._fields.map((field, colIndex) => (
+                    <TableCell
+                      key={`${rowIdx}-${colIndex}`}
+                      className="py-3 text-gray-500 text-theme-sm dark:text-gray-400"
+                    >
+                      {JSON.stringify(simplifyField(field))}
                     </TableCell>
-                  )
-                })}
-              </TableRow>
-            ))}
-          </TableBody>
+                  ))}
+                </TableRow>
+              ))}
+            </TableBody>
+          )}
         </Table>
       </div>
     </div>

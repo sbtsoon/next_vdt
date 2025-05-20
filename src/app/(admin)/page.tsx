@@ -172,7 +172,7 @@ export default function EcommerceTabs() {
               {/* 하단: RecentOrders */}
               <div style={{ height: `${100 - topHeight}%` }} className="transition-all">
                 <div className="bg-white dark:bg-gray-900 rounded shadow p-4 h-full">
-                  <RecentOrders rawRecords={rawRecords}/>
+                  <RecentOrders rawRecords={rawRecords} isSimple={isSimple}/>
                 </div>
               </div>
             </div>
@@ -219,7 +219,7 @@ export default function EcommerceTabs() {
               {/* 하단: RecentOrders */}
               <div style={{ height: `${100 - topHeight}%` }} className="transition-all">
                 <div className="bg-white dark:bg-gray-900 rounded shadow p-4 h-full">
-                  <RecentOrders rawRecords={rawRecords}/>
+                  <RecentOrders rawRecords={rawRecords} isSimple={isSimple}/>
                 </div>
               </div>
             </div>
@@ -266,7 +266,7 @@ export default function EcommerceTabs() {
               {/* 하단: RecentOrders */}
               <div style={{ height: `${100 - topHeight}%` }} className="transition-all">
                 <div className="bg-white dark:bg-gray-900 rounded shadow p-4 h-full">
-                  <RecentOrders rawRecords={rawRecords}/>
+                  <RecentOrders rawRecords={rawRecords} isSimple={isSimple}/>
                 </div>
               </div>
             </div>

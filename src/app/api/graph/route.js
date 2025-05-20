@@ -6,6 +6,7 @@ export async function GET() {
 
   try {
     const result = await session.run("MATCH (n)-[r]->(m) RETURN n, r, m");
+    // const result = await session.run("MATCH (n:Metric) RETURN MIN(n.amount) AS minAmount, MAX(n.amount) AS maxAmount, AVG(n.amount) AS avgAmount");
     const data = formatDataForCytoscape(result.records);
     return NextResponse.json({
       data,
