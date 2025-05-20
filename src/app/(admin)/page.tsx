@@ -55,7 +55,7 @@ export default function EcommerceTabs() {
     const containerWidth = containerRef.current.offsetWidth;
     const offsetX = e.clientX - containerRef.current.getBoundingClientRect().left;
     const newLeftWidth = (offsetX / containerWidth) * 100;
-    if (newLeftWidth > 20 && newLeftWidth < 80) setLeftWidth(newLeftWidth);
+    if (newLeftWidth > 25 && newLeftWidth < 80) setLeftWidth(newLeftWidth);
   };
 
   const stopHorizontalDrag = () => {
@@ -75,7 +75,7 @@ export default function EcommerceTabs() {
     const containerHeight = containerRef.current.offsetHeight;
     const offsetY = e.clientY - containerRef.current.getBoundingClientRect().top;
     const newTopHeight = (offsetY / containerHeight) * 100;
-    if (newTopHeight > 20 && newTopHeight < 80) setTopHeight(newTopHeight);
+    if (newTopHeight > 30 && newTopHeight < 70) setTopHeight(newTopHeight);
   };
 
   const stopVerticalDrag = () => {
@@ -146,33 +146,34 @@ export default function EcommerceTabs() {
 
       <Tab.Panels className="mt-4">
         <Tab.Panel>
-          <div
+        <div
             ref={containerRef}
-            className="flex w-[100%-90px] h-[100%-76px] relative   overflow-hidden"
+            className="flex w-full h-[1840px] min-h-screen overflow-hidden"
           >
-            {/* 왼쪽 전체 영역 */}
+            {/* 왼쪽: 상하 분할 */}
             <div
               style={{ width: `${leftWidth}%` }}
               className="flex flex-col transition-all duration-100"
             >
-              {/* 상단: MonthlySalesChart */}
+              {/* 상단 */}
               <div style={{ height: `${topHeight}%` }} className="transition-all">
-                <div className="shadow p-4 h-full">
-                <EcommerceMetrics />
-                  <MonthlySalesChart onReady={setCy} selectedIndex = {selectedIndex}/>
+                <div className="bg-white dark:bg-gray-900 rounded shadow p-4 h-full">
+                  <EcommerceMetrics />
+                  <MonthlySalesChart onReady={setCy} selectedIndex={selectedIndex} />
                 </div>
               </div>
 
               {/* 상하 리사이즈 핸들 */}
               <div
                 onMouseDown={startVerticalDrag}
-                className="h-1 cursor-row-resize bg-gray-100 dark:bg-gray-800"
+                className="h-2 cursor-row-resize bg-gray-300 hover:bg-gray-500"
+                style={{ zIndex: 50 }}
               />
 
-              {/* 하단: RecentOrders */}
+              {/* 하단 */}
               <div style={{ height: `${100 - topHeight}%` }} className="transition-all">
-                <div className="bg-white dark:bg-gray-900 rounded shadow p-4 h-full">
-                  <RecentOrders rawRecords={rawRecords} isSimple={isSimple}/>
+                <div className="bg-white dark:bg-gray-900 rounded shadow p-4 h-full overflow-y-auto">
+                  <RecentOrders rawRecords={rawRecords} isSimple={isSimple} />
                 </div>
               </div>
             </div>
@@ -180,14 +181,16 @@ export default function EcommerceTabs() {
             {/* 좌우 리사이즈 핸들 */}
             <div
               onMouseDown={startHorizontalDrag}
-              className="w-1 cursor-col-resize bg-gray-200 dark:bg-gray-800"
+              className="w-2 cursor-col-resize bg-gray-300 hover:bg-gray-500 transition-colors duration-150"
+              style={{ zIndex: 50 }}
             />
 
-            {/* 오른쪽: MonthlyTarget */}
+            {/* 오른쪽 */}
             <div
-              style={{ width: `${100 - leftWidth}%` }}
+              style={{ width: `${100 - leftWidth}%`, minWidth: "280px" }}
               className="bg-white dark:bg-gray-900 rounded shadow p-4 h-full"
-            > < DefaultInputs />
+            >
+              <DefaultInputs />
               <MonthlyTarget />
             </div>
           </div>
@@ -272,10 +275,12 @@ export default function EcommerceTabs() {
             </div>
 
             {/* 좌우 리사이즈 핸들 */}
-            <div
-              onMouseDown={startHorizontalDrag}
-              className="w-1 cursor-col-resize bg-gray-200 dark:bg-gray-800"
-            />
+              <div
+                onMouseDown={startHorizontalDrag}
+                className="w-2 cursor-col-resize bg-gray-300 hover:bg-gray-500 transition-colors duration-150"
+                style={{ zIndex: 50 }}
+              />
+
 
             {/* 오른쪽: MonthlyTarget */}
             <div
