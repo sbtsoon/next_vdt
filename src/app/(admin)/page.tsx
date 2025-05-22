@@ -148,12 +148,12 @@ export default function EcommerceTabs() {
         <Tab.Panel>
         <div
             ref={containerRef}
-            className="flex w-full h-[1840px] min-h-screen overflow-hidden"
+            className="flex w-full min-h-[640px]"
           >
             {/* 왼쪽: 상하 분할 */}
             <div
               style={{ width: `${leftWidth}%` }}
-              className="flex flex-col transition-all duration-100"
+              className="flex flex-col h-full w-[75%] transition-all duration-100"
             >
               {/* 상단 */}
               <div style={{ height: `${topHeight}%` }} className="transition-all">
@@ -171,7 +171,7 @@ export default function EcommerceTabs() {
               />
 
               {/* 하단 */}
-              <div style={{ height: `${100 - topHeight}%` }} className="transition-all">
+              <div style={{ height: `${100 - topHeight}%` }} className="transition-all h-full">
                 <div className="bg-white dark:bg-gray-900 rounded shadow p-4 h-full overflow-y-auto">
                   <RecentOrders rawRecords={rawRecords} isSimple={isSimple} />
                 </div>
