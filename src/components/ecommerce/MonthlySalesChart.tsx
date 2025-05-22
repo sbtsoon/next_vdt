@@ -70,13 +70,13 @@ export default function MonthlySalesChart({ onReady, selectedIndex }) {
             "text-halign": "center",
             "font-size": "4px",
             backgroundColor: (ele) => {
-              const level = parseNeo4jInt(ele.data("level"));
-              if (level === 0) return "#e57373";
-              else if (level === 1) return "#90a4ce";
-              else if (level === 2) return "#26A69A";
-              else if (level === 3) return "#64b5f6";
-              else if (level === 4) return "#B2DFDB";
-              else return "#ddd";
+              const level = parseNeo4jInt(ele.data('level'));
+              if (level === 0) return '#BF512C';  // Coach Red
+              else if (level === 1) return '#DA9828'; // Orange
+              else if (level === 2) return '#FBCFA1'; // Soft Yellow
+              else if (level === 3) return '#A8C8CA'; // Mint
+              else if (level === 4) return '#376f9f'; // Navy
+              else return '#7A7A7A'; // fallback gray
             },
             color: "#333",
             width: "20px",
@@ -106,8 +106,9 @@ export default function MonthlySalesChart({ onReady, selectedIndex }) {
               ele.data("role") === "negative" ? "#d62828" : "#2a9d8f",
             "edge-text-rotation": "autorotate",
             "text-background-shape": "rectangle",
-            "text-background-opacity": 1,
-            "text-background-color": "#fff",
+            "text-background-opacity": 0.1,
+            "text-background-color": "#222",
+            "text-background-radius": "5px",
           },
         },
       ],

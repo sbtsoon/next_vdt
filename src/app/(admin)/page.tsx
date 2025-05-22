@@ -166,13 +166,13 @@ export default function EcommerceTabs() {
               {/* 상하 리사이즈 핸들 */}
               <div
                 onMouseDown={startVerticalDrag}
-                className="h-2 cursor-row-resize bg-gray-300 hover:bg-gray-500"
+                className="h-2 cursor-row-resize bg-gray-300 hover:bg-gray-700"
                 style={{ zIndex: 50 }}
               />
 
               {/* 하단 */}
               <div style={{ height: `${100 - topHeight}%` }} className="transition-all h-full">
-                <div className="bg-white dark:bg-gray-900 rounded shadow p-4 h-full overflow-y-auto">
+                <div className="bg-white dark:bg-gray-900 rounded shadow p-4 overflow-y-auto">
                   <RecentOrders rawRecords={rawRecords} isSimple={isSimple} />
                 </div>
               </div>
@@ -181,14 +181,14 @@ export default function EcommerceTabs() {
             {/* 좌우 리사이즈 핸들 */}
             <div
               onMouseDown={startHorizontalDrag}
-              className="w-2 cursor-col-resize bg-gray-300 hover:bg-gray-500 transition-colors duration-150"
+              className="w-2 cursor-col-resize bg-gray-300 hover:bg-gray-00 transition-colors duration-150"
               style={{ zIndex: 50 }}
             />
 
             {/* 오른쪽 */}
             <div
               style={{ width: `${100 - leftWidth}%`, minWidth: "280px" }}
-              className="bg-white dark:bg-gray-900 rounded shadow p-4 h-full"
+              className="bg-white dark:bg-gray-900 rounded shadow p-2 h-full"
             >
               <DefaultInputs />
               <MonthlyTarget />
@@ -263,12 +263,12 @@ export default function EcommerceTabs() {
               {/* 상하 리사이즈 핸들 */}
               <div
                 onMouseDown={startVerticalDrag}
-                className="h-1 cursor-row-resize bg-gray-100 dark:bg-gray-800"
+                className="h-1 cursor-row-resize bg-gray-100 dark:bg-gray-800 rounded  hover:bg-gray-500"
               />
 
               {/* 하단: RecentOrders */}
               <div style={{ height: `${100 - topHeight}%` }} className="transition-all">
-                <div className="bg-white dark:bg-gray-900 rounded shadow p-4 h-full">
+                <div className="bg-white dark:bg-gray-900  shadow p-4  h-30">
                   <RecentOrders rawRecords={rawRecords} isSimple={isSimple}/>
                 </div>
               </div>
