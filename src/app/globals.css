@@ -16,16 +16,16 @@ body {
 @theme {
   --font-*: initial;
   --font-outfit: Outfit, sans-serif;
-
   --breakpoint-*: initial;
   --breakpoint-2xsm: 375px;
   --breakpoint-xsm: 425px;
-  --breakpoint-3xl: 2000px;
+
   --breakpoint-sm: 640px;
   --breakpoint-md: 768px;
   --breakpoint-lg: 1024px;
   --breakpoint-xl: 1280px;
   --breakpoint-2xl: 1536px;
+  --breakpoint-3xl: 1736px;
 
   --text-title-2xl: 72px;
   --text-title-2xl--line-height: 90px;
@@ -55,7 +55,7 @@ body {
   --color-brand-200: #f3c3a6;
   --color-brand-300: #eca076;
   --color-brand-400: #e28352;
-  --color-brand-500: #dd7943; /* 🎯 메인 강조 색 */
+  --color-brand-500: #d3662f; /* 🎯 메인 강조 색 */
   --color-brand-600: #c16538;
   --color-brand-700: #9c512f;
   --color-brand-800: #7e4129;

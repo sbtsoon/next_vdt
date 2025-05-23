@@ -74,7 +74,7 @@ export default function MonthlySalesChart({ onReady, selectedIndex }) {
               if (level === 0) return '#BF512C';  // Coach Red
               else if (level === 1) return '#DA9828'; // Orange
               else if (level === 2) return '#FBCFA1'; // Soft Yellow
-              else if (level === 3) return '#A8C8CA'; // Mint
+              else if (level === 3) return '#277d5f'; // Mint
               else if (level === 4) return '#376f9f'; // Navy
               else return '#7A7A7A'; // fallback gray
             },
@@ -323,8 +323,8 @@ export default function MonthlySalesChart({ onReady, selectedIndex }) {
   };
 
   return (
-    <div className="overflow-hidden rounded-2xl border border-gray-200 bg-white px-5 pt-5 dark:border-gray-800 dark:bg-white/[0.03] sm:px-6 sm:pt-6">
-      <div id="cy" ref={cyRef} style={{ width: "900px", minHeight: "600px" }} />
+    <div className="overflow-hidden  border border-gray-200 bg-white px-5 pt-5 dark:border-gray-800 dark:bg-white/[0.03] sm:px-6 sm:pt-6">
+      <div id="cy" ref={cyRef} style={{ width: "100%", minHeight: "600px" }} />
     </div>
   );
 }

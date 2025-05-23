@@ -26,28 +26,35 @@ type NavItem = {
 
 const navItems: NavItem[] = [
   {
+    icon: <CalenderIcon />,
+    name: "income statement",
+    path: "/Dashboard",
+  },
+  {
     icon: <GridIcon />,
-    name: "Dashboard",
+    name: "general",
     subItems: [{ name: "Menu00", path: "/", pro: false }],
   },
   {
-    icon: <CalenderIcon />,
-    name: "Menu01",
-    path: "/calendar",
-  },
-
-  {
-    name: "Menu02",
+    name: "QSA",
     icon: <ListIcon />,
     subItems: [{ name: "Form Elements", path: "/form-elements", pro: false }],
   },
   {
-    name: "Menu03",
+    name: "BOM",
     icon: <TableIcon />,
     subItems: [{ name: "Basic Tables", path: "/basic-tables", pro: false }],
   },
   {
-    name: "Menu04",
+    name: "organization net-work",
+    icon: <PageIcon />,
+    subItems: [
+      { name: "Blank Page", path: "/blank", pro: false },
+      { name: "404 Error", path: "/error-404", pro: false },
+    ],
+  },
+  {
+    name: "distribution net-work",
     icon: <PageIcon />,
     subItems: [
       { name: "Blank Page", path: "/blank", pro: false },
@@ -59,7 +66,7 @@ const navItems: NavItem[] = [
 const othersItems: NavItem[] = [
   {
     icon: <PieChartIcon />,
-    name: "Menu05",
+    name: "general",
     subItems: [
       { name: "Line Chart", path: "/line-chart", pro: false },
       { name: "Bar Chart", path: "/bar-chart", pro: false },
@@ -67,14 +74,39 @@ const othersItems: NavItem[] = [
   },
   {
     icon: <BoxCubeIcon />,
-    name: "Menu06",
+    name: "income statement",
     subItems: [
       { name: "Alerts", path: "/alerts", pro: false },
       { name: "Avatar", path: "/avatars", pro: false },
-      { name: "Badge", path: "/badge", pro: false },
-      { name: "Buttons", path: "/buttons", pro: false },
-      { name: "Images", path: "/images", pro: false },
-      { name: "Videos", path: "/videos", pro: false },
+    ],
+  },
+  {
+    icon: <BoxCubeIcon />,
+    name: "QSA",
+    subItems: [
+      { name: "Alerts", path: "/alerts", pro: false },
+      { name: "Avatar", path: "/avatars", pro: false },
+    ],
+  },
+  {
+    icon: <BoxCubeIcon />,
+    name: "BOM",
+    subItems: [
+      { name: "Alerts", path: "/alerts", pro: false },
+    ],
+  },
+  {
+    icon: <BoxCubeIcon />,
+    name: "organization net-work",
+    subItems: [
+      { name: "Avatar", path: "/avatars", pro: false },
+    ],
+  },
+  {
+    icon: <BoxCubeIcon />,
+    name: "distribution net-work",
+    subItems: [
+      { name: "Avatar", path: "/avatars", pro: false },
     ],
   },
 
@@ -335,7 +367,7 @@ const AppSidebar: React.FC = () => {
                 }`}
               >
                 {isExpanded || isHovered || isMobileOpen ? (
-                  "Menu"
+                  "NetGraph Analyzer"
                 ) : (
                   <HorizontaLDots />
                 )}
@@ -352,7 +384,7 @@ const AppSidebar: React.FC = () => {
                 }`}
               >
                 {isExpanded || isHovered || isMobileOpen ? (
-                  "Others"
+                  "NetGraph Builder"
                 ) : (
                   <HorizontaLDots />
                 )}

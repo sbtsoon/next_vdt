@@ -7,6 +7,7 @@ import MonthlyTarget from "@/components/ecommerce/MonthlyTarget";
 import MonthlySalesChart from "@/components/ecommerce/MonthlySalesChart";
 import RecentOrders from "@/components/ecommerce/RecentOrders";
 import  DefaultInputs  from "@/components/form/Form-elements/DefaultInputs";
+import AIChatPanel from "@/components/AIChatPanel";
 
 import {
   BellIcon,
@@ -148,16 +149,16 @@ export default function EcommerceTabs() {
         <Tab.Panel>
         <div
             ref={containerRef}
-            className="flex w-full min-h-[640px]"
+         className="flex w-[100%-90px] h-[100%-76px] relative   overflow-hidden"
           >
             {/* 왼쪽: 상하 분할 */}
             <div
               style={{ width: `${leftWidth}%` }}
-              className="flex flex-col h-full w-[75%] transition-all duration-100"
+              className="flex flex-col w-[75%] transition-all duration-100"
             >
               {/* 상단 */}
               <div style={{ height: `${topHeight}%` }} className="transition-all">
-                <div className="bg-white dark:bg-gray-900 rounded shadow p-4 h-full">
+                <div className="bg-white dark:bg-gray-900 rounded shadow p-4 h-[100%-400px]">
                   <EcommerceMetrics />
                   <MonthlySalesChart onReady={setCy} selectedIndex={selectedIndex} />
                 </div>
@@ -166,8 +167,8 @@ export default function EcommerceTabs() {
               {/* 상하 리사이즈 핸들 */}
               <div
                 onMouseDown={startVerticalDrag}
-                className="h-2 cursor-row-resize bg-gray-300 hover:bg-gray-700"
-                style={{ zIndex: 50 }}
+                className="h-1 cursor-row-resize bg-gray-100 dark:bg-gray-800 hover:bg-blue-500"
+                style={{ zIndex: 9990 }}
               />
 
               {/* 하단 */}
@@ -181,7 +182,7 @@ export default function EcommerceTabs() {
             {/* 좌우 리사이즈 핸들 */}
             <div
               onMouseDown={startHorizontalDrag}
-              className="w-2 cursor-col-resize bg-gray-300 hover:bg-gray-00 transition-colors duration-150"
+              className="w-1 cursor-col-resize bg-gray-100 dark:bg-gray-800 hover:bg-blue-500 transition-colors duration-150"
               style={{ zIndex: 50 }}
             />
 
@@ -191,7 +192,7 @@ export default function EcommerceTabs() {
               className="bg-white dark:bg-gray-900 rounded shadow p-2 h-full"
             >
               <DefaultInputs />
-              <MonthlyTarget />
+             < AIChatPanel/>
             </div>
           </div>
         </Tab.Panel>
