@@ -32,10 +32,10 @@ export default function EcommerceTabs() {
   const [selectedIndex, setSelectedIndex] = useState(0);
 
   const tabs = [
-    { name: "Plotly Chart", icon: Squares2X2Icon },
-    { name: "Spotify Chart", icon: BellIcon },
-    { name: "Line Chart", icon: UserGroupIcon },
-    { name: "Bar Chart", icon: ChartBarIcon },
+    { name: "Network Graph", icon: Squares2X2Icon },
+    { name: "VDT", icon: BellIcon },
+    { name: "Exmple1", icon: UserGroupIcon },
+    { name: "Exmple2", icon: ChartBarIcon },
   ];
 
   const containerRef = useRef<HTMLDivElement>(null);
@@ -243,52 +243,104 @@ export default function EcommerceTabs() {
             </div>
           </div>
         </Tab.Panel>
+  {/* example */}
         <Tab.Panel>
-          <div
+        <div
             ref={containerRef}
-            className="flex w-[100%-90px] h-[100%-76px] relative   overflow-hidden"
+         className="flex w-[100%-90px] h-[100%-76px] relative   overflow-hidden"
           >
-            {/* 왼쪽 전체 영역 */}
+            {/* 왼쪽: 상하 분할 */}
             <div
               style={{ width: `${leftWidth}%` }}
-              className="flex flex-col transition-all duration-100"
+              className="flex flex-col w-[75%] transition-all duration-100"
             >
-              {/* 상단: MonthlySalesChart */}
+              {/* 상단 */}
               <div style={{ height: `${topHeight}%` }} className="transition-all">
-                <div className="shadow p-4 h-full">
-                <EcommerceMetrics />
-                <MonthlySalesChart onReady={setCy} selectedIndex = {selectedIndex}/>
+                <div className="bg-white dark:bg-gray-900 rounded shadow p-4 h-[100%-400px]">
+                  <EcommerceMetrics />
+                  <MonthlySalesChart onReady={setCy} selectedIndex={selectedIndex} />
                 </div>
               </div>
 
               {/* 상하 리사이즈 핸들 */}
               <div
                 onMouseDown={startVerticalDrag}
-                className="h-1 cursor-row-resize bg-gray-100 dark:bg-gray-800 rounded  hover:bg-gray-500"
+                className="h-1 cursor-row-resize bg-gray-100 dark:bg-gray-800 hover:bg-blue-500"
+                style={{ zIndex: 9990 }}
               />
 
-              {/* 하단: RecentOrders */}
-              <div style={{ height: `${100 - topHeight}%` }} className="transition-all">
-                <div className="bg-white dark:bg-gray-900  shadow p-4  h-30">
-                  <RecentOrders rawRecords={rawRecords} isSimple={isSimple}/>
+              {/* 하단 */}
+              <div style={{ height: `${100 - topHeight}%` }} className="transition-all h-full">
+                <div className="bg-white dark:bg-gray-900 rounded shadow p-4 overflow-y-auto">
+                  <RecentOrders rawRecords={rawRecords} isSimple={isSimple} />
                 </div>
               </div>
             </div>
 
             {/* 좌우 리사이즈 핸들 */}
+            <div
+              onMouseDown={startHorizontalDrag}
+              className="w-1 cursor-col-resize bg-gray-100 dark:bg-gray-800 hover:bg-blue-500 transition-colors duration-150"
+              style={{ zIndex: 50 }}
+            />
+
+            {/* 오른쪽 */}
+            <div
+              style={{ width: `${100 - leftWidth}%`, minWidth: "280px" }}
+              className="bg-white dark:bg-gray-900 rounded shadow p-2 h-full"
+            >
+              <DefaultInputs />
+             < AIChatPanel/>
+            </div>
+          </div>
+        </Tab.Panel>
+        <Tab.Panel>
+        <div
+            ref={containerRef}
+         className="flex w-[100%-90px] h-[100%-76px] relative   overflow-hidden"
+          >
+            {/* 왼쪽: 상하 분할 */}
+            <div
+              style={{ width: `${leftWidth}%` }}
+              className="flex flex-col w-[75%] transition-all duration-100"
+            >
+              {/* 상단 */}
+              <div style={{ height: `${topHeight}%` }} className="transition-all">
+                <div className="bg-white dark:bg-gray-900 rounded shadow p-4 h-[100%-400px]">
+                  <EcommerceMetrics />
+                  <MonthlySalesChart onReady={setCy} selectedIndex={selectedIndex} />
+                </div>
+              </div>
+
+              {/* 상하 리사이즈 핸들 */}
               <div
-                onMouseDown={startHorizontalDrag}
-                className="w-2 cursor-col-resize bg-gray-300 hover:bg-gray-500 transition-colors duration-150"
-                style={{ zIndex: 50 }}
+                onMouseDown={startVerticalDrag}
+                className="h-1 cursor-row-resize bg-gray-100 dark:bg-gray-800 hover:bg-blue-500"
+                style={{ zIndex: 9990 }}
               />
 
+              {/* 하단 */}
+              <div style={{ height: `${100 - topHeight}%` }} className="transition-all h-full">
+                <div className="bg-white dark:bg-gray-900 rounded shadow p-4 overflow-y-auto">
+                  <RecentOrders rawRecords={rawRecords} isSimple={isSimple} />
+                </div>
+              </div>
+            </div>
 
-            {/* 오른쪽: MonthlyTarget */}
+            {/* 좌우 리사이즈 핸들 */}
             <div
-              style={{ width: `${100 - leftWidth}%` }}
-              className="bg-white dark:bg-gray-900 rounded shadow p-4 h-full"
-            > < DefaultInputs />
-              <MonthlyTarget />
+              onMouseDown={startHorizontalDrag}
+              className="w-1 cursor-col-resize bg-gray-100 dark:bg-gray-800 hover:bg-blue-500 transition-colors duration-150"
+              style={{ zIndex: 50 }}
+            />
+
+            {/* 오른쪽 */}
+            <div
+              style={{ width: `${100 - leftWidth}%`, minWidth: "280px" }}
+              className="bg-white dark:bg-gray-900 rounded shadow p-2 h-full"
+            >< AIChatPanel/>
+                  <MonthlyTarget />
+
             </div>
           </div>
         </Tab.Panel>
