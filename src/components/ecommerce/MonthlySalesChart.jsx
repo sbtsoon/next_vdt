@@ -44,16 +44,20 @@ export default function MonthlySalesChart() {
     if (layoutMode === LAYOUT_MODES.MINDMAP) {
       edge.style("opacity", 0);
     }
+    edge.data("isHidden", true);
   };
 
   const showEdge = (edge, layoutMode = 0, duration = 800) => {
-    edge.show();
-    if (layoutMode === LAYOUT_MODES.MINDMAP) {
-      requestAnimationFrame(() => {
-        edge.animate({ style: { opacity: 1 }, duration });
-      });
-    } else {
-      edge.style("opacity", 1);
+    if (edge.data("isHidden")) {
+      edge.show();
+      edge.data("isHidden", false);
+      if (layoutMode === LAYOUT_MODES.MINDMAP) {
+        requestAnimationFrame(() => {
+          edge.animate({ style: { opacity: 1 }, duration });
+        });
+      } else {
+        edge.style("opacity", 1);
+      }
     }
   };
 
