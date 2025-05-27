@@ -265,8 +265,8 @@ export default function SimulationGraph() {
       const mouseX = event.clientX + window.scrollX;
       const mouseY = event.clientY + window.scrollY;
 
-      tooltip.style.left = `${mouseX + 10}px`; // 약간 오른쪽
-      tooltip.style.top = `${mouseY - 10}px`; // 약간 위쪽
+      tooltip.style.left = `${mouseX + 2}px`; // 약간 오른쪽
+      tooltip.style.top = `${mouseY - 2}px`; // 약간 위쪽
       tooltip.style.display = "block";
 
       setTimeout(() => {
@@ -318,9 +318,9 @@ export default function SimulationGraph() {
         name: "dagre",
         rankDir: "RL", // 방향: 오른쪽 → 왼쪽
         nodeSep: 3, // 같은 레벨 노드 간 거리
-        rankSep: 70, // 부모, 자식 노드 간 거리
-        edgeSep: 10,
-        padding: 20,
+        rankSep: 300, // 부모, 자식 노드 간 거리
+        edgeSep: 100,
+        padding: 200,
         animate: true,
         animationDuration: 400,
         animationEasing: "ease-in-out",

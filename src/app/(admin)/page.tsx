@@ -109,9 +109,10 @@ export default function EcommerceTabs() {
   };
 
   useEffect(() => {
-    if (selectedIndex === 0 || selectedIndex === 1) {
-      loadGraph(null);
-    }
+    loadGraph(null);
+  }, []);
+
+  useEffect(() => {
     setActivePanel(null);
   }, [selectedIndex]);
 
