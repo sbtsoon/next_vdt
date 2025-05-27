@@ -24,6 +24,7 @@ import {
 import { useAtom } from "jotai";
 import { graphDataAtom } from "@/store/graphAtoms";
 import NetworkGraph from "@/components/ecommerce/NetworkGraph";
+import SimulationGraph from "@/components/ecommerce/SimulationGraph";
 
 function classNames(...classes: string[]) {
   return classes.filter(Boolean).join(" ");
@@ -340,7 +341,7 @@ export default function EcommerceTabs() {
               >
                 <div className="shadow p-4 h-full">
                   <EcommerceMetrics />
-                  <MonthlySalesChart />
+                  <SimulationGraph />
                 </div>
               </div>
 

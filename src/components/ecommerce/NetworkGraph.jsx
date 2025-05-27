@@ -13,13 +13,6 @@ import {
   hideEdge,
 } from "@/helpers/cytoscapeVisibility";
 
-// Layout mode constants
-export const LAYOUT_MODES = Object.freeze({
-  RADIAL: 0,
-  DAGRE: 1,
-  MINDMAP: 2,
-});
-
 export default function NetworkGraph() {
   const cyRef = useRef(null);
   const cyInstanceRef = useRef(null);
