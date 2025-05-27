@@ -283,7 +283,7 @@ export default function SimulationGraph() {
         {
           selector: "node",
           style: {
-            width: 400,
+            width: 300,
             height: 74,
             shape: "rectangle",
           },
@@ -588,6 +588,66 @@ export default function SimulationGraph() {
       });
 
       cy.center(roots);
+
+      cy.nodes().forEach((node) => {
+        const name = node.data("name");
+
+        if (name === "매출원가") {
+          node.position({ x: 798.3342288998895, y: 704.8898453135909 });
+        }
+
+        if (name === "매출액") {
+          node.position({ x: 798.3342288998895, y: 968.24288111116 });
+        }
+
+        if (name === "당기제품제조원가") {
+          node.position({ x: 1347.24006, y: 347.0353200556658 });
+        }
+
+        if (name === "기초재고") {
+          node.position({ x: 1374.8861906279813, y: 525.3371253720223 });
+        }
+
+        if (name === "기말재고") {
+          node.position({ x: 1401.164721046636, y: 705.6113923763377 });
+        }
+
+        if (name === "FERT100s") {
+          node.position({ x: 1404.4980606279814, y: 880.7656582299755 });
+        }
+
+        if (name === "FERT200s") {
+          node.position({ x: 1402.8313908373088, y: 1058.8715207419013 });
+        }
+
+        if (name === "당기제조비용") {
+          node.position({ x: 1948.7291706279816, y: 64.39271855322282 });
+        }
+
+        if (name === "재공품") {
+          node.position({ x: 1987.308, y: 247.7019956226425 });
+        }
+
+        if (name === "액티비티단수차") {
+          node.position({ x: 1987.3079999999993, y: 435.6673726920622 });
+        }
+
+        if (name === "액티비티배부") {
+          node.position({ x: 1948.7291706279816, y: 625.0334101801366 });
+        }
+
+        if (name === "가공비") {
+          node.position({ x: 2561.788617629735, y: -123.62142290129071 });
+        }
+
+        if (name === "부재료비") {
+          node.position({ x: 2562.5938048081102, y: 63.04208671492896 });
+        }
+
+        if (name === "원재료비") {
+          node.position({ x: 2565.064991986484, y: 247.10429232439049 });
+        }
+      });
     });
 
     cyInstanceRef.current = cy;

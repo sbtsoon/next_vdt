@@ -27,7 +27,8 @@ export default function NetworkGraph() {
           selector: "node",
           style: {
             label: (ele) => ele.data("name"),
-            "text-valign": "center",
+            "text-valign": "top",
+            "text-margin-y": -1.5,
             "text-halign": "center",
             "font-size": "4px",
             backgroundColor: (ele) => {
@@ -54,9 +55,9 @@ export default function NetworkGraph() {
               const amount = parseNeo4jInt(ele.data("amount"));
               return `${type}\n${
                 ele.data("role") === "negative" ? "(-)" : "(+)"
-              } ${formatAmountWithMajorUnits(amount)}`;
+              } ₩ ${Math.round(amount / 1_000_000)}`;
             },
-            width: 0.4,
+            width: 0.2,
             "text-wrap": "wrap",
             "line-color": "#ccc",
             "target-arrow-color": "#ccc",
