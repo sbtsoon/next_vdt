@@ -177,7 +177,6 @@ export default function EcommerceTabs() {
           ) : (
             <>
               <ChatBubbleLeftRightIcon className="h-5 w-5" />
-              <span>AI</span>
             </>
           )}
         </button>
@@ -203,7 +202,6 @@ export default function EcommerceTabs() {
           ) : (
             <>
               <Cog8ToothIcon className="h-5 w-5" />
-              <span>Fliter</span>
             </>
           )}
         </button>
@@ -229,7 +227,6 @@ export default function EcommerceTabs() {
           ) : (
             <>
               <ChartPieIcon className="h-5 w-5" />
-              <span>Analysis </span>
             </>
           )}
         </button>
