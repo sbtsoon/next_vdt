@@ -164,10 +164,6 @@ export default function MonthlySalesChart() {
           },
         },
         {
-          content: "닫기",
-          select: function () {},
-        },
-        {
           content: "통합",
           select: function (ele) {
             const visited = new Set();
@@ -210,6 +206,7 @@ export default function MonthlySalesChart() {
         },
       ],
       openMenuEvents: "tap",
+      outsideMenuCancel: 1,
       fillColor: "#eaeaea",
       activeFillColor: "#ccc",
       activePadding: 5,
