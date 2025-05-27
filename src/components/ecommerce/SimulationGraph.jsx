@@ -13,6 +13,7 @@ import {
   hideEdge,
 } from "@/helpers/cytoscapeVisibility";
 import { updateMetricDataHelper } from "@/helpers/metricHelper";
+import styles from "./simulationGraph.css";
 
 export default function SimulationGraph() {
   const cyRef = useRef(null);
@@ -139,7 +140,7 @@ export default function SimulationGraph() {
         `.cy-node-label-html[data-node-id="${nodeId}"]`
       );
       if (html) {
-        const input = html.querySelector(".range-input");
+        const input = html.querySelector(".range-input-container");
         if (input) input.style.display = "inline-block";
       }
     };
@@ -149,7 +150,7 @@ export default function SimulationGraph() {
         `.cy-node-label-html[data-node-id="${nodeId}"]`
       );
       if (html) {
-        const input = html.querySelector(".range-input");
+        const input = html.querySelector(".range-input-container");
         if (input) input.style.display = "none";
       }
     };
@@ -380,48 +381,20 @@ export default function SimulationGraph() {
                     data-node-id="${data.id}"
                     onmouseover="showInput('${data.id}');"
                     onmouseout="hideInput('${data.id}');"
-                    style="
-                        pointer-events:auto; 
-                        background: white;
-                        border: 2px solid #90caf9;
-                        border-radius: 10px;
-                        box-shadow: 0 1px 5px rgba(0,0,0,0.1);
-                        padding: 10px;
-                        width: 400px;
-                        position: relative;
-                    "
                 >  
                     ${
                       isLeaf
                         ? ""
-                        : `<div
-                                    style="
-                                        position: absolute;
-                                        right: -13px;
-                                        top: 50%;
-                                        transform: translateY(-50%);
-                                        background: white;
-                                        border: 1px solid #90caf9;
-                                        border-radius: 50%;
-                                        width: 20px;
-                                        height: 20px;
-                                        font-weight: bold;
-                                        font-size: 14px;
-                                        text-align: center;
-                                        line-height: 20px;
-                                        box-shadow: 0 1px 4px rgba(0,0,0,0.15);
-                                        pointer-events: auto;
-                                        cursor: pointer;
-                                    "
-                                    onclick="handleToggleClick('${data.id}')"
-                                >
-                                    ${toggleSymbol}
-                                </div>`
+                        : `<div 
+                            class="toggle-symbol"
+                            onclick="handleToggleClick('${data.id}')">
+                            ${toggleSymbol}
+                          </div>`
                     }
                 
-                    <div style="display: flex; justify-content: space-between; align-items: center;">
-                        <div style="display: flex; justify-content: center; align-items: center;">
-                            <div style="margin-right: 10px">${data.name}</div>
+                    <div class="node-header-container">
+                        <div class="node-header-info">
+                            <div class="node-name">${data.name}</div>
                             ${
                               !excludedNames.includes(data.name)
                                 ? `<div class="percentage">${percentageValue}%</div>`
@@ -437,17 +410,17 @@ export default function SimulationGraph() {
                               excludedNames.includes(data.name)
                                 ? ""
                                 : `
-                                        <div style="display: flex; justify-content: space-between">
-                                            <div style="display: flex; flex-direction: column;">
-                                                <div style="display: flex; justify-content: space-between;">
+                                        <div class="node-content-container">
+                                            <div class="amt-container"">
+                                                <div class="old-amt-container">
                                                     <div>Old Amt:</div>
-                                                    <div style="text-align: right; min-width: 100px;">₩ ${initialAmount.toLocaleString(
+                                                    <div class="amt-value">₩ ${initialAmount.toLocaleString(
                                                       "ko-KR"
                                                     )}</div>
                                                 </div>
-                                                <div style="display: flex; justify-content: space-between;">
+                                                <div class="chg-amt-container">
                                                     <div>Chg Amt:</div>
-                                                    <div style="text-align: right; min-width: 100px;">₩ ${(
+                                                    <div  class="amt-value">₩ ${(
                                                       amountValue -
                                                       initialAmount
                                                     ).toLocaleString(
@@ -457,8 +430,8 @@ export default function SimulationGraph() {
                                             </div>
                                             <div>
                                                 <div>Last 10 records</div>                                        
-                                                <div class="history-graph" style="height: 40px; display: flex; flex-direction: column;">
-                                                    <div style="height: 19px; display: flex; align-items: flex-end; gap: 2px;">
+                                                <div class="history-graph">
+                                                    <div class="positive-history-data-container">
                                                         ${scaledHistoryData
                                                           .map((h, i) => {
                                                             const color =
@@ -468,21 +441,21 @@ export default function SimulationGraph() {
                                                             const height =
                                                               h > 0 ? h : 0;
                                                             return `<div 
+                                                                    class="history-bar ${
+                                                                      h >= 0
+                                                                        ? "bar-positive"
+                                                                        : "bar-empty"
+                                                                    }" 
+                                                                    style="height: ${height}px;"
                                                                     onmousedown="event.stopPropagation(); 
                                                                     clickHistoryData('${
                                                                       data.id
-                                                                    }', ${i}, event);"
-                                                                    style="width: 8px; height: ${height}px; background: ${color}; ${
-                                                              color ===
-                                                              "transparent"
-                                                                ? "pointer-events: none;"
-                                                                : "cursor: pointer;"
-                                                            }"></div>`;
+                                                                    }', ${i}, event);"></div>`;
                                                           })
                                                           .join("")}
                                                     </div>
-                                                    <div style="height: 2px;"></div>
-                                                    <div style="height: 19px; display: flex; align-items: flex-start; gap: 2px;">
+                                                    <div class="history-graph-divider"></div>
+                                                    <div class="negative-history-data-container">
                                                         ${scaledHistoryData
                                                           .map((h, i) => {
                                                             const color =
@@ -492,50 +465,54 @@ export default function SimulationGraph() {
                                                             const height =
                                                               h < 0 ? -h : 0;
                                                             return `<div 
+                                                                    class="history-bar ${
+                                                                      h < 0
+                                                                        ? "bar-negative"
+                                                                        : "bar-empty"
+                                                                    }" 
+                                                                    style="height: ${height}px;"
                                                                     onmousedown="event.stopPropagation(); 
                                                                     clickHistoryData('${
                                                                       data.id
-                                                                    }', ${i}, event);"
-                                                                    style="width: 8px; height: ${height}px; background: ${color}; ${
-                                                              color ===
-                                                              "transparent"
-                                                                ? "pointer-events: none;"
-                                                                : "cursor: pointer;"
-                                                            }"></div>`;
+                                                                    }', ${i}, event);"></div>`;
                                                           })
                                                           .join("")}
                                                     </div>
                                                 </div>
                                             </div>
                                         </div>
-                                        <div class="range-input" style="display: none;"> 
-                                            <div style="display: flex; justify-content: center; align-items: center"> 
-                                                <div style="margin-right: 10px">
-                                                    <button style="padding: 3px 3px 3px 3px">KEEP</button>
+                                        <div class="range-input-container"> 
+                                            <div class="range-input-display-box"> 
+                                                <div class="keep-button-container">
+                                                    <button class="keep-button">KEEP</button>
                                                 </div>
                                                 <input 
-                                            type="range"
-                                            ${disabled}
-                                            value="${percentageValue}"
-                                            min="-15"
-                                            max="15"
-                                            oninput="
-                                                const percentageDivs = this.closest('.cy-node-label-html')?.querySelectorAll('.percentage');
-                                                if (percentageDivs) {
-                                                    percentageDivs.forEach(div => {
-                                                    div.textContent = this.value + '%';
-                                                })}"
-                                            onmouseup="
-                                                handleInputChange('${
-                                                  data.id
-                                                }', ${initialAmount}, this.value);
-                                                forceReRenderNode('${data.id}');
-                                                updateParentNodes('${data.id}');
-                                            "
-                                            onmousedown="event.stopPropagation();"
-                                            onmousemove="event.stopPropagation();"
-                                            style="width: 100px; margin-right: 10px; pointer-events: auto;"
-                                            />
+                                                  class="range-input"
+                                                  type="range"
+                                                  ${disabled}
+                                                  value="${percentageValue}"
+                                                  min="-15"
+                                                  max="15"
+                                                  oninput="
+                                                    const percentageDivs = this.closest('.cy-node-label-html')?.querySelectorAll('.percentage');
+                                                    if (percentageDivs) {
+                                                      percentageDivs.forEach(div => {
+                                                      div.textContent = this.value + '%';
+                                                  })}"
+                                                  onmouseup="
+                                                    handleInputChange('${
+                                                      data.id
+                                                    }', ${initialAmount}, this.value);
+                                                    forceReRenderNode('${
+                                                      data.id
+                                                    }');
+                                                    updateParentNodes('${
+                                                      data.id
+                                                    }');
+                                                  "
+                                                  onmousedown="event.stopPropagation();"
+                                                  onmousemove="event.stopPropagation();"
+                                                />
                                                 <div class="percentage">${percentageValue}%</div>
                                             </div>
                                         </div>    
@@ -625,21 +602,7 @@ export default function SimulationGraph() {
   return (
     <div className="overflow-hidden  border border-gray-200 bg-white px-5 pt-5 dark:border-gray-800 dark:bg-white/[0.03] sm:px-6 sm:pt-6">
       <div id="cy" ref={cyRef} style={{ width: "100%", minHeight: "600px" }} />
-      <div
-        id="tooltip"
-        style={{
-          position: "absolute",
-          backgroundColor: "#fff",
-          border: "1px solid #ccc",
-          padding: "4px 8px",
-          borderRadius: "4px",
-          boxShadow: "0px 2px 5px rgba(0,0,0,0.2)",
-          pointerEvents: "none",
-          display: "none",
-          zIndex: 1000,
-          fontSize: "12px",
-        }}
-      />
+      <div id="tooltip" className="graph-tool-tip" />
     </div>
   );
 }

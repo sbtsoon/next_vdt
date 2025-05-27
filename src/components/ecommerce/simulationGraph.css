@@ -1,0 +1,152 @@
+.cy-node-label-html {
+  pointer-events: auto;
+  background: white;
+  border: 2px solid #90caf9;
+  border-radius: 10px;
+  box-shadow: 0 1px 5px rgba(0, 0, 0, 0.1);
+  padding: 10px;
+  width: 400px;
+  position: relative;
+}
+
+.toggle-symbol {
+  position: absolute;
+  right: -13px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: white;
+  border: 1px solid #90caf9;
+  border-radius: 50%;
+  width: 20px;
+  height: 20px;
+  font-weight: bold;
+  font-size: 14px;
+  text-align: center;
+  line-height: 20px;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.15);
+  pointer-events: auto;
+  cursor: pointer;
+}
+
+.node-header-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.node-header-info {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.node-name {
+  margin-right: 10px;
+}
+
+.node-content-container {
+  display: flex;
+  justify-content: space-between;
+}
+
+.amt-container {
+  display: flex;
+  flex-direction: column;
+}
+
+.old-amt-container {
+  display: flex;
+  justify-content: space-between;
+}
+
+.chg-amt-container {
+  display: flex;
+  justify-content: space-between;
+}
+
+.amt-value {
+  text-align: right;
+  min-width: 100px;
+}
+
+.history-graph {
+  height: 40px;
+  display: flex;
+  flex-direction: column;
+}
+
+.positive-history-data-container {
+  height: 19px;
+  display: flex;
+  align-items: flex-end;
+  gap: 2px;
+}
+
+.negative-history-data-container {
+  height: 19px;
+  display: flex;
+  align-items: flex-start;
+  gap: 2px;
+}
+
+.history-bar {
+  width: 8px;
+  margin-right: 2px;
+}
+
+.bar-positive {
+  background: blue;
+  cursor: pointer;
+}
+
+.bar-negative {
+  background: red;
+  cursor: pointer;
+}
+
+.bar-empty {
+  background: transparent;
+  pointer-events: none;
+}
+
+.history-graph-divider {
+  height: 2px;
+}
+
+.range-input-container {
+  display: none;
+}
+
+.range-input-display-box {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.range-input {
+  width: 100px;
+  margin-right: 10px;
+  pointer-events: auto;
+}
+
+.keep-button-container {
+  margin-right: 10px;
+}
+
+.keep-button {
+  padding: 3px 3px 3px 3px;
+  background-color: lightgrey;
+}
+
+.graph-tool-tip {
+  position: "absolute";
+  background-color: "#fff";
+  border: "1px solid #ccc";
+  padding: "4px 8px";
+  border-radius: "4px";
+  box-shadow: "0px 2px 5px rgba(0,0,0,0.2)";
+  pointer-events: "none";
+  display: "none";
+  z-index: 1000;
+  font-size: "12px";
+}
