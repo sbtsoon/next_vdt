@@ -92,8 +92,8 @@ const AIChatPanel: React.FC = () => {
               key={idx}
               className={`p-2 rounded-lg max-w-[80%] w-fit whitespace-pre-wrap text-sm ${
                 msg.role === "user"
-                  ? "ml-auto bg-brand-100 text-gray-800"
-                  : "bg-gray-100 dark:bg-gray-800 text-gray-800 dark:text-white"
+                  ? "ml-auto bg-brand-500/50 text-gray-200"
+                  : "bg-gray-100 dark:bg-gray-600 text-gray-800 dark:text-white"
               }`}
             >
               {msg.content}

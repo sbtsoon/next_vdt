@@ -1,13 +1,11 @@
-// EcommerceTabs.tsx 파일에서 수정할 부분만 발췌
-
 "use client";
 
 import { useRef, useState, useEffect } from "react";
 import { Tab } from "@headlessui/react";
 import { EcommerceMetrics } from "@/components/ecommerce/EcommerceMetrics";
+import MonthlyTarget from "@/components/ecommerce/MonthlyTarget";
 import MonthlySalesChart from "@/components/ecommerce/MonthlySalesChart";
 import RecentOrders from "@/components/ecommerce/RecentOrders";
-import MonthlyTarget from "@/components/ecommerce/MonthlyTarget";
 import DefaultInputs from "@/components/form/Form-elements/DefaultInputs";
 import AIChatPanel from "@/components/AIChatPanel";
 
@@ -16,8 +14,11 @@ import {
   ChartBarIcon,
   UserGroupIcon,
   Squares2X2Icon,
-  ChevronLeftIcon, // 추가: 사이드바 토글 버튼용 아이콘
-  ChevronRightIcon, // 추가: 사이드바 토글 버튼용 아이콘
+  ChevronLeftIcon,
+  ChevronRightIcon,
+  ChatBubbleLeftRightIcon,
+  Cog8ToothIcon,
+  ChartPieIcon,
 } from "@heroicons/react/24/outline";
 
 import { useAtom } from "jotai";
@@ -35,8 +36,7 @@ export default function EcommerceTabs() {
 
   const [selectedIndex, setSelectedIndex] = useState(0);
 
-  // 새 상태: 사이드바 표시/숨김 여부
-  const [showRightSidebar, setShowRightSidebar] = useState(false);
+  const [activePanel, setActivePanel] = useState<string | null>(null);
 
   const tabs = [
     { name: "Network Graph", icon: Squares2X2Icon },
@@ -47,18 +47,51 @@ export default function EcommerceTabs() {
 
   const containerRef = useRef<HTMLDivElement>(null);
 
+  const isDraggingHorizontal = useRef(false);
   const [leftWidth, setLeftWidth] = useState(75); // %
+
+  const isDraggingVertical = useRef(false);
   const [topHeight, setTopHeight] = useState(50); // %
 
-  // drag 관련 함수들은 Network Graph 탭에서는 더 이상 필요 없지만,
-  // 다른 탭에서 사용한다면 그대로 유지해야 합니다.
-  const startHorizontalDrag = () => { /* ... */ };
-  const handleHorizontalDrag = (e: MouseEvent) => { /* ... */ };
-  const stopHorizontalDrag = () => { /* ... */ };
-  const startVerticalDrag = () => { /* ... */ };
-  const handleVerticalDrag = (e: MouseEvent) => { /* ... */ };
-  const stopVerticalDrag = () => { /* ... */ };
+  const startHorizontalDrag = () => {
+    isDraggingHorizontal.current = true;
+    document.addEventListener("mousemove", handleHorizontalDrag);
+    document.addEventListener("mouseup", stopHorizontalDrag);
+  };
 
+  const handleHorizontalDrag = (e: MouseEvent) => {
+    if (!isDraggingHorizontal.current || !containerRef.current) return;
+    const containerWidth = containerRef.current.offsetWidth;
+    const offsetX = e.clientX - containerRef.current.getBoundingClientRect().left;
+    const newLeftWidth = (offsetX / containerWidth) * 100;
+    if (newLeftWidth > 25 && newLeftWidth < 80) setLeftWidth(newLeftWidth);
+  };
+
+  const stopHorizontalDrag = () => {
+    isDraggingHorizontal.current = false;
+    document.removeEventListener("mousemove", handleHorizontalDrag);
+    document.removeEventListener("mouseup", stopHorizontalDrag);
+  };
+
+  const startVerticalDrag = () => {
+    isDraggingVertical.current = true;
+    document.addEventListener("mousemove", handleVerticalDrag);
+    document.addEventListener("mouseup", stopVerticalDrag);
+  };
+
+  const handleVerticalDrag = (e: MouseEvent) => {
+    if (!isDraggingVertical.current || !containerRef.current) return;
+    const containerHeight = containerRef.current.offsetHeight;
+    const offsetY = e.clientY - containerRef.current.getBoundingClientRect().top;
+    const newTopHeight = (offsetY / containerHeight) * 100;
+    if (newTopHeight > 10 && newTopHeight < 90) setTopHeight(newTopHeight);
+  };
+
+  const stopVerticalDrag = () => {
+    isDraggingVertical.current = false;
+    document.removeEventListener("mousemove", handleVerticalDrag);
+    document.removeEventListener("mouseup", stopVerticalDrag);
+  };
 
   const loadGraph = async (query = null) => {
     const res = await fetch(query ? "/api/query" : "/api/graph", {
@@ -75,17 +108,16 @@ export default function EcommerceTabs() {
   };
 
   useEffect(() => {
-    // 'Network Graph' 탭이 선택될 때만 데이터 로딩
-    if (selectedIndex === 0) {
-        loadGraph(null);
+    if (selectedIndex === 0 || selectedIndex === 1) {
+      loadGraph(null);
     }
+    setActivePanel(null);
   }, [selectedIndex]);
 
-
-  function isSimpleTable(records) {
+  function isSimpleTable(records: any) {
     if (!records?.length) return true;
-    return records.every((record) =>
-      record._fields.every((field) => {
+    return records.every((record: any) =>
+      record._fields.every((field: any) => {
         const isNeoInt =
           typeof field === "object" &&
           field !== null &&
@@ -98,6 +130,10 @@ export default function EcommerceTabs() {
       })
     );
   }
+
+  const sidebarWidth = 350; // ✨ 변경: 각 사이드바 패널의 너비를 320px로 설정
+  const totalOpenedSidebarWidth = activePanel ? sidebarWidth : 0;
+
 
   return (
     <Tab.Group selectedIndex={selectedIndex} onChange={setSelectedIndex}>
@@ -121,22 +157,93 @@ export default function EcommerceTabs() {
         ))}
       </Tab.List>
 
-      {/* Tab Panels 시작 */}
-      <Tab.Panels className="mt-4 h-[calc(100%-60px)]">
+      {/* AI Assistant 토글 버튼 (Network Graph (0) 또는 Simulation (1) 탭일 때만 표시) */}
+      {(selectedIndex === 0 || selectedIndex === 1) && (
+        <button
+          onClick={() => setActivePanel(activePanel === 'aiAssistant' ? null : 'aiAssistant')}
+          className={`fixed top-1/2 -translate-y-1/2 bg-gray-700 text-white py-2 px-3 rounded-l-full shadow-lg hover:bg-gray-600 z-50 active:bg-blue-600 transition-all duration-300 ease-in-out flex items-center gap-2`}
+          style={{
+            right: activePanel ? `${sidebarWidth}px` : "0px",
+            top: `calc(20% - 20px)`,
+            borderRadius: '9999px 0 0 9999px'
+          }}
+          aria-label="Toggle AI Assistant Panel"
+        >
+          {activePanel === 'aiAssistant' ? (
+            <>
+              <ChevronRightIcon className="h-5 w-5" />
+              <span>AI닫기</span>
+            </>
+          ) : (
+            <>
+              <ChatBubbleLeftRightIcon className="h-5 w-5" />
+              <span>AI</span>
+            </>
+          )}
+        </button>
+      )}
 
-        {/* 1. Network Graph Tab Panel */}
+      {/* Default Inputs 토글 버튼 (Network Graph (0) 또는 Simulation (1) 탭일 때만 표시) */}
+      {(selectedIndex === 0 || selectedIndex === 1) && (
+        <button
+          onClick={() => setActivePanel(activePanel === 'defaultInputs' ? null : 'defaultInputs')}
+          className={`fixed top-1/2 -translate-y-1/2 bg-gray-700 text-white py-2 px-3 rounded-l-full shadow-lg hover:bg-gray-600 z-50 transition-all duration-300 ease-in-out flex items-center gap-2`}
+          style={{
+            right: activePanel ? `${sidebarWidth}px` : "0px",
+            top: `calc(20% + 30px)`,
+            borderRadius: '9999px 0 0 9999px'
+          }}
+          aria-label="Toggle Default Inputs Panel"
+        >
+          {activePanel === 'defaultInputs' ? (
+            <>
+              <ChevronRightIcon className="h-5 w-5" />
+              <span>Fliter 닫기</span>
+            </>
+          ) : (
+            <>
+              <Cog8ToothIcon className="h-5 w-5" />
+              <span>Fliter</span>
+            </>
+          )}
+        </button>
+      )}
+
+      {/* Analysis 토글 버튼 (Network Graph (0) 또는 Simulation (1) 탭일 때만 표시) */}
+      {(selectedIndex === 0 || selectedIndex === 1) && (
+        <button
+          onClick={() => setActivePanel(activePanel === 'monthlyTarget' ? null : 'monthlyTarget')}
+          className={`fixed top-1/2 -translate-y-1/2 bg-gray-700 text-white py-2 px-3 rounded-l-full shadow-lg hover:bg-gray-600 z-50 transition-all duration-300 ease-in-out flex items-center gap-2`}
+          style={{
+            right: activePanel ? `${sidebarWidth}px` : "0px",
+            top: `calc(20% + 80px)`,
+            borderRadius: '9999px 0 0 9999px'
+          }}
+          aria-label="Toggle Analysis Panel"
+        >
+          {activePanel === 'monthlyTarget' ? (
+            <>
+              <ChevronRightIcon className="h-5 w-5" />
+              <span>Analysis 닫기</span>
+            </>
+          ) : (
+            <>
+              <ChartPieIcon className="h-5 w-5" />
+              <span>Analysis </span>
+            </>
+          )}
+        </button>
+      )}
+
+
+      <Tab.Panels className="mt-4 h-[calc(100%-60px)] relative">
+        {/* 1. Network Graph Tab Panel (팝업 사이드바) */}
         <Tab.Panel className="h-full">
           <div
             ref={containerRef}
             className="flex h-full relative overflow-hidden"
           >
-            {/* 왼쪽: 상하 분할 (메인 콘텐츠) */}
-            <div
-                className={`flex flex-col h-full transition-all duration-300 ease-in-out ${
-                  showRightSidebar ? 'w-[calc(100%-280px)]' : 'w-full'
-                }`}
-            >
-              {/* 상단 그래프 영역 */}
+            <div className="flex flex-col h-full w-full transition-all duration-300 ease-in-out">
               <div style={{ height: `${topHeight}%` }} className="transition-all">
                 <div className="bg-white dark:bg-gray-900 rounded shadow p-4 h-full">
                   <EcommerceMetrics />
@@ -144,14 +251,12 @@ export default function EcommerceTabs() {
                 </div>
               </div>
 
-              {/* 상하 리사이즈 핸들 (필요에 따라 유지/제거) */}
               <div
                 onMouseDown={startVerticalDrag}
                 className="h-1 cursor-row-resize bg-gray-100 dark:bg-gray-800 hover:bg-blue-500"
                 style={{ zIndex: 9990 }}
               />
 
-              {/* 하단 데이터 테이블 영역 */}
               <div style={{ height: `${100 - topHeight}%` }} className="transition-all h-full">
                 <div className="bg-white dark:bg-gray-900 rounded shadow p-4 overflow-y-auto h-full">
                   <RecentOrders rawRecords={rawRecords} isSimple={isSimple} />
@@ -159,41 +264,49 @@ export default function EcommerceTabs() {
               </div>
             </div>
 
-            {/* 사이드바 토글 버튼 */}
-            <button
-              onClick={() => setShowRightSidebar(!showRightSidebar)}
-              className={`absolute top-1/2 -translate-y-1/2 bg-gray-700 text-white p-1 rounded-full shadow-lg hover:bg-gray-600 z-30 transition-all duration-300 ease-in-out
-                ${showRightSidebar ? 'right-[270px]' : 'right-4'}`}
-              aria-label="Toggle Right Sidebar"
-            >
-              {showRightSidebar ? (
-                <ChevronRightIcon className="h-5 w-5" />
-              ) : (
-                <ChevronLeftIcon className="h-5 w-5" />
-              )}
-            </button>
-
-            {/* 오른쪽 사이드바 */}
-            <div
-              className={`fixed right-0 top-[var(--header-height)] h-[calc(100vh - var(--header-height))] bg-white dark:bg-gray-900 shadow-xl p-2 z-20 transform transition-transform duration-300 ease-in-out
-                ${showRightSidebar ? 'translate-x-0' : 'translate-x-full'}`}
-              style={{ width: "280px" }}
-            >
-              <DefaultInputs />
-              <AIChatPanel />
-            </div>
+            {/* 오른쪽 사이드바 - fixed 팝업 방식 (탭 0, 1에서만 활성화) */}
+            {/* AIChatPanel 사이드바 */}
+            {activePanel === 'aiAssistant' && (selectedIndex === 0 || selectedIndex === 1) && (
+              <div
+                className={`fixed right-0 top-[var(--header-height)] h-[calc(100vh - var(--header-height))] bg-white dark:bg-gray-900 shadow-xl p-2 z-40 transform transition-transform duration-300 ease-in-out
+                  ${activePanel === 'aiAssistant' ? 'translate-x-0' : 'translate-x-full'}`}
+                style={{ width: `${sidebarWidth}px` }}
+              >
+                <AIChatPanel />
+              </div>
+            )}
+            {/* DefaultInputs 사이드바 */}
+            {activePanel === 'defaultInputs' && (selectedIndex === 0 || selectedIndex === 1) && (
+              <div
+                className={`fixed right-0 top-[var(--header-height)] h-[calc(100vh - var(--header-height))] bg-white dark:bg-gray-900 shadow-xl p-2 z-40 transform transition-transform duration-300 ease-in-out
+                  ${activePanel === 'defaultInputs' ? 'translate-x-0' : 'translate-x-full'}`}
+                style={{ width: `${sidebarWidth}px` }}
+              >
+                <DefaultInputs />
+              </div>
+            )}
+            {/* MonthlyTarget 사이드바 (탭 0, 1에서만 활성화) */}
+            {activePanel === 'monthlyTarget' && (selectedIndex === 0 || selectedIndex === 1) && (
+              <div
+                className={`fixed right-0 top-[var(--header-height)] h-[calc(100vh - var(--header-height))] bg-white dark:bg-gray-900 shadow-xl p-2 z-40 transform transition-transform duration-300 ease-in-out
+                  ${activePanel === 'monthlyTarget' ? 'translate-x-0' : 'translate-x-full'}`}
+                style={{ width: `${sidebarWidth}px` }}
+              >
+                <MonthlyTarget />
+              </div>
+            )}
           </div>
         </Tab.Panel>
 
-        {/* 2. Simulation Tab Panel (수정 없음) */}
+        {/* 2. Simulation Tab Panel (메인 콘텐츠가 밀려나는 방식) */}
         <Tab.Panel className="h-full">
           <div
             ref={containerRef}
-            className="flex w-[100%-90px] h-[100%-76px] relative overflow-hidden"
+            className="flex h-full relative overflow-hidden"
+            style={{ width: `calc(100% - ${totalOpenedSidebarWidth}px)` }}
           >
             <div
-              style={{ width: `${leftWidth}%` }}
-              className="flex flex-col transition-all duration-100"
+              className={`flex flex-col h-full w-full transition-all duration-300 ease-in-out`}
             >
               <div style={{ height: `${topHeight}%` }} className="transition-all">
                 <div className="shadow p-4 h-full">
@@ -201,66 +314,81 @@ export default function EcommerceTabs() {
                   <MonthlySalesChart onReady={setCy} selectedIndex={selectedIndex} />
                 </div>
               </div>
+
               <div
                 onMouseDown={startVerticalDrag}
                 className="h-1 cursor-row-resize bg-gray-100 dark:bg-gray-800"
+                style={{ zIndex: 9990 }}
               />
+
               <div style={{ height: `${100 - topHeight}%` }} className="transition-all">
                 <div className="bg-white dark:bg-gray-900 rounded shadow p-4 h-full">
                   <RecentOrders rawRecords={rawRecords} isSimple={isSimple} />
                 </div>
               </div>
             </div>
-            <div
-              onMouseDown={startHorizontalDrag}
-              className="w-1 cursor-col-resize bg-gray-200 dark:bg-gray-800"
-            />
-            <div
-              style={{ width: `${100 - leftWidth}%` }}
-              className="bg-white dark:bg-gray-900 rounded shadow p-4 h-full"
-            >
-              {" "}
-              <DefaultInputs />
-              <MonthlyTarget />
-            </div>
+
+            {/* 오른쪽 사이드바 - fixed 팝업 방식 (탭 0, 1에서만 활성화) */}
+            {/* AIChatPanel 사이드바 */}
+            {activePanel === 'aiAssistant' && (selectedIndex === 0 || selectedIndex === 1) && (
+              <div
+                className={`fixed right-0 top-[var(--header-height)] h-[calc(100vh - var(--header-height))] bg-white dark:bg-gray-900 shadow-xl p-2 z-20 transform transition-transform duration-300 ease-in-out
+                  ${activePanel === 'aiAssistant' ? 'translate-x-0' : 'translate-x-full'}`}
+                style={{ width: `${sidebarWidth}px` }}
+              >
+                <AIChatPanel />
+              </div>
+            )}
+            {/* DefaultInputs 사이드바 */}
+            {activePanel === 'defaultInputs' && (selectedIndex === 0 || selectedIndex === 1) && (
+              <div
+                className={`fixed right-0 top-[var(--header-height)] h-[calc(100vh - var(--header-height))] bg-white dark:bg-gray-900 shadow-xl p-2 z-20 transform transition-transform duration-300 ease-in-out
+                  ${activePanel === 'defaultInputs' ? 'translate-x-0' : 'translate-x-full'}`}
+                style={{ width: `${sidebarWidth}px` }}
+              >
+                <DefaultInputs />
+              </div>
+            )}
+            {/* MonthlyTarget 사이드바 (탭 0, 1에서만 활성화) */}
+            {activePanel === 'monthlyTarget' && (selectedIndex === 0 || selectedIndex === 1) && (
+              <div
+                className={`fixed right-0 top-[var(--header-height)] h-[calc(100vh - var(--header-height))] bg-white dark:bg-gray-900 shadow-xl p-2 z-20 transform transition-transform duration-300 ease-in-out
+                  ${activePanel === 'monthlyTarget' ? 'translate-x-0' : 'translate-x-full'}`}
+                style={{ width: `${sidebarWidth}px` }}
+              >
+                <MonthlyTarget />
+              </div>
+            )}
           </div>
         </Tab.Panel>
 
-        {/* 3. Timeline Tab Panel (수정 없음) */}
+        {/* 3. Timeline Tab Panel (좌우/상하 리사이징 유지, 필터/AI 영역 포함) */}
         <Tab.Panel className="h-full">
           <div
             ref={containerRef}
-            className="flex w-[100%-90px] h-[100%-76px] relative overflow-hidden"
+            className="flex h-full relative overflow-hidden"
           >
             <div
               style={{ width: `${leftWidth}%` }}
-              className="flex flex-col w-[75%] transition-all duration-100"
+              className="flex flex-col transition-all duration-100"
             >
               <div style={{ height: `${topHeight}%` }} className="transition-all">
-                <div className="bg-white dark:bg-gray-900 rounded shadow p-4 h-[100%-400px]">
+                <div className="bg-white dark:bg-gray-900 rounded shadow p-4 h-full">
                   <EcommerceMetrics />
                   <MonthlySalesChart onReady={setCy} selectedIndex={selectedIndex} />
                 </div>
               </div>
-              <div
-                onMouseDown={startVerticalDrag}
-                className="h-1 cursor-row-resize bg-gray-100 dark:bg-gray-800 hover:bg-blue-500"
-                style={{ zIndex: 9990 }}
-              />
-              <div style={{ height: `${100 - topHeight}%` }} className="transition-all h-full">
-                <div className="bg-white dark:bg-gray-900 rounded shadow p-4 overflow-y-auto">
-                  <RecentOrders rawRecords={rawRecords} isSimple={isSimple} />
-                </div>
-              </div>
             </div>
+
             <div
               onMouseDown={startHorizontalDrag}
               className="w-1 cursor-col-resize bg-gray-100 dark:bg-gray-800 hover:bg-blue-500 transition-colors duration-150"
               style={{ zIndex: 50 }}
             />
+
             <div
               style={{ width: `${100 - leftWidth}%`, minWidth: "280px" }}
-              className="bg-white dark:bg-gray-900 rounded shadow p-2 h-full"
+              className="bg-white dark:bg-gray-900 rounded shadow p-2 h-full flex flex-col gap-4"
             >
               <DefaultInputs />
               <AIChatPanel />
@@ -268,48 +396,51 @@ export default function EcommerceTabs() {
           </div>
         </Tab.Panel>
 
-        {/* 4. Exmple2 Tab Panel (수정 없음) */}
+        {/* 4. Exmple2 Tab Panel (좌우/상하 리사이징 유지, 필터/AI 영역 포함) */}
         <Tab.Panel className="h-full">
           <div
             ref={containerRef}
-            className="flex w-[100%-90px] h-[100%-76px] relative overflow-hidden"
+            className="flex h-full relative overflow-hidden"
           >
             <div
               style={{ width: `${leftWidth}%` }}
               className="flex flex-col w-[75%] transition-all duration-100"
             >
               <div style={{ height: `${topHeight}%` }} className="transition-all">
-                <div className="bg-white dark:bg-gray-900 rounded shadow p-4 h-[100%-400px]">
+                <div className="bg-white dark:bg-gray-900 rounded shadow p-4 h-full">
                   <EcommerceMetrics />
                   <MonthlySalesChart onReady={setCy} selectedIndex={selectedIndex} />
                 </div>
               </div>
+
               <div
                 onMouseDown={startVerticalDrag}
                 className="h-1 cursor-row-resize bg-gray-100 dark:bg-gray-800 hover:bg-blue-500"
                 style={{ zIndex: 9990 }}
               />
+
               <div style={{ height: `${100 - topHeight}%` }} className="transition-all h-full">
-                <div className="bg-white dark:bg-gray-900 rounded shadow p-4 overflow-y-auto">
+                <div className="bg-white dark:bg-gray-900 rounded shadow p-4 overflow-y-auto h-full">
                   <RecentOrders rawRecords={rawRecords} isSimple={isSimple} />
                 </div>
               </div>
             </div>
+
             <div
               onMouseDown={startHorizontalDrag}
               className="w-1 cursor-col-resize bg-gray-100 dark:bg-gray-800 hover:bg-blue-500 transition-colors duration-150"
               style={{ zIndex: 50 }}
             />
+
             <div
               style={{ width: `${100 - leftWidth}%`, minWidth: "280px" }}
-              className="bg-white dark:bg-gray-900 rounded shadow p-2 h-full"
+              className="bg-white dark:bg-gray-900 rounded shadow p-2 h-full flex flex-col gap-4"
             >
+              <DefaultInputs />
               <AIChatPanel />
-              <MonthlyTarget />
             </div>
           </div>
         </Tab.Panel>
-
       </Tab.Panels>
     </Tab.Group>
   );

@@ -26,23 +26,24 @@ const fieldMappings: Record<string, string> = {
 };
 
 const fieldOptions = Object.entries(fieldMappings).map(([value, text]) => ({
-  value,
-  text
+  value,       // 한글
+  text: value,        // 영어 (target)
 }));
+
 
 const DataImportPage: React.FC = () => {
   const router = useRouter();
   const [projectName, setProjectName] = useState("");
   const [projectType, setProjectType] = useState("");
-  const [selectedFiles, setSelectedFiles] = useState<string[]>([]);
   const [uploadedFiles, setUploadedFiles] = useState<File[]>([
     new File([], "project1.xlsx"),
     new File([], "project2.db"),
     new File([], "SAP_etl.db"),
     new File([], "project3.db")
   ]);
+const [selectedFiles, setSelectedFiles] = useState<string[]>(["project1.xlsx", "project2.db"]);
   const [mappings, setMappings] = useState(
-    Array(10).fill({ file: "", field: [], target: "", nodeOrEdge: "" })
+    Array(8).fill({ file: "", field: [], target: "", nodeOrEdge: "" })
   );
   const [showChat, setShowChat] = useState(false);
   const [vizStyles, setVizStyles] = useState<string[]>(["Net Graph", "Simulation", "Timeline"]);
@@ -55,11 +56,11 @@ const DataImportPage: React.FC = () => {
     );
   };
 
-  const handleDeleteFile = (filename: string) => {
-    setUploadedFiles((prev) => prev.filter((file) => file.name !== filename));
-    setSelectedFiles((prev) => prev.filter((f) => f !== filename));
+  const handleDeleteFile = () => {
+    const remaining = uploadedFiles.filter(file => !selectedFiles.includes(file.name));
+    setUploadedFiles(remaining);
+    setSelectedFiles([]);
   };
-
   const handleMappingChange = (index: number, key: string, value: any) => {
     setMappings((prev) => {
       const updated = [...prev];
@@ -177,9 +178,10 @@ const DataImportPage: React.FC = () => {
 
       <div className="flex gap-8">
         <div className="flex-1">
+
+          <div className=" flex justify-between">
           <h2 className="font-bold mb-2">3. Select My Data</h2>
-          <div className=" flex justify-end">
-          <label className="inline-block px-4 py-1  rounded bg-gray-700 hover:bg-blue-700 cursor-pointer">
+          <div className=" flex justify-end"><label className="inline-block px-4 py-1  rounded bg-gray-700 hover:bg-blue-700 cursor-pointer">
             Upload Files
             <input
               type="file"
@@ -188,7 +190,13 @@ const DataImportPage: React.FC = () => {
               onChange={handleFileUpload}
             />
           </label>
-          <button className="ml-4 px-4 py-1 border  border-gray-700 hover:border-gray-800 rounded">Load Data</button>
+          <button
+              className="ml-4 px-4 py-1 border border-gray-700 hover:border-gray-800 rounded"
+              onClick={handleDeleteFile}
+            >
+              Delete Data
+            </button>
+          </div>
           </div>
           <table className="w-full text-left border border-gray-700 mt-4 divide-y divide-gray-600">
             <thead>
@@ -200,7 +208,7 @@ const DataImportPage: React.FC = () => {
               </tr>
             </thead>
             <tbody>
-              {Array.from({ length: 12 }).map((_, i) => {
+              {Array.from({ length: 8 }).map((_, i) => {
                 const file = uploadedFiles[i];
                 return (
                   <tr key={i} className="hover:bg-gray-800 transition h-12">
@@ -318,7 +326,7 @@ const DataImportPage: React.FC = () => {
          onClick={handleSaveProject}>
          Show Graph
         </button>
-        <button className="px-6 py-2 bg-dark-900 hover:bg-dark-700 rounded">
+        <button className="px-6 py-2 bg-brand-950 hover:bg-brand-900 rounded">
       export data
         </button>
       </div>

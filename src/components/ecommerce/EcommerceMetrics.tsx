@@ -1,108 +1,74 @@
 "use client";
+
 import React from "react";
-import Badge from "../ui/badge/Badge";
-import { ArrowDownIcon, ArrowUpIcon,   ListIcon, PlusIcon } from "@/icons";
+import { ArrowUpIcon, ArrowDownIcon } from "@/icons";
+import Image from "next/image";
 
 export const EcommerceMetrics = () => {
+  const metrics = [
+    { label: "Sales", value: "₩ 5,991백만원", change: 3.2 },
+    { label: "COGS", value: "₩ 5,991백만원", change: 3.2 },
+    { label: "Profit", value: "₩ 5,991백만원", change: 3.2 },
+  ];
+
   return (
-     <div className="grid grid-cols-2 gap-2">
-    <div className="grid grid-cols-3 gap-1 mb-3">
-    {/* Metric 1 */}
-    <div className=" border border-gray-200 bg-white p-2 dark:border-gray-800 dark:bg-white/[0.03] w-full">
-        <div className="flex  items-center gap-2 justify-between" >
-            <div className="text-base text-gray-700 dark:text-white font-medium">Net Profit</div>
-            <div className="text-xl font-bold text-gray-800 dark:text-white">$18.6m</div>
-        </div>
-        <div>
-        <div className="flex  items-center gap-2 justify-between">
-          <div className="text-sm text-gray-500 dark:text-gray-400 font-semibold">Sim. Impact</div>
-          <div className= "text-gray-500 dark:text-gray-400" >-</div>
-        </div>
-        <div className="text-sm flex items-end justify-between mt-3">
-          <span className="text-red-600 font-semibold">($3.3m)</span>{' '}
-          <span className="text-red-600 font-semibold px-1">
-          <Badge color="error">
-            <ArrowDownIcon className="inline w-4 h-4" /> (14.9%)</Badge>
-          </span>
-        </div>
-      </div>
-  </div>
-
-
-    {/* Metric 2 */}
-    <div className=" border border-gray-200 bg-white p-2 dark:border-gray-800 dark:bg-white/[0.03] w-full">
-    <div className="flex  items-center gap-2 justify-between" >
-        <div className="text-base text-gray-700 dark:text-white font-medium">Gross Profit</div>
-        <div className="text-xl font-bold text-gray-800 dark:text-white">418.6m</div>
-    </div>
-    <div className="flex  items-center gap-2 justify-between">
-      <div className="text-sm text-gray-500 dark:text-gray-400 font-semibold">Sim. Impact</div>
-       <div className= "text-gray-500 dark:text-gray-400" >-</div>
-    </div>
-
-    <div className="text-sm flex items-end justify-between mt-3">
-      <span className="text-green-600 font-semibold">($3.3m)</span>{' '}
-      <span className="text-green-600 font-semibold px-1">
-      <Badge color="Success">
-        <ArrowDownIcon className="inline w-4 h-4" /> (14.9%)</Badge>
-      </span>
-    </div>
-  </div>
-    {/* Metric 3 */}
-    <div className=" border border-gray-200 bg-white p-2 dark:border-gray-800 dark:bg-white/[0.03] w-full">
-  <div className="flex  items-center gap-2 justify-between">
-        <div className="text-base text-gray-700 dark:text-white font-medium">Income Taxes</div>
-        <div className="text-xl font-bold text-gray-800 dark:text-white">$18.6m</div>
-    </div>
-    <div className="flex  items-center gap-2 justify-between">
-      <div className="text-sm text-gray-500 dark:text-gray-400 font-semibold">Sim. Impact</div>
-       <div className= "text-gray-500 dark:text-gray-400" >-</div>
-    </div>
-    <div className="text-sm flex items-end justify-between mt-3">
-      <span className="text-orange-600 font-semibold">($3.3m)</span>{' '}
-      <span className="text-orange-600 font-semibold px-1">
-      <Badge color="warning">
-        <ArrowUpIcon className="inline w-4 h-4" /> (14.9%)</Badge>
-      </span>
-    </div>
-    </div>
-  </div>
-
-  <div className="grid grid-cols-1 mb-3">
-    {/* Metric 4 */}
-    <div className=" border border-gray-200 bg-white p-3 dark:border-gray-800 dark:bg-white/[0.03]">
-      <div >
-          <h4  className="text-sm text-gray-500 dark:text-gray-400 font-semibold">
-          Node labels
-          </h4>
-          <div className="flex items-center gap-2">
-            <Badge color="dark">
-          Metric(105)
-            </Badge>
-            <Badge color="info">
-              <PlusIcon  className="text-gray-800 size-6 dark:text-blue-500/90" />
-          8895
-            </Badge>
+    <div className="flex gap-2 w-full">
+      {/* 1/2 section: Metrics */}
+      <div className="flex-[1] grid grid-cols-3 gap-2">
+        {metrics.map((metric, idx) => (
+          <div
+            key={idx}
+            className="border border-gray-600 bg-[#2b2d33] text-white p-3 w-full h-[100px] flex flex-col justify-between"
+          >
+            <div className="flex justify-between items-center">
+              <div className="text-sm flex items-center gap-1">
+                <span className="text-gray-200 font-medium">{metric.label}:</span>
+                <span
+                  className={
+                    metric.change >= 0
+                      ? "text-green-400 flex items-center"
+                      : "text-red-400 flex items-center"
+                  }
+                >
+                  {metric.change >= 0 ? (
+                    <ArrowUpIcon className="w-3 h-3" />
+                  ) : (
+                    <ArrowDownIcon className="w-3 h-3" />
+                  )}
+                  {Math.abs(metric.change)}%
+                </span>
+              </div>
+              <Image
+                src="/icons/sparkline-placeholder.svg"
+                alt="sparkline"
+                width={70}
+                height={24}
+              />
             </div>
-        </div>
-        <div >
-          <h4  className=" mt-2text-sm text-gray-500 dark:text-gray-400 font-semibold">
-          Relationship types
-          </h4>
-          <div className="flex items-center gap-2">
-          <Badge color="dark">
-            <PlusIcon  className="text-gray-800 size-6 dark:text-white/90" />
-          (105)
-          </Badge>
-          <Badge color="dark">
-            <PlusIcon  className="text-gray-800 size-6 dark:text-white/90" />
-          (105)
-          </Badge>
+            <div className="text-lg font-semibold text-white">{metric.value}</div>
           </div>
+        ))}
+      </div>
+
+      {/* 1/2 section: Label Summary */}
+      <div className="flex-[1] border border-gray-700 bg-[#2b2d33] text-white text-sm p-4 min-w-[240px] flex flex-col gap-4 justify-between">
+        <div className="flex grid-cols-2 justify-between gap-2">
+          <div className="text-start">
+            <h4 className="mb-2 font-semibold">Node labels</h4>
+            <div className="flex gap-2 flex-wrap">
+              <span className="bg-orange-400 text-white px-2 py-1 rounded-full text-xs">*(140)</span>
+              <span className="bg-pink-400 text-white px-2 py-1 rounded-full text-xs">Metric</span>
+            </div>
+          </div>
+          <div  className="text-start">
+            <h4 className="mb-2 font-semibold">Relationship types</h4>
+            <div className="flex gap-2 flex-wrap">
+              <span className="bg-gray-500 text-white px-2 py-1 rounded-full text-xs">*(34)</span>
+              <span className="bg-gray-500 text-white px-2 py-1 rounded-full text-xs">contrib_to</span>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
-
-  </div>
-</div>
   );
 };

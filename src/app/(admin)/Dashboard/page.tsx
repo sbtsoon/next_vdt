@@ -20,18 +20,18 @@ const DashboardPage: React.FC = () => {
 
   // 프로젝트 데이터 (이미지 파일과 연결될 링크를 포함하도록 수정)
   const projects = [
-    { src: "project1.png", link: "/project/1" },
-    { src: "project2.png", link: "/project/2" },
-    { src: "project3.png", link: "/project/3" },
-    { src: "project4.png", link: "/project/4" },
-    { src: "project5.png", link: "/project/5" },
-    { src: "project6.png", link: "/project/6" },
-    { src: "project1.png", link: "/project/7" },
+    { src: "project1.png", link: "/" },
+    { src: "project2.png", link: "/DataImport" },
+    { src: "project3.png", link: "/DataImport" },
+    { src: "project4.png", link: "/" },
+    { src: "project5.png", link: "/" },
+    { src: "project6.png", link: "/" },
+    { src: "project1.png", link: "/" },
     { src: "project2.png", link: "/project/8" },
     { src: "project3.png", link: "/project/9" },
     { src: "project4.png", link: "/project/10" },
-    { src: "project5.png", link: "/project/11" },
-    { src: "project6.png", link: "/project/12" },
+    { src: "project5.png", link: "/" },
+    { src: "project6.png", link: "/" },
   ];
 
   const ITEM_WIDTH = 240;
