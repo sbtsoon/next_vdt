@@ -48,7 +48,7 @@ const AIChatPanel: React.FC = () => {
   };
 
   return (
-    <div className="w-auto h-full bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 shadow-xl p-2  flex flex-col">
+    <div className="w-auto h-full rounded-b-sm bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-900  shadow-2xl p-2  flex flex-col">
       <div className="p-4 border-b border-gray-200 dark:border-gray-700 text-lg font-semibold text-gray-900 dark:text-white">
         AI Assistant
       </div>

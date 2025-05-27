@@ -4,7 +4,31 @@ import React, { useState } from "react";
 import { useRouter } from "next/navigation";
 import AIChatPanel from "@/components/AIChatPanel";
 import { ChatBubbleLeftEllipsisIcon } from "@heroicons/react/24/outline";
-import MultiSelect from "@/components/form/MultiSelect";
+
+
+
+
+const fieldMappings: Record<string, string> = {
+  "매출이익": "Gross Profit",
+  "매출액": "Sales Revenue",
+  "매출원가": "COGS",
+  "당기제품제조원가": "COGM",
+  "기말재고": "Ending",
+  "기초재고": "Beginning",
+  "재공품": "WIP",
+  "생산입고": "G R P",
+  "공정출고": "G I P",
+  "원재료비": "Direct Materials Cost",
+  "부재료비": "Indirect Materials Cost",
+  "가공비": "Conversion Cost ",
+  "액티비티 배부": "Activity Allocation",
+  "contribute_to": "contribute_to"
+};
+
+const fieldOptions = Object.entries(fieldMappings).map(([value, text]) => ({
+  value,
+  text
+}));
 
 const DataImportPage: React.FC = () => {
   const router = useRouter();
@@ -14,13 +38,14 @@ const DataImportPage: React.FC = () => {
   const [uploadedFiles, setUploadedFiles] = useState<File[]>([
     new File([], "project1.xlsx"),
     new File([], "project2.db"),
+    new File([], "SAP_etl.db"),
     new File([], "project3.db")
   ]);
   const [mappings, setMappings] = useState(
     Array(10).fill({ file: "", field: [], target: "", nodeOrEdge: "" })
   );
   const [showChat, setShowChat] = useState(false);
-  const [vizStyles, setVizStyles] = useState<string[]>(["NET", "VDT", "Timeline"]);
+  const [vizStyles, setVizStyles] = useState<string[]>(["Net Graph", "Simulation", "Timeline"]);
 
   const handleSelectFile = (filename: string) => {
     setSelectedFiles((prev) =>
@@ -36,8 +61,41 @@ const DataImportPage: React.FC = () => {
   };
 
   const handleMappingChange = (index: number, key: string, value: any) => {
-    const updated = [...mappings];
-    updated[index] = { ...updated[index], [key]: value };
+    setMappings((prev) => {
+      const updated = [...prev];
+      updated[index] = { ...updated[index], [key]: value };
+
+      if (key === "field" && typeof value === "string") {
+        const target = fieldMappings[value] || "";
+        updated[index].target = target;
+      }
+
+      return updated;
+    });
+  };
+
+  const handleAIMapFields = () => {
+    const defaultFields = [
+      { file: "project1.xlsx", field: "매출이익" },
+      { file: "project1.xlsx", field: "매출원가" },
+      { file: "SAP_etl.db", field: "기말재고" },
+      { file: "project2.db", field: "액티비티 배부" },
+    ];
+
+    const updated = mappings.map((map, i) => {
+      if (i < defaultFields.length) {
+        const { file, field } = defaultFields[i];
+        const target = fieldMappings[field];
+        return {
+          file,
+          field,
+          target,
+          nodeOrEdge: ""
+        };
+      }
+      return { ...map, file: "", field: "", target: "", nodeOrEdge: "" };
+    });
+
     setMappings(updated);
   };
 
@@ -48,7 +106,7 @@ const DataImportPage: React.FC = () => {
   };
 
   const handleSaveProject = () => {
-    router.push("/page");
+    router.push("/");
   };
 
   const toggleVizStyle = (style: string) => {
@@ -58,7 +116,7 @@ const DataImportPage: React.FC = () => {
   };
 
   return (
-    <div className="p-8 text-white bg-gray-900 min-h-screen relative">
+    <div className="p-8 text-white bg-gray-900 min-h-screen relative z-0">
       <button
         onClick={() => setShowChat(!showChat)}
         className="fixed top-30 right-4 z-50 bg-brand-500 text-white p-2 rounded-full shadow-lg hover:bg-brand-600"
@@ -93,9 +151,9 @@ const DataImportPage: React.FC = () => {
             onChange={(e) => setProjectType(e.target.value)}
           >
             <option value="">Select type</option>
-            <option value="Income Statement1">Income Statement1</option>
-            <option value="Income Statement2">Income Statement2</option>
-            <option value="Income Statement3">Income Statement3</option>
+            <option value="Income Statement1">BOM</option>
+            <option value="Income Statement2">Organization</option>
+            <option value="Income Statement3">Flow Detection</option>
           </select>
         </div>
       </div>
@@ -103,7 +161,7 @@ const DataImportPage: React.FC = () => {
       <div className="mb-4 py-4">
         <label className="block mb-1">2. Select Visualization Style:</label>
         <div className="flex gap-4">
-          {["NET", "VDT", "Timeline", "Geo-map", "Concept"].map((style) => (
+          {["Net Graph", "Simulation", "Timeline", "Geo-map", "Concept"].map((style) => (
             <label key={style} className="flex items-center gap-2 cursor-pointer">
               <input
                 type="checkbox"
@@ -120,7 +178,8 @@ const DataImportPage: React.FC = () => {
       <div className="flex gap-8">
         <div className="flex-1">
           <h2 className="font-bold mb-2">3. Select My Data</h2>
-          <label className="inline-block px-4 py-2 mb-4 rounded bg-blue-600 hover:bg-blue-700 cursor-pointer">
+          <div className=" flex justify-end">
+          <label className="inline-block px-4 py-1  rounded bg-gray-700 hover:bg-blue-700 cursor-pointer">
             Upload Files
             <input
               type="file"
@@ -129,7 +188,8 @@ const DataImportPage: React.FC = () => {
               onChange={handleFileUpload}
             />
           </label>
-          <button className="ml-4 px-4 py-2 bg-green-700 hover:bg-green-800 rounded">Load Data</button>
+          <button className="ml-4 px-4 py-1 border  border-gray-700 hover:border-gray-800 rounded">Load Data</button>
+          </div>
           <table className="w-full text-left border border-gray-700 mt-4 divide-y divide-gray-600">
             <thead>
               <tr className="bg-gray-800">
@@ -140,13 +200,13 @@ const DataImportPage: React.FC = () => {
               </tr>
             </thead>
             <tbody>
-              {Array.from({ length: 10 }).map((_, i) => {
+              {Array.from({ length: 12 }).map((_, i) => {
                 const file = uploadedFiles[i];
                 return (
                   <tr key={i} className="hover:bg-gray-800 transition h-12">
-                    <td className="p-2">{file?.name || ""}</td>
-                    <td className="p-2">{file ? "RDB" : ""}</td>
-                    <td className="p-2">
+                    <td className="p-2 border-b  border-gray-700">{file?.name || ""}</td>
+                    <td className="p-2 border-b  border-gray-700">{file ? "RDB" : ""}</td>
+                    <td className="p-2 border-b  border-gray-700">
                       {file && (
                         <input
                           type="checkbox"
@@ -156,7 +216,7 @@ const DataImportPage: React.FC = () => {
                         />
                       )}
                     </td>
-                    <td className="p-2">
+                    <td className="p-2 border-b  border-gray-700">
                       {file && (
                         <button
                           className="text-red-400 hover:underline text-sm"
@@ -173,15 +233,15 @@ const DataImportPage: React.FC = () => {
           </table>
         </div>
 
-        <div className="flex flex-col items-start pt-8">
-          <button className="px-6 py-2 bg-purple-600 hover:bg-purple-700 rounded">
-            4. AI map fields
+        <div className="flex flex-col items-center justify-center ">
+          <button onClick={handleAIMapFields}  className="px-6 py-2 bg-purple-800 hover:bg-purple-800 rounded">
+          Convert to Graph DB
           </button>
-          <p className="mt-2 text-sm text-gray-400">ai가 자동으로 매칭합니다.</p>
+          <p className="mt-2 text-sm text-gray-400">AI를 사용한 변환이니, 틀릴 수 있습니다</p>
         </div>
 
         <div className="flex-1">
-          <h2 className="font-bold mb-2">5. Map to Graph DB</h2>
+          <h2 className="font-bold mb-2">Map to Graph DB</h2>
           <table className="w-full text-left border border-gray-700 divide-y divide-gray-600">
             <thead>
               <tr className="bg-gray-800">
@@ -192,67 +252,78 @@ const DataImportPage: React.FC = () => {
               </tr>
             </thead>
             <tbody>
-              {mappings.map((map, i) => (
-                <tr key={i} className="hover:bg-gray-800 transition h-10">
-                  <td className="p-1 px-2">
-                    <select
-                      className="bg-gray-800 border border-gray-700 p-1"
-                      value={map.file}
-                      onChange={(e) => handleMappingChange(i, "file", e.target.value)}
-                    >
-                      <option value="">--</option>
-                      {selectedFiles.map((file) => (
-                        <option key={file} value={file}>
-                          {file}
-                        </option>
-                      ))}
-                    </select>
-                  </td>
-                  <td className="p-1">
-                    <MultiSelect
-                      options={["name", "code", "amount"]}
-                      selected={map.field}
-                      onChange={(values: string[]) => handleMappingChange(i, "field", values)}
-                    />
-                  </td>
-                  <td className="p-1">
-                    <input
-                      className="w-full p-1 bg-gray-800 border border-gray-700"
-                      value={map.target}
-                      onChange={(e) => handleMappingChange(i, "target", e.target.value)}
-                    />
-                  </td>
-                  <td className="p-1">
-                    <select
-                      className="w-full p-1 bg-gray-800 border border-gray-700"
-                      value={map.nodeOrEdge}
-                      onChange={(e) => handleMappingChange(i, "nodeOrEdge", e.target.value)}
-                    >
-                      <option value="">--</option>
-                      <option value="node">node</option>
-                      <option value="edge">edge</option>
-                    </select>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
+            {mappings.map((map, i) => (
+              <tr key={i} className="hover:bg-gray-700">
+                <td className="p-2">
+                  <select
+                    className="bg-gray-800 border border-gray-700 p-1 w-full"
+                    value={map.file}
+                    onChange={(e) => handleMappingChange(i, "file", e.target.value)}
+                  >
+                    <option value="">--</option>
+                    {selectedFiles.map((file) => (
+                      <option key={file} value={file}>
+                        {file}
+                      </option>
+                    ))}
+                  </select>
+                </td>
+                <td className="p-2">
+                <select
+                    className="bg-gray-800 border border-gray-700 p-1 w-full"
+                    value={map.field}
+                    onChange={(e) => handleMappingChange(i, "field", e.target.value)}
+                  >
+                    <option value="">--</option>
+                    {fieldOptions.map((opt) => (
+                      <option key={opt.value} value={opt.value}>
+                        {opt.text}
+                      </option>
+                    ))}
+                  </select>
+                </td>
+                <td className="p-2">
+                  <input
+                    type="text"
+                    className="bg-gray-800 border border-gray-700 p-1 w-full"
+                    value={map.target}
+                    readOnly
+                  />
+                </td>
+                <td className="p-2">
+                  <select
+                    className="bg-gray-800 border border-gray-700 p-1 w-full"
+                    value={map.nodeOrEdge}
+                    onChange={(e) => handleMappingChange(i, "nodeOrEdge", e.target.value)}
+                  >
+                    <option value="">--</option>
+                    <option value="node">node</option>
+                    <option value="edge">edge</option>
+                  </select>
+                </td>
+              </tr>
+            ))}
+          </tbody>
           </table>
         </div>
       </div>
 
-      <div className="mt-6 flex gap-4">
-        <button className="px-6 py-2 bg-green-600 hover:bg-green-700 rounded">
-          6. Show Graph
-        </button>
+      <div className="mt-6 flex gap-4 justify-end border-t border-gray-700 py-3">
+
         <button
-          className="px-6 py-2 bg-yellow-600 hover:bg-yellow-700 text-black rounded"
-          onClick={handleSaveProject}
-        >
-          7. Save Project
+          className="px-6 py-2 bg-brand-600 hover:bg-yellow-700  rounded">
+          Save Project
+        </button>
+        <button className="px-6 py-2 bg-green-700 hover:bg-green-700 rounded"
+         onClick={handleSaveProject}>
+         Show Graph
+        </button>
+        <button className="px-6 py-2 bg-dark-900 hover:bg-dark-700 rounded">
+      export data
         </button>
       </div>
 
-      <p className="mt-4 text-pink-400">단계별 잘못하면 에러 메시지 나온다</p>
+
     </div>
   );
 };

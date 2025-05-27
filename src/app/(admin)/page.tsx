@@ -1,12 +1,14 @@
+// EcommerceTabs.tsx 파일에서 수정할 부분만 발췌
+
 "use client";
 
 import { useRef, useState, useEffect } from "react";
 import { Tab } from "@headlessui/react";
 import { EcommerceMetrics } from "@/components/ecommerce/EcommerceMetrics";
-import MonthlyTarget from "@/components/ecommerce/MonthlyTarget";
 import MonthlySalesChart from "@/components/ecommerce/MonthlySalesChart";
 import RecentOrders from "@/components/ecommerce/RecentOrders";
-import  DefaultInputs  from "@/components/form/Form-elements/DefaultInputs";
+import MonthlyTarget from "@/components/ecommerce/MonthlyTarget";
+import DefaultInputs from "@/components/form/Form-elements/DefaultInputs";
 import AIChatPanel from "@/components/AIChatPanel";
 
 import {
@@ -14,6 +16,8 @@ import {
   ChartBarIcon,
   UserGroupIcon,
   Squares2X2Icon,
+  ChevronLeftIcon, // 추가: 사이드바 토글 버튼용 아이콘
+  ChevronRightIcon, // 추가: 사이드바 토글 버튼용 아이콘
 } from "@heroicons/react/24/outline";
 
 import { useAtom } from "jotai";
@@ -31,59 +35,30 @@ export default function EcommerceTabs() {
 
   const [selectedIndex, setSelectedIndex] = useState(0);
 
+  // 새 상태: 사이드바 표시/숨김 여부
+  const [showRightSidebar, setShowRightSidebar] = useState(false);
+
   const tabs = [
     { name: "Network Graph", icon: Squares2X2Icon },
-    { name: "VDT", icon: BellIcon },
-    { name: "Exmple1", icon: UserGroupIcon },
+    { name: "Simulation", icon: BellIcon },
+    { name: "Timeline", icon: UserGroupIcon },
     { name: "Exmple2", icon: ChartBarIcon },
   ];
 
   const containerRef = useRef<HTMLDivElement>(null);
-  const isDraggingHorizontal = useRef(false);
-  const isDraggingVertical = useRef(false);
 
   const [leftWidth, setLeftWidth] = useState(75); // %
   const [topHeight, setTopHeight] = useState(50); // %
 
-  const startHorizontalDrag = () => {
-    isDraggingHorizontal.current = true;
-    document.addEventListener("mousemove", handleHorizontalDrag);
-    document.addEventListener("mouseup", stopHorizontalDrag);
-  };
+  // drag 관련 함수들은 Network Graph 탭에서는 더 이상 필요 없지만,
+  // 다른 탭에서 사용한다면 그대로 유지해야 합니다.
+  const startHorizontalDrag = () => { /* ... */ };
+  const handleHorizontalDrag = (e: MouseEvent) => { /* ... */ };
+  const stopHorizontalDrag = () => { /* ... */ };
+  const startVerticalDrag = () => { /* ... */ };
+  const handleVerticalDrag = (e: MouseEvent) => { /* ... */ };
+  const stopVerticalDrag = () => { /* ... */ };
 
-  const handleHorizontalDrag = (e: MouseEvent) => {
-    if (!isDraggingHorizontal.current || !containerRef.current) return;
-    const containerWidth = containerRef.current.offsetWidth;
-    const offsetX = e.clientX - containerRef.current.getBoundingClientRect().left;
-    const newLeftWidth = (offsetX / containerWidth) * 100;
-    if (newLeftWidth > 25 && newLeftWidth < 80) setLeftWidth(newLeftWidth);
-  };
-
-  const stopHorizontalDrag = () => {
-    isDraggingHorizontal.current = false;
-    document.removeEventListener("mousemove", handleHorizontalDrag);
-    document.removeEventListener("mouseup", stopHorizontalDrag);
-  };
-
-  const startVerticalDrag = () => {
-    isDraggingVertical.current = true;
-    document.addEventListener("mousemove", handleVerticalDrag);
-    document.addEventListener("mouseup", stopVerticalDrag);
-  };
-
-  const handleVerticalDrag = (e: MouseEvent) => {
-    if (!isDraggingVertical.current || !containerRef.current) return;
-    const containerHeight = containerRef.current.offsetHeight;
-    const offsetY = e.clientY - containerRef.current.getBoundingClientRect().top;
-    const newTopHeight = (offsetY / containerHeight) * 100;
-    if (newTopHeight > 30 && newTopHeight < 70) setTopHeight(newTopHeight);
-  };
-
-  const stopVerticalDrag = () => {
-    isDraggingVertical.current = false;
-    document.removeEventListener("mousemove", handleVerticalDrag);
-    document.removeEventListener("mouseup", stopVerticalDrag);
-  };
 
   const loadGraph = async (query = null) => {
     const res = await fetch(query ? "/api/query" : "/api/graph", {
@@ -100,24 +75,25 @@ export default function EcommerceTabs() {
   };
 
   useEffect(() => {
-    loadGraph(null); // 또는 loadGraph() 로 초기 데이터 로딩
-  }, []);
+    // 'Network Graph' 탭이 선택될 때만 데이터 로딩
+    if (selectedIndex === 0) {
+        loadGraph(null);
+    }
+  }, [selectedIndex]);
+
 
   function isSimpleTable(records) {
     if (!records?.length) return true;
     return records.every((record) =>
       record._fields.every((field) => {
-        // 1. Neo4j Integer 객체
         const isNeoInt =
           typeof field === "object" &&
           field !== null &&
           Object.keys(field).length === 2 &&
           typeof field.low === "number" &&
           typeof field.high === "number";
-        // 2. 일반 숫자 또는 문자열
         const isPrimitive =
           typeof field === "number" || typeof field === "string";
-        // 3. 단순 타입 중 하나라도 해당되면 OK
         return isNeoInt || isPrimitive;
       })
     );
@@ -145,205 +121,195 @@ export default function EcommerceTabs() {
         ))}
       </Tab.List>
 
-      <Tab.Panels className="mt-4">
-        <Tab.Panel>
-        <div
+      {/* Tab Panels 시작 */}
+      <Tab.Panels className="mt-4 h-[calc(100%-60px)]">
+
+        {/* 1. Network Graph Tab Panel */}
+        <Tab.Panel className="h-full">
+          <div
             ref={containerRef}
-         className="flex w-[100%-90px] h-[100%-76px] relative   overflow-hidden"
+            className="flex h-full relative overflow-hidden"
           >
-            {/* 왼쪽: 상하 분할 */}
+            {/* 왼쪽: 상하 분할 (메인 콘텐츠) */}
             <div
-              style={{ width: `${leftWidth}%` }}
-              className="flex flex-col w-[75%] transition-all duration-100"
+                className={`flex flex-col h-full transition-all duration-300 ease-in-out ${
+                  showRightSidebar ? 'w-[calc(100%-280px)]' : 'w-full'
+                }`}
             >
-              {/* 상단 */}
+              {/* 상단 그래프 영역 */}
               <div style={{ height: `${topHeight}%` }} className="transition-all">
-                <div className="bg-white dark:bg-gray-900 rounded shadow p-4 h-[100%-400px]">
+                <div className="bg-white dark:bg-gray-900 rounded shadow p-4 h-full">
                   <EcommerceMetrics />
                   <MonthlySalesChart onReady={setCy} selectedIndex={selectedIndex} />
                 </div>
               </div>
 
-              {/* 상하 리사이즈 핸들 */}
+              {/* 상하 리사이즈 핸들 (필요에 따라 유지/제거) */}
               <div
                 onMouseDown={startVerticalDrag}
                 className="h-1 cursor-row-resize bg-gray-100 dark:bg-gray-800 hover:bg-blue-500"
                 style={{ zIndex: 9990 }}
               />
 
-              {/* 하단 */}
+              {/* 하단 데이터 테이블 영역 */}
               <div style={{ height: `${100 - topHeight}%` }} className="transition-all h-full">
-                <div className="bg-white dark:bg-gray-900 rounded shadow p-4 overflow-y-auto">
+                <div className="bg-white dark:bg-gray-900 rounded shadow p-4 overflow-y-auto h-full">
                   <RecentOrders rawRecords={rawRecords} isSimple={isSimple} />
                 </div>
               </div>
             </div>
 
-            {/* 좌우 리사이즈 핸들 */}
-            <div
-              onMouseDown={startHorizontalDrag}
-              className="w-1 cursor-col-resize bg-gray-100 dark:bg-gray-800 hover:bg-blue-500 transition-colors duration-150"
-              style={{ zIndex: 50 }}
-            />
+            {/* 사이드바 토글 버튼 */}
+            <button
+              onClick={() => setShowRightSidebar(!showRightSidebar)}
+              className={`absolute top-1/2 -translate-y-1/2 bg-gray-700 text-white p-1 rounded-full shadow-lg hover:bg-gray-600 z-30 transition-all duration-300 ease-in-out
+                ${showRightSidebar ? 'right-[270px]' : 'right-4'}`}
+              aria-label="Toggle Right Sidebar"
+            >
+              {showRightSidebar ? (
+                <ChevronRightIcon className="h-5 w-5" />
+              ) : (
+                <ChevronLeftIcon className="h-5 w-5" />
+              )}
+            </button>
 
-            {/* 오른쪽 */}
+            {/* 오른쪽 사이드바 */}
             <div
-              style={{ width: `${100 - leftWidth}%`, minWidth: "280px" }}
-              className="bg-white dark:bg-gray-900 rounded shadow p-2 h-full"
+              className={`fixed right-0 top-[var(--header-height)] h-[calc(100vh - var(--header-height))] bg-white dark:bg-gray-900 shadow-xl p-2 z-20 transform transition-transform duration-300 ease-in-out
+                ${showRightSidebar ? 'translate-x-0' : 'translate-x-full'}`}
+              style={{ width: "280px" }}
             >
               <DefaultInputs />
-             < AIChatPanel/>
+              <AIChatPanel />
             </div>
           </div>
         </Tab.Panel>
-        <Tab.Panel>
+
+        {/* 2. Simulation Tab Panel (수정 없음) */}
+        <Tab.Panel className="h-full">
           <div
             ref={containerRef}
-            className="flex w-[100%-90px] h-[100%-76px] relative   overflow-hidden"
+            className="flex w-[100%-90px] h-[100%-76px] relative overflow-hidden"
           >
-            {/* 왼쪽 전체 영역 */}
             <div
               style={{ width: `${leftWidth}%` }}
               className="flex flex-col transition-all duration-100"
             >
-              {/* 상단: MonthlySalesChart */}
               <div style={{ height: `${topHeight}%` }} className="transition-all">
                 <div className="shadow p-4 h-full">
-                <EcommerceMetrics />
-                <MonthlySalesChart onReady={setCy} selectedIndex = {selectedIndex}/>
+                  <EcommerceMetrics />
+                  <MonthlySalesChart onReady={setCy} selectedIndex={selectedIndex} />
                 </div>
               </div>
-
-              {/* 상하 리사이즈 핸들 */}
               <div
                 onMouseDown={startVerticalDrag}
                 className="h-1 cursor-row-resize bg-gray-100 dark:bg-gray-800"
               />
-
-              {/* 하단: RecentOrders */}
               <div style={{ height: `${100 - topHeight}%` }} className="transition-all">
                 <div className="bg-white dark:bg-gray-900 rounded shadow p-4 h-full">
-                  <RecentOrders rawRecords={rawRecords} isSimple={isSimple}/>
+                  <RecentOrders rawRecords={rawRecords} isSimple={isSimple} />
                 </div>
               </div>
             </div>
-
-            {/* 좌우 리사이즈 핸들 */}
             <div
               onMouseDown={startHorizontalDrag}
               className="w-1 cursor-col-resize bg-gray-200 dark:bg-gray-800"
             />
-
-            {/* 오른쪽: MonthlyTarget */}
             <div
               style={{ width: `${100 - leftWidth}%` }}
               className="bg-white dark:bg-gray-900 rounded shadow p-4 h-full"
-            > < DefaultInputs />
+            >
+              {" "}
+              <DefaultInputs />
               <MonthlyTarget />
             </div>
           </div>
         </Tab.Panel>
-  {/* example */}
-        <Tab.Panel>
-        <div
+
+        {/* 3. Timeline Tab Panel (수정 없음) */}
+        <Tab.Panel className="h-full">
+          <div
             ref={containerRef}
-         className="flex w-[100%-90px] h-[100%-76px] relative   overflow-hidden"
+            className="flex w-[100%-90px] h-[100%-76px] relative overflow-hidden"
           >
-            {/* 왼쪽: 상하 분할 */}
             <div
               style={{ width: `${leftWidth}%` }}
               className="flex flex-col w-[75%] transition-all duration-100"
             >
-              {/* 상단 */}
               <div style={{ height: `${topHeight}%` }} className="transition-all">
                 <div className="bg-white dark:bg-gray-900 rounded shadow p-4 h-[100%-400px]">
                   <EcommerceMetrics />
                   <MonthlySalesChart onReady={setCy} selectedIndex={selectedIndex} />
                 </div>
               </div>
-
-              {/* 상하 리사이즈 핸들 */}
               <div
                 onMouseDown={startVerticalDrag}
                 className="h-1 cursor-row-resize bg-gray-100 dark:bg-gray-800 hover:bg-blue-500"
                 style={{ zIndex: 9990 }}
               />
-
-              {/* 하단 */}
               <div style={{ height: `${100 - topHeight}%` }} className="transition-all h-full">
                 <div className="bg-white dark:bg-gray-900 rounded shadow p-4 overflow-y-auto">
                   <RecentOrders rawRecords={rawRecords} isSimple={isSimple} />
                 </div>
               </div>
             </div>
-
-            {/* 좌우 리사이즈 핸들 */}
             <div
               onMouseDown={startHorizontalDrag}
               className="w-1 cursor-col-resize bg-gray-100 dark:bg-gray-800 hover:bg-blue-500 transition-colors duration-150"
               style={{ zIndex: 50 }}
             />
-
-            {/* 오른쪽 */}
             <div
               style={{ width: `${100 - leftWidth}%`, minWidth: "280px" }}
               className="bg-white dark:bg-gray-900 rounded shadow p-2 h-full"
             >
               <DefaultInputs />
-             < AIChatPanel/>
+              <AIChatPanel />
             </div>
           </div>
         </Tab.Panel>
-        <Tab.Panel>
-        <div
+
+        {/* 4. Exmple2 Tab Panel (수정 없음) */}
+        <Tab.Panel className="h-full">
+          <div
             ref={containerRef}
-         className="flex w-[100%-90px] h-[100%-76px] relative   overflow-hidden"
+            className="flex w-[100%-90px] h-[100%-76px] relative overflow-hidden"
           >
-            {/* 왼쪽: 상하 분할 */}
             <div
               style={{ width: `${leftWidth}%` }}
               className="flex flex-col w-[75%] transition-all duration-100"
             >
-              {/* 상단 */}
               <div style={{ height: `${topHeight}%` }} className="transition-all">
                 <div className="bg-white dark:bg-gray-900 rounded shadow p-4 h-[100%-400px]">
                   <EcommerceMetrics />
                   <MonthlySalesChart onReady={setCy} selectedIndex={selectedIndex} />
                 </div>
               </div>
-
-              {/* 상하 리사이즈 핸들 */}
               <div
                 onMouseDown={startVerticalDrag}
                 className="h-1 cursor-row-resize bg-gray-100 dark:bg-gray-800 hover:bg-blue-500"
                 style={{ zIndex: 9990 }}
               />
-
-              {/* 하단 */}
               <div style={{ height: `${100 - topHeight}%` }} className="transition-all h-full">
                 <div className="bg-white dark:bg-gray-900 rounded shadow p-4 overflow-y-auto">
                   <RecentOrders rawRecords={rawRecords} isSimple={isSimple} />
                 </div>
               </div>
             </div>
-
-            {/* 좌우 리사이즈 핸들 */}
             <div
               onMouseDown={startHorizontalDrag}
               className="w-1 cursor-col-resize bg-gray-100 dark:bg-gray-800 hover:bg-blue-500 transition-colors duration-150"
               style={{ zIndex: 50 }}
             />
-
-            {/* 오른쪽 */}
             <div
               style={{ width: `${100 - leftWidth}%`, minWidth: "280px" }}
               className="bg-white dark:bg-gray-900 rounded shadow p-2 h-full"
-            >< AIChatPanel/>
-                  <MonthlyTarget />
-
+            >
+              <AIChatPanel />
+              <MonthlyTarget />
             </div>
           </div>
         </Tab.Panel>
+
       </Tab.Panels>
     </Tab.Group>
   );

@@ -26,13 +26,13 @@ type NavItem = {
 
 const navItems: NavItem[] = [
   {
-    icon: <CalenderIcon />,
-    name: "income statement",
+    icon: <GridIcon />,
+    name: "General",
     path: "/Dashboard",
   },
   {
-    icon: <GridIcon />,
-    name: "general",
+    icon: <PieChartIcon />,
+    name: "Income statement",
     path: "/",
   },
   {
@@ -46,7 +46,7 @@ const navItems: NavItem[] = [
     subItems: [{ name: "Basic Tables", path: "/basic-tables", pro: false }],
   },
   {
-    name: "organization net-work",
+    name: "OrganizationNet",
     icon: <PageIcon />,
     subItems: [
       { name: "Blank Page", path: "/blank", pro: false },
@@ -54,7 +54,7 @@ const navItems: NavItem[] = [
     ],
   },
   {
-    name: "distribution net-work",
+    name: "DistributionNet",
     icon: <PageIcon />,
     subItems: [
       { name: "Blank Page", path: "/blank", pro: false },
@@ -66,7 +66,7 @@ const navItems: NavItem[] = [
 const othersItems: NavItem[] = [
   {
     icon: <PieChartIcon />,
-    name: "general",
+    name: "General",
     subItems: [
       { name: "Line Chart", path: "/line-chart", pro: false },
       { name: "Bar Chart", path: "/bar-chart", pro: false },
@@ -74,14 +74,14 @@ const othersItems: NavItem[] = [
   },
   {
     icon: <BoxCubeIcon />,
-    name: "income statement",
+    name: "Income statement",
     subItems: [
       { name: "Alerts", path: "/alerts", pro: false },
       { name: "Avatar", path: "/avatars", pro: false },
     ],
   },
   {
-    icon: <BoxCubeIcon />,
+    icon: <CalenderIcon />,
     name: "QSA",
     subItems: [
       { name: "Alerts", path: "/alerts", pro: false },
@@ -97,14 +97,14 @@ const othersItems: NavItem[] = [
   },
   {
     icon: <BoxCubeIcon />,
-    name: "organization net-work",
+    name: "OrganizationNet",
     subItems: [
       { name: "Avatar", path: "/avatars", pro: false },
     ],
   },
   {
     icon: <BoxCubeIcon />,
-    name: "distribution net-work",
+    name: "DistributionNet",
     subItems: [
       { name: "Avatar", path: "/avatars", pro: false },
     ],

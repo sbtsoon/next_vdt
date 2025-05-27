@@ -5,8 +5,8 @@ import { ArrowDownIcon, ArrowUpIcon,   ListIcon, PlusIcon } from "@/icons";
 
 export const EcommerceMetrics = () => {
   return (
-    <div className="grid grid-cols-4 gap-4 mb-3">
-
+     <div className="grid grid-cols-2 gap-2">
+    <div className="grid grid-cols-3 gap-1 mb-3">
     {/* Metric 1 */}
     <div className=" border border-gray-200 bg-white p-2 dark:border-gray-800 dark:bg-white/[0.03] w-full">
         <div className="flex  items-center gap-2 justify-between" >
@@ -65,39 +65,44 @@ export const EcommerceMetrics = () => {
         <ArrowUpIcon className="inline w-4 h-4" /> (14.9%)</Badge>
       </span>
     </div>
+    </div>
   </div>
+
+  <div className="grid grid-cols-1 mb-3">
     {/* Metric 4 */}
     <div className=" border border-gray-200 bg-white p-3 dark:border-gray-800 dark:bg-white/[0.03]">
       <div >
-        <h4  className="text-sm text-gray-500 dark:text-gray-400 font-semibold">
-        Node labels
-        </h4>
-         <div className="flex items-center gap-2">
-        <Badge color="dark">
-       Metric(105)
-        </Badge>
-        <Badge color="info">
-          <PlusIcon  className="text-gray-800 size-6 dark:text-blue-500/90" />
-       8895
-        </Badge>
+          <h4  className="text-sm text-gray-500 dark:text-gray-400 font-semibold">
+          Node labels
+          </h4>
+          <div className="flex items-center gap-2">
+            <Badge color="dark">
+          Metric(105)
+            </Badge>
+            <Badge color="info">
+              <PlusIcon  className="text-gray-800 size-6 dark:text-blue-500/90" />
+          8895
+            </Badge>
+            </div>
         </div>
-        <h4  className=" mt-2text-sm text-gray-500 dark:text-gray-400 font-semibold">
-        Relationship types
-        </h4>
-        <div className="flex items-center gap-2">
-        <Badge color="dark">
-          <PlusIcon  className="text-gray-800 size-6 dark:text-white/90" />
-        (105)
-        </Badge>
-        <Badge color="dark">
-          <PlusIcon  className="text-gray-800 size-6 dark:text-white/90" />
-        (105)
-        </Badge>
-        </div>
+        <div >
+          <h4  className=" mt-2text-sm text-gray-500 dark:text-gray-400 font-semibold">
+          Relationship types
+          </h4>
+          <div className="flex items-center gap-2">
+          <Badge color="dark">
+            <PlusIcon  className="text-gray-800 size-6 dark:text-white/90" />
+          (105)
+          </Badge>
+          <Badge color="dark">
+            <PlusIcon  className="text-gray-800 size-6 dark:text-white/90" />
+          (105)
+          </Badge>
+          </div>
       </div>
     </div>
 
   </div>
-
+</div>
   );
 };
