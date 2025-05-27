@@ -22,7 +22,7 @@ import {
 } from "@heroicons/react/24/outline";
 
 import { useAtom } from "jotai";
-import { graphDataAtom } from "@/store/graphAtoms";
+import { aiQueryAtom, graphDataAtom } from "@/store/graphAtoms";
 import NetworkGraph from "@/components/ecommerce/NetworkGraph";
 import SimulationGraph from "@/components/ecommerce/SimulationGraph";
 
@@ -32,6 +32,7 @@ function classNames(...classes: string[]) {
 
 export default function EcommerceTabs() {
   const [graphData, setGraphData] = useAtom(graphDataAtom);
+  const [aiQuery, setAiQuery] = useAtom(aiQueryAtom);
   const [rawRecords, setRawRecords] = useState(null);
   const [isSimple, setIsSimple] = useState(false);
 
@@ -111,6 +112,13 @@ export default function EcommerceTabs() {
   useEffect(() => {
     loadGraph(null);
   }, []);
+
+  useEffect(() => {
+    if (aiQuery.query) {
+      console.log(aiQuery.query);
+      loadGraph(aiQuery.query);
+    }
+  }, [aiQuery.query]);
 
   useEffect(() => {
     setActivePanel(null);

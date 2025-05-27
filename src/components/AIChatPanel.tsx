@@ -1,7 +1,9 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { PaperAirplaneIcon, MicrophoneIcon } from "@heroicons/react/24/outline";
+import { useAtom } from "jotai";
+import { aiQueryAtom } from "@/store/graphAtoms";
 
 interface Message {
   role: "user" | "assistant";
@@ -11,6 +13,9 @@ interface Message {
 const AIChatPanel: React.FC = () => {
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState("");
+  const [, setAiQuery] = useAtom(aiQueryAtom);
+  const messagesEndRef = useRef<HTMLDivElement | null>(null);
+  const [loading, setLoading] = useState(false);
 
   const handleSend = async () => {
     if (!input.trim()) return;
@@ -19,6 +24,7 @@ const AIChatPanel: React.FC = () => {
     setInput("");
 
     try {
+      setLoading(true);
       const res = await fetch("/api/chat", {
         method: "POST",
         headers: {
@@ -31,6 +37,10 @@ const AIChatPanel: React.FC = () => {
       });
 
       const data = await res.json();
+
+      const aiQuery = data?.response?.cypher;
+      setAiQuery({ query: aiQuery });
+
       const reply = data?.response?.response || "(No response)";
       const assistantMessage: Message = { role: "assistant", content: reply };
       setMessages((prev) => [...prev, assistantMessage]);
@@ -43,12 +53,22 @@ const AIChatPanel: React.FC = () => {
           content: "⚠️ 서버 응답에 문제가 있습니다.",
         },
       ]);
+    } finally {
+      setLoading(false);
     }
   };
 
   const handleVoiceInput = () => {
     alert("Voice input not implemented yet.");
   };
+
+  const scrollToBottom = () => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  };
+
+  useEffect(() => {
+    scrollToBottom();
+  }, [messages]);
 
   return (
     <div className="w-auto h-full rounded-b-sm bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-900  shadow-2xl p-2  flex flex-col">
@@ -92,18 +112,26 @@ const AIChatPanel: React.FC = () => {
             Start a conversation...
           </p>
         ) : (
-          messages.map((msg, idx) => (
-            <div
-              key={idx}
-              className={`p-2 rounded-lg max-w-[80%] w-fit whitespace-pre-wrap text-sm ${
-                msg.role === "user"
-                  ? "ml-auto bg-brand-500/50 text-gray-200"
-                  : "bg-gray-100 dark:bg-gray-600 text-gray-800 dark:text-white"
-              }`}
-            >
-              {msg.content}
-            </div>
-          ))
+          <>
+            {messages.map((msg, idx) => (
+              <div
+                key={idx}
+                className={`p-2 rounded-lg max-w-[80%] w-fit whitespace-pre-wrap text-sm ${
+                  msg.role === "user"
+                    ? "ml-auto bg-brand-500/50 text-gray-200"
+                    : "bg-gray-100 dark:bg-gray-600 text-gray-800 dark:text-white"
+                }`}
+              >
+                {msg.content}
+              </div>
+            ))}
+            {loading && (
+              <div className="p-2 rounded-lg bg-gray-100 dark:bg-gray-800 text-sm text-gray-600 dark:text-gray-300 w-fit">
+                <span className="animate-pulse">Assistant is typing...</span>
+              </div>
+            )}
+            <div ref={messagesEndRef} />
+          </>
         )}
       </div>
     </div>
