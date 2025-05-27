@@ -6,6 +6,12 @@ import { useAtom } from "jotai";
 import { useEffect, useRef } from "react";
 import { formatAmountWithMajorUnits } from "@/utils/formatUtils";
 import { parseNeo4jInt } from "@/utils/neo4jUtils";
+import {
+  showNode,
+  showEdge,
+  hideNode,
+  hideEdge,
+} from "@/helpers/cytoscapeVisibility";
 
 // Layout mode constants
 export const LAYOUT_MODES = Object.freeze({
@@ -18,48 +24,6 @@ export default function MonthlySalesChart() {
   const cyRef = useRef(null);
   const cyInstanceRef = useRef(null);
   const [graphData] = useAtom(graphDataAtom);
-
-  const hideNode = (node, layoutMode = 0) => {
-    node.hide();
-    if (layoutMode === LAYOUT_MODES.MINDMAP) {
-      node.style("opacity", 0);
-    }
-    node.data("isHidden", true);
-  };
-
-  const showNode = (node, layoutMode = 0, duration = 800) => {
-    node.show();
-    node.data("isHidden", false);
-    if (layoutMode === LAYOUT_MODES.MINDMAP) {
-      requestAnimationFrame(() => {
-        node.animate({ style: { opacity: 1 }, duration });
-      });
-    } else {
-      node.style("opacity", 1);
-    }
-  };
-
-  const hideEdge = (edge, layoutMode = 0) => {
-    edge.hide();
-    if (layoutMode === LAYOUT_MODES.MINDMAP) {
-      edge.style("opacity", 0);
-    }
-    edge.data("isHidden", true);
-  };
-
-  const showEdge = (edge, layoutMode = 0, duration = 800) => {
-    if (edge.data("isHidden")) {
-      edge.show();
-      edge.data("isHidden", false);
-      if (layoutMode === LAYOUT_MODES.MINDMAP) {
-        requestAnimationFrame(() => {
-          edge.animate({ style: { opacity: 1 }, duration });
-        });
-      } else {
-        edge.style("opacity", 1);
-      }
-    }
-  };
 
   useEffect(() => {
     if (!cyRef.current) return;
