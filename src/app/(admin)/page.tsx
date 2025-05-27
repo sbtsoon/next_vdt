@@ -23,6 +23,7 @@ import {
 
 import { useAtom } from "jotai";
 import { graphDataAtom } from "@/store/graphAtoms";
+import NetworkGraph from "@/components/ecommerce/NetworkGraph";
 
 function classNames(...classes: string[]) {
   return classes.filter(Boolean).join(" ");
@@ -61,7 +62,8 @@ export default function EcommerceTabs() {
   const handleHorizontalDrag = (e: MouseEvent) => {
     if (!isDraggingHorizontal.current || !containerRef.current) return;
     const containerWidth = containerRef.current.offsetWidth;
-    const offsetX = e.clientX - containerRef.current.getBoundingClientRect().left;
+    const offsetX =
+      e.clientX - containerRef.current.getBoundingClientRect().left;
     const newLeftWidth = (offsetX / containerWidth) * 100;
     if (newLeftWidth > 25 && newLeftWidth < 80) setLeftWidth(newLeftWidth);
   };
@@ -81,7 +83,8 @@ export default function EcommerceTabs() {
   const handleVerticalDrag = (e: MouseEvent) => {
     if (!isDraggingVertical.current || !containerRef.current) return;
     const containerHeight = containerRef.current.offsetHeight;
-    const offsetY = e.clientY - containerRef.current.getBoundingClientRect().top;
+    const offsetY =
+      e.clientY - containerRef.current.getBoundingClientRect().top;
     const newTopHeight = (offsetY / containerHeight) * 100;
     if (newTopHeight > 10 && newTopHeight < 90) setTopHeight(newTopHeight);
   };
@@ -130,7 +133,6 @@ export default function EcommerceTabs() {
 
   const sidebarWidth = 350; // ✨ 변경: 각 사이드바 패널의 너비를 320px로 설정
   const totalOpenedSidebarWidth = activePanel ? sidebarWidth : 0;
-
 
   return (
     <Tab.Group selectedIndex={selectedIndex} onChange={setSelectedIndex}>
@@ -253,7 +255,7 @@ export default function EcommerceTabs() {
               >
                 <div className="bg-white dark:bg-gray-900 rounded shadow p-4 h-full">
                   <EcommerceMetrics />
-                  <MonthlySalesChart />
+                  <NetworkGraph />
                 </div>
               </div>
 
