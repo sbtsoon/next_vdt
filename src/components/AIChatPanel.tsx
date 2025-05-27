@@ -1,3 +1,5 @@
+"use client";
+
 import React, { useState } from "react";
 import { PaperAirplaneIcon, MicrophoneIcon } from "@heroicons/react/24/outline";
 
@@ -17,16 +19,15 @@ const AIChatPanel: React.FC = () => {
     setInput("");
 
     try {
-      const formBody = new URLSearchParams();
-      formBody.append("assistant", "text2cypher");
-      formBody.append("query", input);
-
-      const res = await fetch("http://121.133.205.199:14803/chat", {
+      const res = await fetch("/api/chat", {
         method: "POST",
         headers: {
-          "Content-Type": "application/x-www-form-urlencoded",
+          "Content-Type": "application/json",
         },
-        body: formBody.toString(),
+        body: JSON.stringify({
+          assistant: "text2cypher",
+          query: input,
+        }),
       });
 
       const data = await res.json();
@@ -35,11 +36,13 @@ const AIChatPanel: React.FC = () => {
       setMessages((prev) => [...prev, assistantMessage]);
     } catch (error) {
       console.error("API Error:", error);
-      const errorMessage: Message = {
-        role: "assistant",
-        content: "⚠️ 서버 응답에 문제가 있습니다.",
-      };
-      setMessages((prev) => [...prev, errorMessage]);
+      setMessages((prev) => [
+        ...prev,
+        {
+          role: "assistant",
+          content: "⚠️ 서버 응답에 문제가 있습니다.",
+        },
+      ]);
     }
   };
 
@@ -85,7 +88,9 @@ const AIChatPanel: React.FC = () => {
       </div>
       <div className="flex-1 overflow-y-auto p-4 custom-scrollbar space-y-3 max-h-[350px] border dark:border-gray-700">
         {messages.length === 0 ? (
-          <p className="text-gray-500 dark:text-gray-400 text-sm">Start a conversation...</p>
+          <p className="text-gray-500 dark:text-gray-400 text-sm">
+            Start a conversation...
+          </p>
         ) : (
           messages.map((msg, idx) => (
             <div
