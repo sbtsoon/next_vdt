@@ -5,7 +5,6 @@ import { Tab } from "@headlessui/react";
 import { EcommerceMetrics } from "@/components/ecommerce/EcommerceMetrics";
 import MonthlyTarget from "@/components/ecommerce/MonthlyTarget";
 import MonthlySalesChart from "@/components/ecommerce/MonthlySalesChart";
-import RecentOrders from "@/components/ecommerce/RecentOrders";
 import DefaultInputs from "@/components/form/Form-elements/DefaultInputs";
 import AIChatPanel from "@/components/AIChatPanel";
 
@@ -23,8 +22,9 @@ import {
 
 import { useAtom } from "jotai";
 import { aiQueryAtom, graphDataAtom } from "@/store/graphAtoms";
-import NetworkGraph from "@/components/ecommerce/NetworkGraph";
-import SimulationGraph from "@/components/ecommerce/SimulationGraph";
+import NetworkGraph from "@/app/(admin)/_components/NetworkGraph";
+import SimulationGraph from "@/app/(admin)/_components/SimulationGraph";
+import GraphDataTable from "./_components/GraphDataTable";
 
 function classNames(...classes: string[]) {
   return classes.filter(Boolean).join(" ");
@@ -280,7 +280,7 @@ export default function EcommerceTabs() {
                 className="transition-all h-full"
               >
                 <div className="bg-white dark:bg-gray-900 rounded shadow p-4 overflow-y-auto h-full">
-                  <RecentOrders rawRecords={rawRecords} isSimple={isSimple} />
+                  <GraphDataTable rawRecords={rawRecords} isSimple={isSimple} />
                 </div>
               </div>
             </div>
@@ -365,7 +365,7 @@ export default function EcommerceTabs() {
                 className="transition-all"
               >
                 <div className="bg-white dark:bg-gray-900 rounded shadow p-4 h-full">
-                  <RecentOrders rawRecords={rawRecords} isSimple={isSimple} />
+                  <GraphDataTable rawRecords={rawRecords} isSimple={isSimple} />
                 </div>
               </div>
             </div>
@@ -487,7 +487,7 @@ export default function EcommerceTabs() {
                 className="transition-all h-full"
               >
                 <div className="bg-white dark:bg-gray-900 rounded shadow p-4 overflow-y-auto h-full">
-                  <RecentOrders rawRecords={rawRecords} isSimple={isSimple} />
+                  <GraphDataTable rawRecords={rawRecords} isSimple={isSimple} />
                 </div>
               </div>
             </div>
