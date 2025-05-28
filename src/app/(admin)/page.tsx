@@ -351,6 +351,7 @@ export default function EcommerceTabs() {
         <Tab.Panel className="h-full" unmount={true}>
           <div
             ref={containerRef}
+
             className="flex h-full relative overflow-hidden"
             style={{ width: `calc(100% - ${totalOpenedSidebarWidth}px)` }}
           >
@@ -381,8 +382,8 @@ export default function EcommerceTabs() {
                   <GraphDataTable rawRecords={rawRecords} isSimple={isSimple} />
                 </div>
               </div>
-            </div>
 
+            </div>
             {/* 오른쪽 사이드바 - fixed 팝업 방식 (탭 0, 1에서만 활성화) */}
             {/* AIChatPanel 사이드바 */}
             {activePanel === "aiAssistant" &&
@@ -463,8 +464,8 @@ export default function EcommerceTabs() {
               style={{ width: `${100 - leftWidth}%`, minWidth: "280px" }}
               className="bg-white dark:bg-gray-900 rounded shadow p-2 h-full flex flex-col gap-4"
             >
-              <DefaultInputs />
               <AIChatPanel />
+              <DefaultInputs />
             </div>
           </div>
         </Tab.Panel>
@@ -479,15 +480,17 @@ export default function EcommerceTabs() {
               style={{ width: `${leftWidth}%` }}
               className="flex flex-col w-[75%] transition-all duration-100"
             >
+
               <div
                 style={{ height: `${topHeight}%` }}
-                className="transition-all"
-              >
+                className="transition-all">
+
                 <div className="bg-white dark:bg-gray-900 rounded shadow p-4 h-full">
+
+
                   <EcommerceMetrics />
                   <MonthlySalesChart />
                 </div>
-              </div>
 
               <div
                 onMouseDown={startVerticalDrag}

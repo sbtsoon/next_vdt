@@ -7,8 +7,8 @@ import Image from "next/image";
 export const EcommerceMetrics = () => {
   const metrics = [
     { label: "Sales", value: "₩ 5,991백만원", change: 3.2 },
-    { label: "COGS", value: "₩ 5,991백만원", change: 3.2 },
-    { label: "Profit", value: "₩ 5,991백만원", change: 3.2 },
+    { label: "COGS", value: "₩ 137,850백만원", change: 3.2 },
+    { label: "Profit", value: "₩ 28,899백만원", change: -5.2 },
   ];
 
   return (
@@ -51,19 +51,20 @@ export const EcommerceMetrics = () => {
       </div>
 
       {/* 1/2 section: Label Summary */}
-      <div className="flex-[1] border border-gray-700 bg-[#2b2d33] text-white text-sm p-4 min-w-[240px] flex flex-col gap-4 justify-between">
-        <div className="flex grid-cols-2 justify-between gap-2">
-          <div className="text-start">
+      <div className="flex-[1] border border-gray-700 bg-[#2b2d33] text-white text-sm p-4 min-w-[240px] flex flex-col gap-4  w-1/2">
+        <div className="flex flex-wrap  gap-2 items-center ">
+          <div className="w-1/2">
             <h4 className="mb-2 font-semibold">Node labels</h4>
             <div className="flex gap-2 flex-wrap">
-              <span className="bg-orange-400 text-white px-2 py-1 rounded-full text-xs">*(140)</span>
-              <span className="bg-pink-400 text-white px-2 py-1 rounded-full text-xs">Metric</span>
+              <span className="bg-orange-400/30 text-white px-2 py-1 rounded-full text-xs">*(140)</span>
+              <span className="bg-pink-400/30 text-white px-2 py-1 rounded-full text-xs">Metric</span>
             </div>
           </div>
-          <div  className="text-start">
+          <div>
             <h4 className="mb-2 font-semibold">Relationship types</h4>
             <div className="flex gap-2 flex-wrap">
               <span className="bg-gray-500 text-white px-2 py-1 rounded-full text-xs">*(34)</span>
+              <span className="bg-blue-500/30 text-white px-2 py-1 rounded-full text-xs">345</span>
               <span className="bg-gray-500 text-white px-2 py-1 rounded-full text-xs">contrib_to</span>
             </div>
           </div>
