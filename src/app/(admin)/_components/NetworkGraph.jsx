@@ -1,7 +1,7 @@
 "use client";
 
 import cytoscape from "@/lib/cytoscapeWithExtensions";
-import { graphDataAtom } from "@/store/graphAtoms";
+import { graphDataAtom, metricMapAtom } from "@/store/graphAtoms";
 import { useAtom } from "jotai";
 import { useEffect, useRef } from "react";
 import { formatAmountWithMajorUnits } from "@/utils/formatUtils";
@@ -12,11 +12,13 @@ import {
   hideNode,
   hideEdge,
 } from "@/helpers/cytoscapeVisibility";
+import { updateMetricDataHelper } from "@/helpers/metricHelper";
 
 export default function NetworkGraph() {
   const cyRef = useRef(null);
   const cyInstanceRef = useRef(null);
   const [graphData] = useAtom(graphDataAtom);
+  const [, setMetricData] = useAtom(metricMapAtom);
 
   useEffect(() => {
     if (!cyRef.current) return;
@@ -40,6 +42,9 @@ export default function NetworkGraph() {
               else if (level === 4) return "#376f9f"; // Navy
               else return "#7A7A7A"; // fallback gray
             },
+            "border-color": "#2a9d8f",
+            "border-width": 1,
+            "border-style": "solid",
             color: "#333",
             width: "20px",
             height: "20px",
@@ -53,9 +58,10 @@ export default function NetworkGraph() {
             label: (ele) => {
               const type = ele.data("type") || "";
               const amount = parseNeo4jInt(ele.data("amount"));
+              const parsedAmount = Math.round(amount / 1_000_000);
               return `${type}\n${
                 ele.data("role") === "negative" ? "(-)" : "(+)"
-              } ₩ ${Math.round(amount / 1_000_000)}`;
+              } ₩ ${parsedAmount.toLocaleString("KO-KR")}`;
             },
             width: 0.2,
             "text-wrap": "wrap",
@@ -185,6 +191,13 @@ export default function NetworkGraph() {
 
     cy.add([...graphData.nodes, ...graphData.edges]);
     cyInstanceRef.current = cy;
+
+    // metric card 정보 업데이트
+    cy.nodes().forEach((node) => {
+      const name = node.data("name");
+      const amount = Math.round(parseNeo4jInt(node.data("amount")) / 1_000_000);
+      updateMetricDataHelper(name, amount, [], setMetricData);
+    });
 
     applyRadialLayout();
   }, [graphData]);

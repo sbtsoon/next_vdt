@@ -112,7 +112,8 @@ export default function SimulationGraph() {
       // metric card 정보 업데이트
       const name = node.data("name");
       const amount = nodeRef.current[nodeId].amount;
-      updateMetricDataHelper(name, amount, setMetricData);
+      const scaledHistoryData = nodeRef.current[nodeId].scaledHistoryData;
+      updateMetricDataHelper(name, amount, scaledHistoryData, setMetricData);
     };
 
     window.handleToggleClick = (nodeId) => {
@@ -266,8 +267,8 @@ export default function SimulationGraph() {
       const mouseX = event.clientX + window.scrollX;
       const mouseY = event.clientY + window.scrollY;
 
-      tooltip.style.left = `${mouseX + 2}px`; // 약간 오른쪽
-      tooltip.style.top = `${mouseY - 2}px`; // 약간 위쪽
+      // tooltip.style.left = `${mouseX + 2}px`; // 약간 오른쪽
+      //tooltip.style.top = `${mouseY - 2}px`; // 약간 위쪽
       tooltip.style.display = "block";
 
       setTimeout(() => {
@@ -544,13 +545,6 @@ export default function SimulationGraph() {
     const roots = cy
       .nodes()
       .filter((node) => node.outgoers("edge").length === 0);
-
-    // metric card 정보 업데이트
-    cy.nodes().forEach((node) => {
-      const name = node.data("name");
-      const amount = Math.round(parseNeo4jInt(node.data("amount")) / 1_000_000);
-      updateMetricDataHelper(name, amount, setMetricData);
-    });
 
     layout.on("layoutstop", () => {
       roots.forEach((root) => {

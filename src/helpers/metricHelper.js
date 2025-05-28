@@ -1,16 +1,24 @@
-export const importantNameMap = {
-  매출이익: "salesProfit",
-  매출액: "revenue",
-  영업이익: "operatingProfit",
-  순이익: "netIncome",
+export const metricNameMap = {
+  매출이익: "profit",
+  매출액: "sales",
+  매출원가: "cogs",
 };
 
-export function updateMetricDataHelper(name, amount, setMetricData) {
-  const key = importantNameMap[name];
+export function updateMetricDataHelper(
+  name,
+  amount,
+  scaledHistoryData,
+  setMetricData
+) {
+  const key = metricNameMap[name];
   if (!key) return;
 
   setMetricData((prev) => ({
     ...prev,
-    [key]: amount,
+    [key]: {
+      ...prev[key],
+      amount,
+      scaledHistoryData,
+    },
   }));
 }

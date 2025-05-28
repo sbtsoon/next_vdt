@@ -25,6 +25,7 @@ import { aiQueryAtom, graphDataAtom } from "@/store/graphAtoms";
 import NetworkGraph from "@/app/(admin)/_components/NetworkGraph";
 import SimulationGraph from "@/app/(admin)/_components/SimulationGraph";
 import GraphDataTable from "./_components/GraphDataTable";
+import { GraphMetrics } from "./_components/GraphMetrics";
 
 function classNames(...classes: string[]) {
   return classes.filter(Boolean).join(" ");
@@ -264,7 +265,7 @@ export default function EcommerceTabs() {
                 className="transition-all"
               >
                 <div className="bg-white dark:bg-gray-900 rounded shadow p-4 h-full">
-                  <EcommerceMetrics />
+                  <GraphMetrics />
                   <NetworkGraph />
                 </div>
               </div>
@@ -349,7 +350,7 @@ export default function EcommerceTabs() {
                 className="transition-all"
               >
                 <div className="shadow p-4 h-full">
-                  <EcommerceMetrics />
+                  <GraphMetrics />
                   <SimulationGraph />
                 </div>
               </div>
