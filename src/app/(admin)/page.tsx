@@ -299,32 +299,14 @@ export default function EcommerceTabs() {
         <Tab.Panel className="h-full">
           <div
             ref={containerRef}
-            className="flex h-full relative overflow-hidden"
-            style={{ width: `calc(100% - ${totalOpenedSidebarWidth}px)` }}
-          >
-            <div
-              className={`flex flex-col h-full w-full transition-all duration-300 ease-in-out`}
-            >
-              <div style={{ height: `${topHeight}%` }} className="transition-all">
-                <div className="shadow p-4 h-full">
+            className="flex "
+            style={{ width: `calc(100% - ${totalOpenedSidebarWidth}px)` }} >
+            <div className={`flex flex-col  w-full`} >
+                <div className="shadow p-4">
                   <EcommerceMetrics />
                   <MonthlySalesChart onReady={setCy} selectedIndex={selectedIndex} />
                 </div>
-              </div>
-
-              <div
-                onMouseDown={startVerticalDrag}
-                className="h-1 cursor-row-resize bg-gray-100 dark:bg-gray-800"
-                style={{ zIndex: 9990 }}
-              />
-
-              <div style={{ height: `${100 - topHeight}%` }} className="transition-all">
-                <div className="bg-white dark:bg-gray-900 rounded shadow p-4 h-full">
-                  <RecentOrders rawRecords={rawRecords} isSimple={isSimple} />
-                </div>
-              </div>
             </div>
-
             {/* 오른쪽 사이드바 - fixed 팝업 방식 (탭 0, 1에서만 활성화) */}
             {/* AIChatPanel 사이드바 */}
             {activePanel === 'aiAssistant' && (selectedIndex === 0 || selectedIndex === 1) && (
@@ -387,8 +369,8 @@ export default function EcommerceTabs() {
               style={{ width: `${100 - leftWidth}%`, minWidth: "280px" }}
               className="bg-white dark:bg-gray-900 rounded shadow p-2 h-full flex flex-col gap-4"
             >
-              <DefaultInputs />
               <AIChatPanel />
+              <DefaultInputs />
             </div>
           </div>
         </Tab.Panel>
@@ -403,12 +385,10 @@ export default function EcommerceTabs() {
               style={{ width: `${leftWidth}%` }}
               className="flex flex-col w-[75%] transition-all duration-100"
             >
-              <div style={{ height: `${topHeight}%` }} className="transition-all">
-                <div className="bg-white dark:bg-gray-900 rounded shadow p-4 h-full">
+                <div className="bg-white dark:bg-gray-900 p-4 h-full">
                   <EcommerceMetrics />
                   <MonthlySalesChart onReady={setCy} selectedIndex={selectedIndex} />
                 </div>
-              </div>
 
               <div
                 onMouseDown={startVerticalDrag}
