@@ -15,7 +15,7 @@ import {
 import { updateMetricDataHelper } from "@/helpers/metricHelper";
 import styles from "./simulationGraph.css";
 
-export default function SimulationGraph() {
+export default function SimulationGraph({ isActive }) {
   const cyRef = useRef(null);
   const cyInstanceRef = useRef(null);
   const [graphData] = useAtom(graphDataAtom);
@@ -279,6 +279,16 @@ export default function SimulationGraph() {
 
   useEffect(() => {
     if (!cyRef.current) return;
+
+    if (cyInstanceRef.current) {
+      cyInstanceRef.current.destroy();
+      cyInstanceRef.current = null;
+    }
+
+    if (nodeRef.current) {
+      nodeRef.current = {};
+    }
+
     const cy = cytoscape({
       container: cyRef.current,
       style: [
@@ -591,12 +601,6 @@ export default function SimulationGraph() {
     });
 
     cyInstanceRef.current = cy;
-
-    return () => {
-      cy.destroy();
-      cyInstanceRef.current = null;
-      nodeRef.current = {};
-    };
   }, [graphData]);
 
   return (

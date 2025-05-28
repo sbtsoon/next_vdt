@@ -14,7 +14,7 @@ import {
 } from "@/helpers/cytoscapeVisibility";
 import { updateMetricDataHelper } from "@/helpers/metricHelper";
 
-export default function NetworkGraph() {
+export default function NetworkGraph({ isActive }) {
   const cyRef = useRef(null);
   const cyInstanceRef = useRef(null);
   const [graphData] = useAtom(graphDataAtom);
@@ -22,6 +22,12 @@ export default function NetworkGraph() {
 
   useEffect(() => {
     if (!cyRef.current) return;
+
+    if (cyInstanceRef.current) {
+      cyInstanceRef.current.destroy();
+      cyInstanceRef.current = null;
+    }
+
     const cy = cytoscape({
       container: cyRef.current,
       style: [
@@ -190,7 +196,6 @@ export default function NetworkGraph() {
     });
 
     cy.add([...graphData.nodes, ...graphData.edges]);
-    cyInstanceRef.current = cy;
 
     // metric card 정보 업데이트
     cy.nodes().forEach((node) => {
@@ -199,13 +204,11 @@ export default function NetworkGraph() {
       updateMetricDataHelper(name, amount, [], setMetricData);
     });
 
-    applyRadialLayout();
+    cyInstanceRef.current = cy;
 
-    return () => {
-      cy.destroy();
-      cyInstanceRef.current = null;
-    };
+    applyRadialLayout();
   }, [graphData]);
+
 
   const applyRadialLayout = () => {
     const cy = cyInstanceRef.current;
