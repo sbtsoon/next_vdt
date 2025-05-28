@@ -21,7 +21,7 @@ import {
 } from "@heroicons/react/24/outline";
 
 import { useAtom } from "jotai";
-import { aiQueryAtom, graphDataAtom } from "@/store/graphAtoms";
+import { aiQueryAtom, graphDataAtom, metricMapAtom } from "@/store/graphAtoms";
 import NetworkGraph from "@/app/(admin)/_components/NetworkGraph";
 import SimulationGraph from "@/app/(admin)/_components/SimulationGraph";
 import GraphDataTable from "./_components/GraphDataTable";
@@ -33,6 +33,7 @@ function classNames(...classes: string[]) {
 
 export default function EcommerceTabs() {
   const [graphData, setGraphData] = useAtom(graphDataAtom);
+  const [, setMetricData] = useAtom(metricMapAtom);
   const [aiQuery, setAiQuery] = useAtom(aiQueryAtom);
   const [rawRecords, setRawRecords] = useState(null);
   const [isSimple, setIsSimple] = useState(false);
@@ -98,7 +99,18 @@ export default function EcommerceTabs() {
     document.removeEventListener("mouseup", stopVerticalDrag);
   };
 
+  const initStoreData = () => {
+    setGraphData({ nodes: [], edges: [] });
+    setMetricData({
+      profit: { amount: 0, scaledHistoryData: [] },
+      sales: { amount: 0, scaledHistoryData: [] },
+      cogs: { amount: 0, scaledHistoryData: [] },
+    });
+    setAiQuery({ query: "" });
+  };
+
   const loadGraph = async (query = null) => {
+    initStoreData();
     const res = await fetch(query ? "/api/query" : "/api/graph", {
       method: query ? "POST" : "GET",
       headers: { "Content-Type": "application/json" },

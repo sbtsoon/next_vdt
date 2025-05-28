@@ -591,6 +591,12 @@ export default function SimulationGraph() {
     });
 
     cyInstanceRef.current = cy;
+
+    return () => {
+      cy.destroy();
+      cyInstanceRef.current = null;
+      nodeRef.current = {};
+    };
   }, [graphData]);
 
   return (

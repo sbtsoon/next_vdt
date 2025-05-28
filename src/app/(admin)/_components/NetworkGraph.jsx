@@ -200,6 +200,11 @@ export default function NetworkGraph() {
     });
 
     applyRadialLayout();
+
+    return () => {
+      cy.destroy();
+      cyInstanceRef.current = null;
+    };
   }, [graphData]);
 
   const applyRadialLayout = () => {
