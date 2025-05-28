@@ -1,64 +1,33 @@
 "use client";
 
 import cytoscape from "@/lib/cytoscapeWithExtensions";
-import { graphDataAtom } from "@/store/graphAtoms";
+import { graphDataAtom, metricMapAtom } from "@/store/graphAtoms";
 import { useAtom } from "jotai";
 import { useEffect, useRef } from "react";
 import { formatAmountWithMajorUnits } from "@/utils/formatUtils";
 import { parseNeo4jInt } from "@/utils/neo4jUtils";
+import {
+  showNode,
+  showEdge,
+  hideNode,
+  hideEdge,
+} from "@/helpers/cytoscapeVisibility";
+import { updateMetricDataHelper } from "@/helpers/metricHelper";
 
-// Layout mode constants
-export const LAYOUT_MODES = Object.freeze({
-  RADIAL: 0,
-  DAGRE: 1,
-  MINDMAP: 2,
-});
-
-export default function MonthlySalesChart({ onReady, selectedIndex }) {
+export default function NetworkGraph({ isActive }) {
   const cyRef = useRef(null);
   const cyInstanceRef = useRef(null);
   const [graphData] = useAtom(graphDataAtom);
-
-  const hideNode = (node, layoutMode) => {
-    node.hide();
-    if (layoutMode === LAYOUT_MODES.MINDMAP) {
-      node.style("opacity", 0);
-    }
-    node.data("isHidden", true);
-  };
-
-  const showNode = (node, layoutMode, duration = 800) => {
-    node.show();
-    node.data("isHidden", false);
-    if (layoutMode === LAYOUT_MODES.MINDMAP) {
-      requestAnimationFrame(() => {
-        node.animate({ style: { opacity: 1 }, duration });
-      });
-    } else {
-      node.style("opacity", 1);
-    }
-  };
-
-  const hideEdge = (edge, layoutMode) => {
-    edge.hide();
-    if (layoutMode === LAYOUT_MODES.MINDMAP) {
-      edge.style("opacity", 0);
-    }
-  };
-
-  const showEdge = (edge, layoutMode, duration = 800) => {
-    edge.show();
-    if (layoutMode === LAYOUT_MODES.MINDMAP) {
-      requestAnimationFrame(() => {
-        edge.animate({ style: { opacity: 1 }, duration });
-      });
-    } else {
-      edge.style("opacity", 1);
-    }
-  };
+  const [, setMetricData] = useAtom(metricMapAtom);
 
   useEffect(() => {
     if (!cyRef.current) return;
+
+    if (cyInstanceRef.current) {
+      cyInstanceRef.current.destroy();
+      cyInstanceRef.current = null;
+    }
+
     const cy = cytoscape({
       container: cyRef.current,
       style: [
@@ -66,18 +35,22 @@ export default function MonthlySalesChart({ onReady, selectedIndex }) {
           selector: "node",
           style: {
             label: (ele) => ele.data("name"),
-            "text-valign": "center",
+            "text-valign": "top",
+            "text-margin-y": -1.5,
             "text-halign": "center",
             "font-size": "4px",
             backgroundColor: (ele) => {
-              const level = parseNeo4jInt(ele.data('level'));
-              if (level === 0) return '#BF512C';  // Coach Red
-              else if (level === 1) return '#DA9828'; // Orange
-              else if (level === 2) return '#FBCFA1'; // Soft Yellow
-              else if (level === 3) return '#277d5f'; // Mint
-              else if (level === 4) return '#376f9f'; // Navy
-              else return '#7A7A7A'; // fallback gray
+              const level = parseNeo4jInt(ele.data("level"));
+              if (level === 0) return "#BF512C"; // Coach Red
+              else if (level === 1) return "#DA9828"; // Orange
+              else if (level === 2) return "#FBCFA1"; // Soft Yellow
+              else if (level === 3) return "#277d5f"; // Mint
+              else if (level === 4) return "#376f9f"; // Navy
+              else return "#7A7A7A"; // fallback gray
             },
+            "border-color": "#2a9d8f",
+            "border-width": 1,
+            "border-style": "solid",
             color: "#333",
             width: "20px",
             height: "20px",
@@ -91,11 +64,12 @@ export default function MonthlySalesChart({ onReady, selectedIndex }) {
             label: (ele) => {
               const type = ele.data("type") || "";
               const amount = parseNeo4jInt(ele.data("amount"));
+              const parsedAmount = Math.round(amount / 1_000_000);
               return `${type}\n${
                 ele.data("role") === "negative" ? "(-)" : "(+)"
-              } ${formatAmountWithMajorUnits(amount)}`;
+              } ₩ ${parsedAmount.toLocaleString("KO-KR")}`;
             },
-            width: 0.4,
+            width: 0.2,
             "text-wrap": "wrap",
             "line-color": "#ccc",
             "target-arrow-color": "#ccc",
@@ -121,9 +95,9 @@ export default function MonthlySalesChart({ onReady, selectedIndex }) {
         {
           content: "숨김",
           select: function (ele) {
-            hideNode(ele, selectedIndex);
+            hideNode(ele, 0);
             ele.connectedEdges().forEach((edge) => {
-              hideEdge(edge, selectedIndex);
+              hideEdge(edge, 0);
             });
           },
         },
@@ -149,23 +123,19 @@ export default function MonthlySalesChart({ onReady, selectedIndex }) {
                 if (isOutgoing) {
                   const next = target;
                   if (nodeId !== rootId) return;
-                  showEdge(edge, selectedIndex);
-                  showNode(next, selectedIndex);
+                  showEdge(edge, 0);
+                  showNode(next, 0);
                   queue.push({ node: next, from: nodeId });
                 } else {
                   const prev = source;
                   if (target.id() !== rootId && prev.data("isHidden")) return;
-                  showEdge(edge, selectedIndex);
-                  showNode(prev, selectedIndex);
+                  showEdge(edge, 0);
+                  showNode(prev, 0);
                   queue.push({ node: prev, from: nodeId });
                 }
               });
             }
           },
-        },
-        {
-          content: "닫기",
-          select: function () {},
         },
         {
           content: "통합",
@@ -184,8 +154,8 @@ export default function MonthlySalesChart({ onReady, selectedIndex }) {
 
               incomingEdges.forEach((edge) => {
                 const source = edge.source();
-                hideEdge(edge, selectedIndex);
-                hideNode(source, selectedIndex);
+                hideEdge(edge, 0);
+                hideNode(source, 0);
                 queue.push(source);
               });
             }
@@ -198,12 +168,19 @@ export default function MonthlySalesChart({ onReady, selectedIndex }) {
             const connectedNodes = connectedEdges
               .connectedNodes()
               .filter((n) => n.id() !== ele.id());
-            console.log("연결된 노드:", connectedNodes.map((n) => n.data()));
-            console.log("연결된 엣지:", connectedEdges.map((e) => e.data()));
+            console.log(
+              "연결된 노드:",
+              connectedNodes.map((n) => n.data())
+            );
+            console.log(
+              "연결된 엣지:",
+              connectedEdges.map((e) => e.data())
+            );
           },
         },
       ],
       openMenuEvents: "tap",
+      outsideMenuCancel: 1,
       fillColor: "#eaeaea",
       activeFillColor: "#ccc",
       activePadding: 5,
@@ -219,107 +196,30 @@ export default function MonthlySalesChart({ onReady, selectedIndex }) {
     });
 
     cy.add([...graphData.nodes, ...graphData.edges]);
+
+    // metric card 정보 업데이트
+    cy.nodes().forEach((node) => {
+      const name = node.data("name");
+      const amount = Math.round(parseNeo4jInt(node.data("amount")) / 1_000_000);
+      updateMetricDataHelper(name, amount, [], setMetricData);
+    });
+
     cyInstanceRef.current = cy;
 
-    applyLayoutByIndex(selectedIndex);
-    onReady?.(cy);
+    applyRadialLayout();
   }, [graphData]);
 
-  useEffect(() => {
-    if (cyInstanceRef.current) {
-      applyLayoutByIndex(selectedIndex);
-    }
-  }, [selectedIndex]);
-
-  const applyLayoutByIndex = (index) => {
-    switch (index) {
-      case LAYOUT_MODES.RADIAL:
-        applyRadialLayout();
-        break;
-      case LAYOUT_MODES.DAGRE:
-        applyDagreLayout();
-        break;
-      case LAYOUT_MODES.MINDMAP:
-        applyMindmapLayout();
-        break;
-      default:
-        applyRadialLayout();
-        break;
-    }
-  };
 
   const applyRadialLayout = () => {
     const cy = cyInstanceRef.current;
-    cy.nodes().forEach((node) => showNode(node, selectedIndex));
-    cy.edges().forEach((edge) => showEdge(edge, selectedIndex));
+    cy.nodes().forEach((node) => showNode(node, 0));
+    cy.edges().forEach((edge) => showEdge(edge, 0));
     cy.layout({ name: "cose", animate: true, padding: 30 }).run();
 
-    cy.style().selector("node").style({ shape: "ellipse", width: "20px", height: "20px" });
-    cy.style().selector("edge").style({ "curve-style": "straight" }).update();
-  };
-
-  const applyDagreLayout = () => {
-    const cy = cyInstanceRef.current;
-    cy.nodes().forEach((node) => showNode(node, selectedIndex));
-    cy.edges().forEach((edge) => showEdge(edge, selectedIndex));
-    cy.layout({
-      name: "dagre",
-      rankDir: "RL",
-      nodeSep: 40,
-      rankSep: 100,
-      edgeSep: 20,
-      padding: 20,
-      animate: true,
-    }).run();
-
-    cy.style().selector("node").style({ shape: "ellipse", width: "20px", height: "20px" });
-    cy.style().selector("edge").style({ "curve-style": "round-taxi" }).update();
-  };
-
-  const applyMindmapLayout = () => {
-    const cy = cyInstanceRef.current;
-    if (!cy) return;
-
-    cy.nodes().forEach((node) => hideNode(node, selectedIndex));
-    cy.edges().forEach((edge) => hideEdge(edge, selectedIndex));
-
-    const roots = cy.nodes().filter((node) => node.outgoers("edge").length === 0);
-    if (roots.length === 0) {
-      console.log("루트 노드를 찾을 수 없습니다.");
-      return;
-    }
-
-    cy.style().selector("node").style({ shape: "rectangle", width: "30px", height: "20px" });
     cy.style()
-      .selector("edge")
-      .style({
-        "curve-style": "round-taxi",
-        "taxi-direction": "horizontal",
-        "taxi-turn": 20,
-        "taxi-turn-min-distance": 15,
-        "edge-distances": "node-position",
-      })
-      .update();
-
-    const layout = cy.layout({
-      name: "dagre",
-      rankDir: "RL",
-      nodeSep: 40,
-      rankSep: 100,
-      edgeSep: 20,
-      padding: 20,
-      animate: true,
-    });
-
-    layout.run();
-
-    layout.on("layoutstop", () => {
-      roots.forEach((root) => {
-        root.show();
-        root.data("isHidden", false);
-        root.animate({ style: { opacity: 1 }, duration: 500 });
-      });
-    });
+      .selector("node")
+      .style({ shape: "ellipse", width: "20px", height: "20px" });
+    cy.style().selector("edge").style({ "curve-style": "straight" }).update();
   };
 
   return (

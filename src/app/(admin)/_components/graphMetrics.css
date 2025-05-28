@@ -1,0 +1,47 @@
+.history-graph {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  height: 60px; /* 총 높이 */
+}
+
+.positive-history-data-container {
+  height: 28px;
+  display: flex;
+  align-items: flex-end;
+  gap: 2px;
+}
+
+.negative-history-data-container {
+  height: 28px;
+  display: flex;
+  align-items: flex-start;
+  gap: 2px;
+}
+
+.history-bar {
+  width: 6px;
+  transition: height 0.2s ease;
+}
+
+.bar-positive {
+  background-color: blue;
+  cursor: pointer;
+}
+
+.bar-negative {
+  background-color: red;
+  cursor: pointer;
+}
+
+.bar-empty {
+  background-color: transparent;
+  pointer-events: none;
+}
+
+.history-graph-divider {
+  height: 2px;
+  width: 100%;
+  background-color: #999;
+}
