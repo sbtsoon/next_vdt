@@ -51,8 +51,8 @@ export const GraphMetrics = () => {
       {/* 1/2 section: Metrics */}
       <div className="flex-[1] grid grid-cols-3 gap-2">
         {metrics.map((metric, idx) => {
-          const { amount, scaledHistoryData } = metricMap[metric.key];
-          const change = 0;
+          const { amount, percentage, scaledHistoryData } =
+            metricMap[metric.key];
 
           return (
             <div
@@ -66,15 +66,15 @@ export const GraphMetrics = () => {
                   </span>
                   <span
                     className={`${
-                      change >= 0 ? "text-green-400" : "text-red-400"
+                      percentage >= 0 ? "text-green-400" : "text-red-400"
                     } flex items-center`}
                   >
-                    {change >= 0 ? (
+                    {percentage >= 0 ? (
                       <ArrowUpIcon className="w-3 h-3" />
                     ) : (
                       <ArrowDownIcon className="w-3 h-3" />
                     )}
-                    {Math.abs(change)}%
+                    {Math.abs(percentage)}%
                   </span>
                 </div>
                 <div>

@@ -69,12 +69,12 @@ export default function NetworkGraph({ isActive }) {
                 ele.data("role") === "negative" ? "(-)" : "(+)"
               } ₩ ${parsedAmount.toLocaleString("KO-KR")}`;
             },
-            width: 0.2,
+            width: 0.1,
             "text-wrap": "wrap",
             "line-color": "#ccc",
             "target-arrow-color": "#ccc",
             "target-arrow-shape": "triangle",
-            "arrow-scale": "0.4",
+            "arrow-scale": "0.2",
             "font-size": "4px",
             color: (ele) =>
               ele.data("role") === "negative" ? "#d62828" : "#2a9d8f",
@@ -201,14 +201,14 @@ export default function NetworkGraph({ isActive }) {
     cy.nodes().forEach((node) => {
       const name = node.data("name");
       const amount = Math.round(parseNeo4jInt(node.data("amount")) / 1_000_000);
-      updateMetricDataHelper(name, amount, [], setMetricData);
+      const percentage = 0;
+      updateMetricDataHelper(name, amount, percentage, [], setMetricData);
     });
 
     cyInstanceRef.current = cy;
 
     applyRadialLayout();
   }, [graphData]);
-
 
   const applyRadialLayout = () => {
     const cy = cyInstanceRef.current;

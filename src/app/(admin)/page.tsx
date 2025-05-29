@@ -26,6 +26,7 @@ import NetworkGraph from "@/app/(admin)/_components/NetworkGraph";
 import SimulationGraph from "@/app/(admin)/_components/SimulationGraph";
 import GraphDataTable from "./_components/GraphDataTable";
 import { GraphMetrics } from "./_components/GraphMetrics";
+import TimeLineGraph from "./_components/TimeLineGraph";
 
 function classNames(...classes: string[]) {
   return classes.filter(Boolean).join(" ");
@@ -351,7 +352,6 @@ export default function EcommerceTabs() {
         <Tab.Panel className="h-full" unmount={true}>
           <div
             ref={containerRef}
-
             className="flex h-full relative overflow-hidden"
             style={{ width: `calc(100% - ${totalOpenedSidebarWidth}px)` }}
           >
@@ -382,7 +382,6 @@ export default function EcommerceTabs() {
                   <GraphDataTable rawRecords={rawRecords} isSimple={isSimple} />
                 </div>
               </div>
-
             </div>
             {/* 오른쪽 사이드바 - fixed 팝업 방식 (탭 0, 1에서만 활성화) */}
             {/* AIChatPanel 사이드바 */}
@@ -449,7 +448,7 @@ export default function EcommerceTabs() {
               >
                 <div className="bg-white dark:bg-gray-900 rounded shadow p-4 h-full">
                   <EcommerceMetrics />
-                  <MonthlySalesChart />
+                  <TimeLineGraph />
                 </div>
               </div>
             </div>
@@ -480,23 +479,21 @@ export default function EcommerceTabs() {
               style={{ width: `${leftWidth}%` }}
               className="flex flex-col w-[75%] transition-all duration-100"
             >
-
               <div
                 style={{ height: `${topHeight}%` }}
-                className="transition-all">
-
+                className="transition-all"
+              >
                 <div className="bg-white dark:bg-gray-900 rounded shadow p-4 h-full">
-
-
                   <EcommerceMetrics />
                   <MonthlySalesChart />
                 </div>
 
-              <div
-                onMouseDown={startVerticalDrag}
-                className="h-1 cursor-row-resize bg-gray-100 dark:bg-gray-800 hover:bg-blue-500"
-                style={{ zIndex: 9990 }}
-              />
+                <div
+                  onMouseDown={startVerticalDrag}
+                  className="h-1 cursor-row-resize bg-gray-100 dark:bg-gray-800 hover:bg-blue-500"
+                  style={{ zIndex: 9990 }}
+                />
+              </div>
 
               <div
                 style={{ height: `${100 - topHeight}%` }}
