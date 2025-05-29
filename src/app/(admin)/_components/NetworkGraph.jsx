@@ -48,10 +48,10 @@ export default function NetworkGraph({ isActive }) {
               else if (level === 4) return "#376f9f"; // Navy
               else return "#7A7A7A"; // fallback gray
             },
-            "border-color": "#2a9d8f",
-            "border-width": 1,
+            "border-color": "#4f4f50",
+            "border-width": 0.8,
             "border-style": "solid",
-            color: "#333",
+            color: "#f5f5f5",
             width: "20px",
             height: "20px",
             "text-wrap": "wrap",
