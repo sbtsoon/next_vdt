@@ -14,6 +14,57 @@ import {
 } from "@/helpers/cytoscapeVisibility";
 import { updateMetricDataHelper } from "@/helpers/metricHelper";
 
+const iconMap = new Map([
+  // 매출 관련
+  ["매출이익", "profit.png"],
+  ["매출액", "sales.png"],
+  ["매출원가", "cogs.png"],
+
+  // 제품군 / 재고
+  ["FERT100s", "winebox.jpg"],
+  ["FERT200s", "winebox.jpg"],
+  ["기초재고", "bi.png"],
+  ["기말재고", "ei.png"],
+  ["당기제품제조원가", "cpmc.png"],
+
+  // 제품 단위
+  ["FERT101", "winebottle.jpg"],
+  ["FERT102", "winebottle.jpg"],
+  ["FERT103", "winebottle.jpg"],
+  ["FERT104", "winebottle.jpg"],
+  ["FERT105", "winebottle.jpg"],
+  ["FERT106", "winebottle.jpg"],
+  ["FERT201", "winebottle.jpg"],
+  ["FERT202", "winebottle.jpg"],
+  ["FERT203", "winebottle.jpg"],
+
+  // 제조비용
+  ["당기제조비용", "cmc.png"],
+  ["재공품", "wip.png"],
+  ["액티비티배부", "ad.png"],
+  ["액티비티단수차", "aqd.png"],
+
+  // 세부 원가
+  ["원재료비", "rmc.png"],
+  ["부재료비", "smc.png"],
+  ["가공비", "pc.png"],
+  ["생산입고", "pr.png"],
+  ["공정출고", "fd.png"],
+  ["액티비티단가합", "ps.png"],
+  ["액티비티수차합", "ps.png"],
+
+  // 포도 재료
+  ["ROH0001누적", "grape.jpg"],
+  ["ROH0002누적", "grape.jpg"],
+  ["ROH0003누적", "grape.jpg"],
+  ["ROH2001누적", "grape.jpg"],
+  ["ROH2002누적", "grape.jpg"],
+  ["ROH2003누적", "grape.jpg"],
+
+  // 비용 계획
+  ["비용계획합", "cp.png"],
+]);
+
 export default function NetworkGraph({ isActive }) {
   const cyRef = useRef(null);
   const cyInstanceRef = useRef(null);
@@ -39,7 +90,14 @@ export default function NetworkGraph({ isActive }) {
             "text-margin-y": -1.5,
             "text-halign": "center",
             "font-size": "4px",
-            backgroundColor: (ele) => {
+            backgroundColor: "#FFF",
+            "background-image": (ele) => {
+              const name = ele.data("name");
+              const icon = iconMap.get(name);
+              return icon ? `/images/network-graph-node/${icon}` : undefined;
+            },
+            "background-fit": "cover",
+            "border-color": (ele) => {
               const level = parseNeo4jInt(ele.data("level"));
               if (level === 0) return "#BF512C"; // Coach Red
               else if (level === 1) return "#DA9828"; // Orange
@@ -48,10 +106,10 @@ export default function NetworkGraph({ isActive }) {
               else if (level === 4) return "#376f9f"; // Navy
               else return "#7A7A7A"; // fallback gray
             },
-            "border-color": "#4f4f50",
-            "border-width": 0.8,
+            // "border-color": "#2a9d8f",
+            "border-width": 1,
             "border-style": "solid",
-            color: "#f5f5f5",
+            color: "#333",
             width: "20px",
             height: "20px",
             "text-wrap": "wrap",
@@ -224,7 +282,7 @@ export default function NetworkGraph({ isActive }) {
 
   return (
     <div className="overflow-hidden  border border-gray-200 bg-white px-5 pt-5 dark:border-gray-800 dark:bg-white/[0.03] sm:px-6 sm:pt-6">
-      <div id="cy" ref={cyRef} style={{ width: "100%", minHeight: "700px" }} />
+      <div id="cy" ref={cyRef} style={{ width: "100%", minHeight: "600px" }} />
     </div>
   );
 }
