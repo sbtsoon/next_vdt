@@ -49,7 +49,7 @@ export default function EcommerceTabs() {
     { name: "Network Graph", icon: Squares2X2Icon },
     { name: "Simulation", icon: BellIcon },
     { name: "Timeline", icon: UserGroupIcon },
-    { name: "3D Graph", icon:CubeTransparentIcon  },
+    { name: "3D Graph", icon: CubeTransparentIcon },
     { name: "Exmple2", icon: ChartBarIcon },
   ];
 
@@ -106,9 +106,9 @@ export default function EcommerceTabs() {
   const initStoreData = () => {
     setGraphData({ nodes: [], edges: [] });
     setMetricData({
-      profit: { amount: 0, scaledHistoryData: [] },
-      sales: { amount: 0, scaledHistoryData: [] },
-      cogs: { amount: 0, scaledHistoryData: [] },
+      profit: { amount: 0, percentage: 0, scaledHistoryData: [] },
+      sales: { amount: 0, percentage: 0, scaledHistoryData: [] },
+      cogs: { amount: 0, percentage: 0, scaledHistoryData: [] },
     });
     setAiQuery({ query: "" });
   };
@@ -456,40 +456,40 @@ export default function EcommerceTabs() {
         </Tab.Panel>
         {/* 4. 프랑스 지도 */}
         <Tab.Panel className="h-full">
-                <div
-                  ref={containerRef}
-                  className="flex h-full relative overflow-hidden"
-                >
-                  <div
-                    style={{ width: `${leftWidth}%` }}
-                    className="flex flex-col transition-all duration-100"
-                  >
-                    <div
-                      style={{ height: `${topHeight}%` }}
-                      className="transition-all"
-                    >
-                      <div className="bg-white dark:bg-gray-900 rounded shadow p-4 h-full">
-                        <EcommerceMetrics />
-                        <TimeLineGraph />
-                      </div>
-                    </div>
-                  </div>
-
-                  <div
-                    onMouseDown={startHorizontalDrag}
-                    className="w-1 cursor-col-resize bg-gray-100 dark:bg-gray-800 hover:bg-blue-500 transition-colors duration-150"
-                    style={{ zIndex: 50 }}
-                  />
-
-                  <div
-                    style={{ width: `${100 - leftWidth}%`, minWidth: "280px" }}
-                    className="bg-white dark:bg-gray-900 rounded shadow p-2 h-full flex flex-col gap-4"
-                  >
-                    <AIChatPanel />
-                    <DefaultInputs />
-                  </div>
+          <div
+            ref={containerRef}
+            className="flex h-full relative overflow-hidden"
+          >
+            <div
+              style={{ width: `${leftWidth}%` }}
+              className="flex flex-col transition-all duration-100"
+            >
+              <div
+                style={{ height: `${topHeight}%` }}
+                className="transition-all"
+              >
+                <div className="bg-white dark:bg-gray-900 rounded shadow p-4 h-full">
+                  <EcommerceMetrics />
+                  <TimeLineGraph />
                 </div>
-              </Tab.Panel>
+              </div>
+            </div>
+
+            <div
+              onMouseDown={startHorizontalDrag}
+              className="w-1 cursor-col-resize bg-gray-100 dark:bg-gray-800 hover:bg-blue-500 transition-colors duration-150"
+              style={{ zIndex: 50 }}
+            />
+
+            <div
+              style={{ width: `${100 - leftWidth}%`, minWidth: "280px" }}
+              className="bg-white dark:bg-gray-900 rounded shadow p-2 h-full flex flex-col gap-4"
+            >
+              <AIChatPanel />
+              <DefaultInputs />
+            </div>
+          </div>
+        </Tab.Panel>
 
         {/* 5. Exmple2 Tab Panel (좌우/상하 리사이징 유지, 필터/AI 영역 포함) */}
         <Tab.Panel className="h-full">
@@ -506,7 +506,6 @@ export default function EcommerceTabs() {
                 className="transition-all"
               >
                 <div className="bg-white dark:bg-gray-900 rounded shadow p-4 h-full">
-
                   <GraphMetrics />
                   <MonthlySalesChart />
                 </div>
@@ -516,8 +515,8 @@ export default function EcommerceTabs() {
                 onMouseDown={startVerticalDrag}
                 className="h-1 cursor-row-resize bg-gray-100 dark:bg-gray-800 hover:bg-blue-500"
                 style={{ zIndex: 9990 }}
-              /> {/* <--- 이 부분이 위로 이동했습니다. */}
-
+              />{" "}
+              {/* <--- 이 부분이 위로 이동했습니다. */}
               <div
                 style={{ height: `${100 - topHeight}%` }}
                 className="transition-all h-full"
