@@ -103,9 +103,9 @@ export default function EcommerceTabs() {
   const initStoreData = () => {
     setGraphData({ nodes: [], edges: [] });
     setMetricData({
-      profit: { amount: 0, scaledHistoryData: [] },
-      sales: { amount: 0, scaledHistoryData: [] },
-      cogs: { amount: 0, scaledHistoryData: [] },
+      profit: { amount: 0, percentage: 0, scaledHistoryData: [] },
+      sales: { amount: 0, percentage: 0, scaledHistoryData: [] },
+      cogs: { amount: 0, percentage: 0, scaledHistoryData: [] },
     });
     setAiQuery({ query: "" });
   };
