@@ -7,6 +7,7 @@ export const metricNameMap = {
 export function updateMetricDataHelper(
   name,
   amount,
+  percentage,
   scaledHistoryData,
   setMetricData
 ) {
@@ -18,6 +19,7 @@ export function updateMetricDataHelper(
     [key]: {
       ...prev[key],
       amount,
+      percentage,
       scaledHistoryData,
     },
   }));

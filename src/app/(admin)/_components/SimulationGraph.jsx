@@ -112,8 +112,15 @@ export default function SimulationGraph({ isActive }) {
       // metric card 정보 업데이트
       const name = node.data("name");
       const amount = nodeRef.current[nodeId].amount;
+      const percentage = nodeRef.current[nodeId].percentage;
       const scaledHistoryData = nodeRef.current[nodeId].scaledHistoryData;
-      updateMetricDataHelper(name, amount, scaledHistoryData, setMetricData);
+      updateMetricDataHelper(
+        name,
+        amount,
+        percentage,
+        scaledHistoryData,
+        setMetricData
+      );
     };
 
     window.handleToggleClick = (nodeId) => {
@@ -309,11 +316,9 @@ export default function SimulationGraph({ isActive }) {
             color: (ele) => {
               return ele.data("role") === "negative" ? "red" : "black";
             },
-            width: 1,
+            width: 0.3,
             "font-size": "30px",
-            "line-color": "#ccc",
-            "target-arrow-shape": "triangle",
-            "target-arrow-color": "#ccc",
+            "line-color": "#CCC",
             "curve-style": "round-taxi",
             "taxi-direction": "leftward",
             "taxi-turn": 100,
@@ -356,13 +361,14 @@ export default function SimulationGraph({ isActive }) {
           if (ref.initialAmount === undefined) {
             ref.initialAmount = initialAmount;
           }
-
           const amountValue =
             ref.amount === undefined ? initialAmount : ref.amount;
           ref.amount = amountValue;
 
-          const percentageValue =
-            ref.percentage === undefined ? 0 : ref.percentage;
+          if (!ref.percentage) {
+            ref.percentage = 0;
+          }
+          const percentageValue = ref.percentage;
           const disabled = ref.disabled ? "disabled" : "";
 
           const expanded = ref.expanded === true;
