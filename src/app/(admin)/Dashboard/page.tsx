@@ -62,7 +62,7 @@ const DashboardPage: React.FC = () => {
       {/* AI Toggle Button */}
       <button
         onClick={() => setShowChat(!showChat)}
-        className="fixed top-30 right-6 z-50 bg-brand-500 text-white p-2 rounded-full shadow-lg hover:bg-brand-600"
+        className="fixed top-30 right-6 z-50 bg-gray-780 shadow-soon2 text-white p-2 rounded-full shadow-lg hover:bg-brand-600"
         aria-label="Toggle AI Chat"
       >
         <ChatBubbleLeftEllipsisIcon className="h-6 w-6" />
@@ -85,7 +85,7 @@ const DashboardPage: React.FC = () => {
           <div className="flex justify-center flex-wrap gap-6 mb-10">
             <button
               onClick={() => router.push("/DataImport")}
-              className="px-6 py-3 rounded-lg border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-800 dark:text-white shadow hover:shadow-lg transition"
+              className="px-6 py-3 rounded-lg border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-800 dark:text-white  shadow-soon2 hover:shadow-lg transition"
             >
               New Project
             </button>

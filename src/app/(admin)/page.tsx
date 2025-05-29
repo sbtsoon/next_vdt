@@ -6,6 +6,7 @@ import { EcommerceMetrics } from "@/components/ecommerce/EcommerceMetrics";
 import MonthlyTarget from "@/components/ecommerce/MonthlyTarget";
 import MonthlySalesChart from "@/components/ecommerce/MonthlySalesChart";
 import DefaultInputs from "@/components/form/Form-elements/DefaultInputs";
+import Inputs from "@/components/form/Form-elements/Inputs";
 import AIChatPanel from "@/components/AIChatPanel";
 
 import {
@@ -13,11 +14,12 @@ import {
   ChartBarIcon,
   UserGroupIcon,
   Squares2X2Icon,
-  ChevronLeftIcon,
   ChevronRightIcon,
   ChatBubbleLeftRightIcon,
+  ChatBubbleLeftEllipsisIcon,
   Cog8ToothIcon,
   ChartPieIcon,
+  CubeTransparentIcon,
 } from "@heroicons/react/24/outline";
 
 import { useAtom } from "jotai";
@@ -47,6 +49,7 @@ export default function EcommerceTabs() {
     { name: "Network Graph", icon: Squares2X2Icon },
     { name: "Simulation", icon: BellIcon },
     { name: "Timeline", icon: UserGroupIcon },
+    { name: "3D Graph", icon:CubeTransparentIcon  },
     { name: "Exmple2", icon: ChartBarIcon },
   ];
 
@@ -186,7 +189,7 @@ export default function EcommerceTabs() {
           onClick={() =>
             setActivePanel(activePanel === "aiAssistant" ? null : "aiAssistant")
           }
-          className={`fixed top-1/2 -translate-y-1/2 bg-gray-700 text-white py-2 px-3 rounded-l-full shadow-lg hover:bg-gray-600 z-50 active:bg-blue-600 transition-all duration-300 ease-in-out flex items-center gap-2`}
+          className={`fixed top-1/2 -translate-y-1/2 bg-gray-780 shadow-soon text-white py-2 px-3 rounded-l-full hover:bg-gray-600 z-50 active:bg-blue-600 transition-all duration-300 ease-in-out flex items-center gap-2`}
           style={{
             right: activePanel ? `${sidebarWidth}px` : "0px",
             top: `calc(20% - 20px)`,
@@ -201,7 +204,7 @@ export default function EcommerceTabs() {
             </>
           ) : (
             <>
-              <ChatBubbleLeftRightIcon className="h-5 w-5" />
+              <ChatBubbleLeftEllipsisIcon className="h-5 w-5" />
             </>
           )}
         </button>
@@ -215,7 +218,7 @@ export default function EcommerceTabs() {
               activePanel === "defaultInputs" ? null : "defaultInputs"
             )
           }
-          className={`fixed top-1/2 -translate-y-1/2 bg-gray-700 text-white py-2 px-3 rounded-l-full shadow-lg hover:bg-gray-600 z-50 transition-all duration-300 ease-in-out flex items-center gap-2`}
+          className={`fixed top-1/2 -translate-y-1/2 bg-gray-780 shadow-soon text-white py-2 px-3 rounded-l-full shadow-lg hover:bg-gray-600 z-50 transition-all duration-300 ease-in-out flex items-center gap-2`}
           style={{
             right: activePanel ? `${sidebarWidth}px` : "0px",
             top: `calc(20% + 30px)`,
@@ -244,7 +247,7 @@ export default function EcommerceTabs() {
               activePanel === "monthlyTarget" ? null : "monthlyTarget"
             )
           }
-          className={`fixed top-1/2 -translate-y-1/2 bg-gray-700 text-white py-2 px-3 rounded-l-full shadow-lg hover:bg-gray-600 z-50 transition-all duration-300 ease-in-out flex items-center gap-2`}
+          className={`fixed top-1/2 -translate-y-1/2 bg-gray-780 shadow-soon text-white py-2 px-3 rounded-l-full shadow-lg hover:bg-gray-600 z-50 transition-all duration-300 ease-in-out flex items-center gap-2`}
           style={{
             right: activePanel ? `${sidebarWidth}px` : "0px",
             top: `calc(20% + 80px)`,
@@ -268,7 +271,7 @@ export default function EcommerceTabs() {
       <Tab.Panels className="mt-4 h-[calc(100%-60px)] relative">
         {/* 1. Network Graph Tab Panel (팝업 사이드바) */}
         <Tab.Panel className="h-full" unmount={true}>
-          <div
+        <div
             ref={containerRef}
             className="flex h-full relative overflow-hidden"
           >
@@ -283,7 +286,7 @@ export default function EcommerceTabs() {
                 </div>
               </div>
 
-              <div
+              <div // <--- 이 부분이 상단 div 안에 있어야 하는데, 지금은 바로 이 div 다음에 있습니다.
                 onMouseDown={startVerticalDrag}
                 className="h-1 cursor-row-resize bg-gray-100 dark:bg-gray-800 hover:bg-blue-500"
                 style={{ zIndex: 9990 }}
@@ -468,8 +471,44 @@ export default function EcommerceTabs() {
             </div>
           </div>
         </Tab.Panel>
+        {/* 4. 프랑스 지도 */}
+        <Tab.Panel className="h-full">
+                <div
+                  ref={containerRef}
+                  className="flex h-full relative overflow-hidden"
+                >
+                  <div
+                    style={{ width: `${leftWidth}%` }}
+                    className="flex flex-col transition-all duration-100"
+                  >
+                    <div
+                      style={{ height: `${topHeight}%` }}
+                      className="transition-all"
+                    >
+                      <div className="bg-white dark:bg-gray-900 rounded shadow p-4 h-full">
+                        <EcommerceMetrics />
+                        <TimeLineGraph />
+                      </div>
+                    </div>
+                  </div>
 
-        {/* 4. Exmple2 Tab Panel (좌우/상하 리사이징 유지, 필터/AI 영역 포함) */}
+                  <div
+                    onMouseDown={startHorizontalDrag}
+                    className="w-1 cursor-col-resize bg-gray-100 dark:bg-gray-800 hover:bg-blue-500 transition-colors duration-150"
+                    style={{ zIndex: 50 }}
+                  />
+
+                  <div
+                    style={{ width: `${100 - leftWidth}%`, minWidth: "280px" }}
+                    className="bg-white dark:bg-gray-900 rounded shadow p-2 h-full flex flex-col gap-4"
+                  >
+                    <AIChatPanel />
+                    <DefaultInputs />
+                  </div>
+                </div>
+              </Tab.Panel>
+
+        {/* 5. Exmple2 Tab Panel (좌우/상하 리사이징 유지, 필터/AI 영역 포함) */}
         <Tab.Panel className="h-full">
           <div
             ref={containerRef}
@@ -484,16 +523,17 @@ export default function EcommerceTabs() {
                 className="transition-all"
               >
                 <div className="bg-white dark:bg-gray-900 rounded shadow p-4 h-full">
-                  <EcommerceMetrics />
+
+                  <GraphMetrics />
                   <MonthlySalesChart />
                 </div>
-
-                <div
-                  onMouseDown={startVerticalDrag}
-                  className="h-1 cursor-row-resize bg-gray-100 dark:bg-gray-800 hover:bg-blue-500"
-                  style={{ zIndex: 9990 }}
-                />
               </div>
+              {/* 여기에 수직 크기 조절 막대를 배치합니다. 상단 div의 바깥, 하단 div의 바로 위입니다. */}
+              <div
+                onMouseDown={startVerticalDrag}
+                className="h-1 cursor-row-resize bg-gray-100 dark:bg-gray-800 hover:bg-blue-500"
+                style={{ zIndex: 9990 }}
+              /> {/* <--- 이 부분이 위로 이동했습니다. */}
 
               <div
                 style={{ height: `${100 - topHeight}%` }}
@@ -515,7 +555,7 @@ export default function EcommerceTabs() {
               style={{ width: `${100 - leftWidth}%`, minWidth: "280px" }}
               className="bg-white dark:bg-gray-900 rounded shadow p-2 h-full flex flex-col gap-4"
             >
-              <DefaultInputs />
+              <Inputs />
               <AIChatPanel />
             </div>
           </div>

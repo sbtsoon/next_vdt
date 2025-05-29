@@ -1,11 +1,13 @@
 .cy-node-label-html {
   pointer-events: auto;
-  background: white;
-  border: 2px solid #90caf9;
+  background: rgb(49 54 79);
+  border: 3px solid #0f5a98;
   border-radius: 10px;
-  box-shadow: 0 1px 5px rgba(0, 0, 0, 0.1);
+  box-shadow: 6px 5px 6px rgba(31, 72, 255, 0.335);
   padding: 10px;
   width: 400px;
+  font-weight: 400;
+  color:#fff;
   position: relative;
 }
 
@@ -14,15 +16,12 @@
   right: -13px;
   top: 50%;
   transform: translateY(-50%);
-  background: white;
-  border: 1px solid #90caf9;
+  background: rgb(222, 237, 245);
+  border: 2px solid #1279ce;
   border-radius: 50%;
-  width: 20px;
-  height: 20px;
-  font-weight: bold;
-  font-size: 14px;
-  text-align: center;
-  line-height: 20px;
+  padding: 4px 0 0 5px;
+  width: 28px;
+  height: 28px;
   box-shadow: 0 1px 4px rgba(0, 0, 0, 0.15);
   pointer-events: auto;
   cursor: pointer;
@@ -95,12 +94,12 @@
 }
 
 .bar-positive {
-  background: blue;
+  background: rgb(33, 71, 199);
   cursor: pointer;
 }
 
 .bar-negative {
-  background: red;
+  background: rgb(162, 22, 22);
   cursor: pointer;
 }
 
@@ -115,6 +114,9 @@
 
 .range-input-container {
   display: none;
+  background-color: #141e27;
+  width: 100%;
+  padding: 5px 8px;border-radius: 5px;
 }
 
 .range-input-display-box {
@@ -124,7 +126,7 @@
 }
 
 .range-input {
-  width: 100px;
+  width: 280px;
   margin-right: 10px;
   pointer-events: auto;
 }
@@ -134,10 +136,14 @@
 }
 
 .keep-button {
-  padding: 3px 3px 3px 3px;
-  background-color: lightgrey;
+  padding: 3px 8px;
+  opacity: 1;
+  border-radius: 5px;
+  background-color:
+  color-mix(in oklab, var(--color-blue-500) 20%, transparent);    color: var(--color-blue-400);
 }
-
+.keep-button:hover{ background-color:
+  color-mix(in oklab, var(--color-blue-500) 30%, transparent);    color: var(--color-blue-400);}
 .graph-tool-tip {
   position: absolute;
   background-color: #fff;
