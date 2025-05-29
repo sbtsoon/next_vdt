@@ -162,7 +162,7 @@ const DataImportPage: React.FC = () => {
       <h1 className="text-3xl  mb-6">Project Setup - Income Statement</h1>
 
       <div className="mb-4 flex gap-4">
-        <div className="w-1/2">
+        <div className="w-1/4">
           <label className="block font-bold  mb-1">Name new project:</label>
           <input
             className="w-full p-2 rounded bg-gray-800 border border-gray-700"
@@ -171,7 +171,7 @@ const DataImportPage: React.FC = () => {
             placeholder="Enter project name"
           />
         </div>
-        <div className="w-1/2">
+        <div className="w-1/4">
           <label className="block font-bold  mb-1">Select Project process case :</label>
           <select
             className="w-full p-2 rounded bg-gray-800 border border-gray-700"

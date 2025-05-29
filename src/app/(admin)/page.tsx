@@ -271,39 +271,39 @@ export default function EcommerceTabs() {
       <Tab.Panels className="mt-4 h-[calc(100%-60px)] relative">
         {/* 1. Network Graph Tab Panel (팝업 사이드바) */}
         <Tab.Panel className="h-full" unmount={true}>
-        <div
+          <div
             ref={containerRef}
-            className="flex h-full relative overflow-hidden"
+            // ✨ 변경: containerRef에 직접 flex-col 속성 부여
+            // 기존 <div className="flex flex-col h-full w-full ..."> 를 제거하고, containerRef가 그 역할을 하도록 합니다.
+            className="flex flex-col h-full relative overflow-hidden"
           >
-            <div className="flex flex-col h-full w-full transition-all duration-300 ease-in-out">
-              <div
-                style={{ height: `${topHeight}%` }}
-                className="transition-all"
-              >
-                <div className="bg-white dark:bg-gray-900 rounded shadow p-4 h-full">
-                  <GraphMetrics />
-                  <NetworkGraph isActive={selectedIndex === 0} />
-                </div>
-              </div>
-
-              <div // <--- 이 부분이 상단 div 안에 있어야 하는데, 지금은 바로 이 div 다음에 있습니다.
-                onMouseDown={startVerticalDrag}
-                className="h-1 cursor-row-resize bg-gray-100 dark:bg-gray-800 hover:bg-blue-500"
-                style={{ zIndex: 9990 }}
-              />
-
-              <div
-                style={{ height: `${100 - topHeight}%` }}
-                className="transition-all h-full"
-              >
-                <div className="bg-white dark:bg-gray-900 rounded shadow p-4 overflow-y-auto h-full">
-                  <GraphDataTable rawRecords={rawRecords} isSimple={isSimple} />
-                </div>
+            <div
+              style={{ height: `${topHeight}%` }}
+              className="transition-all"
+            >
+              <div className="bg-white dark:bg-gray-900 rounded shadow p-4 h-full">
+                <GraphMetrics />
+                <NetworkGraph isActive={selectedIndex === 0} />
               </div>
             </div>
 
-            {/* 오른쪽 사이드바 - fixed 팝업 방식 (탭 0, 1에서만 활성화) */}
-            {/* AIChatPanel 사이드바 */}
+            {/* 수직 크기 조절 막대 */}
+            <div
+              onMouseDown={startVerticalDrag}
+              className="h-1 cursor-row-resize bg-gray-100 dark:bg-gray-800 hover:bg-blue-500"
+              style={{ zIndex: 9990 }}
+            />
+
+            <div
+              style={{ height: `${100 - topHeight}%` }}
+              className="transition-all h-full"
+            >
+              <div className="bg-white dark:bg-gray-900 rounded shadow p-4 overflow-y-auto h-full">
+                <GraphDataTable rawRecords={rawRecords} isSimple={isSimple} />
+              </div>
+            </div>
+
+            {/* 오른쪽 사이드바 - fixed 팝업 방식 (위치 동일) */}
             {activePanel === "aiAssistant" &&
               (selectedIndex === 0 || selectedIndex === 1) && (
                 <div
@@ -318,7 +318,6 @@ export default function EcommerceTabs() {
                   <AIChatPanel />
                 </div>
               )}
-            {/* DefaultInputs 사이드바 */}
             {activePanel === "defaultInputs" &&
               (selectedIndex === 0 || selectedIndex === 1) && (
                 <div
@@ -333,7 +332,6 @@ export default function EcommerceTabs() {
                   <DefaultInputs />
                 </div>
               )}
-            {/* MonthlyTarget 사이드바 (탭 0, 1에서만 활성화) */}
             {activePanel === "monthlyTarget" &&
               (selectedIndex === 0 || selectedIndex === 1) && (
                 <div
@@ -362,27 +360,12 @@ export default function EcommerceTabs() {
               className={`flex flex-col h-full w-full transition-all duration-300 ease-in-out`}
             >
               <div
-                style={{ height: `${topHeight}%` }}
+                style={{ height: `${85}%` }}
                 className="transition-all"
               >
                 <div className="shadow p-4 h-full">
                   <GraphMetrics />
                   <SimulationGraph isActive={selectedIndex === 1} />
-                </div>
-              </div>
-
-              <div
-                onMouseDown={startVerticalDrag}
-                className="h-1 cursor-row-resize bg-gray-100 dark:bg-gray-800"
-                style={{ zIndex: 9990 }}
-              />
-
-              <div
-                style={{ height: `${100 - topHeight}%` }}
-                className="transition-all"
-              >
-                <div className="bg-white dark:bg-gray-900 rounded shadow p-4 h-full">
-                  <GraphDataTable rawRecords={rawRecords} isSimple={isSimple} />
                 </div>
               </div>
             </div>

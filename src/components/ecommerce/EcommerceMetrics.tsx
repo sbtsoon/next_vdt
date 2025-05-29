@@ -38,12 +38,7 @@ export const EcommerceMetrics = () => {
                   {Math.abs(metric.change)}%
                 </span>
               </div>
-              <Image
-                src="/icons/sparkline-placeholder.svg"
-                alt="sparkline"
-                width={70}
-                height={24}
-              />
+
             </div>
             <div className="text-lg font-semibold text-white">{metric.value}</div>
           </div>

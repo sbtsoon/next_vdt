@@ -424,7 +424,7 @@ export default function SimulationGraph({ isActive }) {
                               !excludedNames.includes(data.name)
                                 ? `<div class="percentage text-xl ${
                                     percentageValue > 0
-                                      ? "text-blue-500"
+                                      ? "text-green-500"
                                       : percentageValue < 0
                                       ? "text-red-500"
                                       : "text-gray-400"
@@ -625,7 +625,7 @@ export default function SimulationGraph({ isActive }) {
 
   return (
     <div className="overflow-hidden  border border-gray-200 bg-white px-5 pt-5 dark:border-gray-800 dark:bg-white/[0.03] sm:px-6 sm:pt-6">
-      <div id="cy" ref={cyRef} style={{ width: "100%", minHeight: "600px" }} />
+      <div id="cy" ref={cyRef} style={{ width: "100%", minHeight: "800px" }} />
       <div id="tooltip" className="graph-tool-tip" />
     </div>
   );
