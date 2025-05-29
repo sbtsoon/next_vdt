@@ -1,0 +1,884 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Perspective Lines - Signposts & Legend with Material Numbers</title>
+    <style>
+      body {
+        margin: 0;
+        overflow: hidden;
+        background-color: #1a1a1a;
+        font-family: Arial, sans-serif;
+      }
+      #canvasViewPort {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100vw;
+        height: 100vh;
+        z-index: 20;
+      }
+      canvas#perspectiveCanvas {
+        display: block;
+        width: 100%;
+        height: 100%;
+        background-color: #2c2c2c;
+        cursor: default;
+      }
+      #scrollDriver {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100vw;
+        height: 100vh;
+        overflow-y: scroll;
+        z-index: 10;
+        scrollbar-width: none;
+        -ms-overflow-style: none;
+      }
+      #scrollDriver::-webkit-scrollbar {
+        display: none;
+      }
+      #scrollContentSizer {
+        display: block;
+      }
+      #sphereInfoDisplay {
+        position: fixed;
+        top: 20px;
+        left: 20px;
+        z-index: 30;
+        background-color: rgba(50, 50, 50, 0.85);
+        color: #e0e0e0;
+        padding: 15px;
+        border-radius: 8px;
+        border: 1px solid #444;
+        display: none;
+        max-width: 280px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+      }
+      #sphereInfoDisplay img {
+        max-width: 250px;
+        max-height: 250px;
+        height: auto;
+        border-radius: 4px;
+        margin-bottom: 10px;
+      }
+      #sphereInfoDisplay h3 {
+        margin-top: 0;
+        margin-bottom: 8px;
+        color: #ffffff;
+      }
+      #sphereInfoDisplay p {
+        margin-bottom: 5px;
+        font-size: 0.9em;
+        word-wrap: break-word;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="sphereInfoDisplay">
+      <img id="sphereInfoImage" src="" alt="Sphere Image" style="display: none;" />
+      <h3 id="sphereInfoTitle">Material Information</h3>
+      <p id="sphereInfoDate"></p>
+      <p id="sphereInfoProduct"></p>
+      <p id="sphereInfoGrapeVariety"></p>
+      <p id="sphereInfoSales"></p>
+      <p id="sphereInfoCustomText"></p>
+    </div>
+
+    <div id="canvasViewPort">
+      <canvas id="perspectiveCanvas"></canvas>
+    </div>
+    <div id="scrollDriver">
+      <div id="scrollContentSizer"></div>
+    </div>
+
+    <script>
+      const canvas = document.getElementById("perspectiveCanvas");
+      const ctx = canvas.getContext("2d");
+      const scrollDriver = document.getElementById("scrollDriver");
+      const scrollContentSizer = document.getElementById("scrollContentSizer");
+
+      const sphereInfoDisplay = document.getElementById("sphereInfoDisplay");
+      const sphereInfoImage = document.getElementById("sphereInfoImage");
+      const sphereInfoTitle = document.getElementById("sphereInfoTitle");
+      const sphereInfoDate = document.getElementById("sphereInfoDate");
+      const sphereInfoColor = document.getElementById("sphereInfoColor");
+      const sphereInfoProduct = document.getElementById("sphereInfoProduct");
+      const sphereInfoGrapeVariety = document.getElementById("sphereInfoGrapeVariety");
+      const sphereInfoSales = document.getElementById("sphereInfoSales");
+      const sphereInfoCustomText = document.getElementById("sphereInfoCustomText");
+
+
+      canvas.addEventListener(
+        "wheel",
+        function (event) {
+          scrollDriver.scrollTop += event.deltaY * 0.5;
+        },
+        { passive: true }
+      );
+
+      let canvasWidthPx;
+      let canvasHeightPx;
+      let lineWorldY;
+
+      let mouseX = 0;
+      let mouseY = 0;
+      let hoveredSphereInfo = null;
+      let clickedSphereData = null;
+
+      function setupCanvasDimensions() {
+        canvasWidthPx = window.innerWidth;
+        canvasHeightPx = window.innerHeight;
+        canvas.width = canvasWidthPx;
+        canvas.height = canvasHeightPx;
+        lineWorldY = canvasHeightPx / 2 - lineBottomOffset;
+      }
+
+      const focalLength = 200;
+      const originalLineWidth = 400; 
+      const lineBottomOffset = 0;
+      const lineVisualThickness = 0.75;
+      const scrollSensitivity = 0.5;
+      const Z_SPACING = 70;
+      const VANISHING_POINT_Y_SCREEN_FACTOR = -0.1;
+
+      const TIMELINE_START_DATE_CONFIG = new Date(Date.UTC(2024, 11, 24));
+      const MAX_VISIBLE_DATE_CUTOFF_CONFIG = new Date(Date.UTC(2026, 1, 1));
+
+      const DATE_TEXT_OFFSET_X = 70;
+      const DATE_TEXT_BASE_SIZE = 15;
+
+      let dateMarkers = [];
+      let lines = [];
+      let weeklyTickWorldZs = [];
+      let dailyTickWorldZs = [];
+
+      const DEFAULT_SPHERE_X_3D = -100;
+      const SPHERE_WORLD_RADIUS = 20;
+      const VERTICAL_CONNECTOR_COLOR = "#D0D0D0";
+      const VERTICAL_CONNECTOR_WIDTH = 0.75;
+      
+      const SPHERE_MATERIAL_TEXT_BASE_SIZE = 15; // Base font size for material number
+      const SPHERE_MATERIAL_TEXT_MIN_SIZE = 4;   // Minimum font size for material number
+      const SPHERE_MATERIAL_TEXT_Y_OFFSET_FACTOR = 0.3; // Factor to adjust text position above sphere
+
+      const SPHERE_DATA_LIST_CONFIG = [
+       
+      {
+        date: new Date(Date.UTC(2025, 4, 26)), color: "blue", xPos: -17, yPos: 250,
+        imageSrc: "https://www.perfectcellar.com/cdn/shop/articles/Fine_Wine_and_Regular_Wine.jpg?v=1643119025",
+        infoText: "Elegant and earthy with red fruit tones and a smooth finish.",
+        product: "Willow Creek Pinot Noir",
+        grapeVariety: "Pinot Noir",
+        sales: 712483,
+        materialNumber: "FERT204"
+      },
+      {
+        date: new Date(Date.UTC(2025, 6, 8)), color: "green", xPos: 62, yPos: 227,
+        imageSrc: "https://hips.hearstapps.com/hmg-prod/images/red-wine-benefits-1592243220.jpg?crop=0.9128842172320434xw:1xh;center,top&resize=1200:*",
+        infoText: "Ripe black cherry and cassis aromas with notes of mocha and vanilla.",
+        product: "Silver Peak Cabernet Sauvignon",
+        grapeVariety: "Cabernet Sauvignon",
+        sales: 824376,
+        materialNumber: "FERT110"
+      },
+      {
+        date: new Date(Date.UTC(2025, 9, 7)), color: "pink", xPos: -126, yPos: 291,
+        imageSrc: "https://bravofarms.com/cdn/shop/products/white-wine.jpg?v=1646253943",
+        infoText: "Ripe black cherry and cassis aromas with notes of mocha and vanilla.",
+        product: "Silver Peak Cabernet Sauvignon",
+        grapeVariety: "Cabernet Sauvignon",
+        sales: 679342,
+        materialNumber: "FERT199"
+      },
+      {
+        date: new Date(Date.UTC(2025, 10, 1)), color: "orange", xPos: 194, yPos: 262,
+        imageSrc: "https://hallmarkchannelwines.com/cdn/shop/files/hallmark-channel-wines-sparkle-sparkling-wine_6357e358-e2db-4358-bdd0-2a18158eab4b.png?v=1684431204",
+        infoText: "Lush and creamy with hints of tropical fruit and toasted oak.",
+        product: "Sunset Valley Chardonnay",
+        grapeVariety: "Chardonnay",
+        sales: 514377,
+        materialNumber: "FERT161"
+      },
+      {
+        date: new Date(Date.UTC(2025, 11, 9)), color: "gold", xPos: -114, yPos: 234,
+        imageSrc: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQpPbVcp-Ocjj8w6l3-dWLSwBdLRXsKOrcd9w&s",
+        infoText: "Lush and creamy with hints of tropical fruit and toasted oak.",
+        product: "Sunset Valley Chardonnay",
+        grapeVariety: "Chardonnay",
+        sales: 657679,
+        materialNumber: "FERT187"
+      },
+      {
+        date: new Date(Date.UTC(2025, 6, 14)), color: "gray", xPos: -85, yPos: 270,
+        imageSrc: "https://www.drinkhardgrapes.com/cdn/shop/files/Hard_grapes_wine_products_2400x.png?v=1722993523",
+        infoText: "Elegant and earthy with red fruit tones and a smooth finish.",
+        product: "Willow Creek Pinot Noir",
+        grapeVariety: "Pinot Noir",
+        sales: 666297,
+        materialNumber: "FERT132"
+      },
+      {
+        date: new Date(Date.UTC(2025, 2, 24)), color: "green", xPos: 200, yPos: 294,
+        imageSrc: "https://cdn.shopify.com/s/files/1/1114/2308/files/IMG_3206_c697aca6-fea0-46ba-827d-1809a4854d04.jpg",
+        infoText: "Jammy berry flavors with a peppery finish and soft tannins.",
+        product: "Oak Ridge Zinfandel",
+        grapeVariety: "Zinfandel",
+        sales: 636531,
+        materialNumber: "FERT214"
+      },
+      {
+        date: new Date(Date.UTC(2025, 2, 21)), color: "pink", xPos: 81, yPos: 248,
+        imageSrc: "https://sph.brown.edu/sites/default/files/styles/wide_sml/public/2025-03/AdobeStock_red%20and%20white%20wine.jpeg?h=b7b4ba02&itok=Lpk0A0Xp",
+        infoText: "Jammy berry flavors with a peppery finish and soft tannins.",
+        product: "Oak Ridge Zinfandel",
+        grapeVariety: "Zinfandel",
+        sales: 698499,
+        materialNumber: "FERT238"
+      },
+      {
+        date: new Date(Date.UTC(2025, 0, 22)), color: "red", xPos: 71, yPos: 261,
+        imageSrc: "https://static01.nyt.com/images/2017/03/21/dining/21WHITEBORDEAUX2/21WHITEBORDEAUX2-superJumbo.jpg?quality=75&auto=webp",
+        infoText: "This classic Merlot-based Bordeaux opens with an elegant nose of red currant, blueberry and black pepper aromas.",
+        product: "Chateau Romfort Cotes de Bourg",
+        grapeVariety: "Merlot",
+        sales: 589129,
+        materialNumber: "FERT264"
+      },
+      {
+        date: new Date(Date.UTC(2025, 5, 10)), color: "gray", xPos: 106, yPos: 291,
+        imageSrc: "https://www.marthastewart.com/thmb/LLemtvIfYtaswsFN7TmkylfsVGY=/1500x0/filters:no_upscale():max_bytes(150000):strip_icc()/martha-stewart-wine-co-12c48f20d94a451ca2b468fc724c4664.jpg",
+        infoText: "Lush and creamy with hints of tropical fruit and toasted oak.",
+        product: "Sunset Valley Chardonnay",
+        grapeVariety: "Chardonnay",
+        sales: 781261,
+        materialNumber: "FERT190"
+      },
+      {
+        date: new Date(Date.UTC(2025, 11, 28)), color: "teal", xPos: -72, yPos: 256,
+        imageSrc: "https://minuman.com/cdn/shop/files/B_G-CUVEE-SPECIALE-ROUGE-SWEET-WINE_1200x.jpg?v=1700117745",
+        infoText: "Ripe black cherry and cassis aromas with notes of mocha and vanilla.",
+        product: "Silver Peak Cabernet Sauvignon",
+        grapeVariety: "Cabernet Sauvignon",
+        sales: 618362,
+        materialNumber: "FERT276"
+      },
+      {
+        date: new Date(Date.UTC(2025, 11, 9)), color: "brown", xPos: -144, yPos: 243,
+        imageSrc: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTSYePniQEhMW_WQk1NuVz04_vUe0grGA0PRw&s",
+        infoText: "This classic Merlot-based Bordeaux opens with an elegant nose of red currant, blueberry and black pepper aromas.",
+        product: "Chateau Romfort Cotes de Bourg",
+        grapeVariety: "Merlot",
+        sales: 746875,
+        materialNumber: "FERT263"
+      },
+      {
+        date: new Date(Date.UTC(2025, 6, 7)), color: "green", xPos: 22, yPos: 228,
+        imageSrc: "https://www.mywineplus.com/cdn/shop/articles/istockphoto-1171685581-170667a.jpg?v=1646109587",
+        infoText: "This classic Merlot-based Bordeaux opens with an elegant nose of red currant, blueberry and black pepper aromas.",
+        product: "Chateau Romfort Cotes de Bourg",
+        grapeVariety: "Merlot",
+        sales: 750259,
+        materialNumber: "FERT125"
+      },
+      {
+        date: new Date(Date.UTC(2025, 9, 10)), color: "blue", xPos: -132, yPos: 277,
+        imageSrc: "https://www.thespruceeats.com/thmb/0nWVV3wNJ7NWfETpxcgv5x3foHY=/1500x0/filters:no_upscale():max_bytes(150000):strip_icc()/sozaijitenDatacraftGettyImages-56aa14a13df78cf772ac5161.jpg",
+        infoText: "Elegant and earthy with red fruit tones and a smooth finish.",
+        product: "Willow Creek Pinot Noir",
+        grapeVariety: "Pinot Noir",
+        sales: 558488,
+        materialNumber: "FERT257"
+      },
+      {
+        date: new Date(Date.UTC(2025, 1, 24)), color: "pink", xPos: -74, yPos: 246,
+        imageSrc: "https://www.quickanddirtytips.com/wp-content/uploads/2013/08/4-Ways-to-Know-if-Your-Wine-Is-Good.png",
+        infoText: "This classic Merlot-based Bordeaux opens with an elegant nose of red currant, blueberry and black pepper aromas.",
+        product: "Chateau Romfort Cotes de Bourg",
+        grapeVariety: "Merlot",
+        sales: 802124,
+        materialNumber: "FERT279"
+      },
+      {
+        date: new Date(Date.UTC(2025, 3, 14)), color: "teal", xPos: -164, yPos: 295,
+        imageSrc: "https://www.thespruceeats.com/thmb/N9TEoqtQz-R9zkjMXM8I530sj30=/1500x0/filters:no_upscale():max_bytes(150000):strip_icc()/red-wine-is-poured-into-a-glass-from-a-bottle--light-background--1153158143-98320451802c485cb6d7b5437c7fd60a.jpg",
+        infoText: "Ripe black cherry and cassis aromas with notes of mocha and vanilla.",
+        product: "Silver Peak Cabernet Sauvignon",
+        grapeVariety: "Cabernet Sauvignon",
+        sales: 857668,
+        materialNumber: "FERT247"
+      },
+      {
+        date: new Date(Date.UTC(2025, 10, 1)), color: "red", xPos: -107, yPos: 238,
+        imageSrc: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQH57aPbPfy_XOaJka0_q0x_qzJbtR9dIwopg&s",
+        infoText: "Jammy berry flavors with a peppery finish and soft tannins.",
+        product: "Oak Ridge Zinfandel",
+        grapeVariety: "Zinfandel",
+        sales: 863685,
+        materialNumber: "FERT136"
+      },
+      {
+        date: new Date(Date.UTC(2025, 9, 2)), color: "gold", xPos: -186, yPos: 266,
+        imageSrc: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTDgSljiT5SCw86Q3OFekBfCif4Vf6LQMgshA&s",
+        infoText: "Lush and creamy with hints of tropical fruit and toasted oak.",
+        product: "Sunset Valley Chardonnay",
+        grapeVariety: "Chardonnay",
+        sales: 768858,
+        materialNumber: "FERT278"
+      },
+      {
+        date: new Date(Date.UTC(2025, 3, 12)), color: "blue", xPos: -171, yPos: 251,
+        imageSrc: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQEx4UQ0jN7shxnVBl5sBfzCdjmlP18F1UWcw&s",
+        infoText: "This classic Merlot-based Bordeaux opens with an elegant nose of red currant, blueberry and black pepper aromas.",
+        product: "Chateau Romfort Cotes de Bourg",
+        grapeVariety: "Merlot",
+        sales: 718397,
+        materialNumber: "FERT249"
+      },
+      {
+        date: new Date(Date.UTC(2025, 4, 22)), color: "brown", xPos: -16, yPos: 300,
+        imageSrc: "https://i.guim.co.uk/img/media/e2f5c62371aa20907e64aade56fcc1f4df5ace9e/0_0_5040_3024/master/5040.jpg?width=1200&height=1200&quality=85&auto=format&fit=crop&s=d60381d4d2d2da95064f5b5e9b47c5a8",
+        infoText: "Lush and creamy with hints of tropical fruit and toasted oak.",
+        product: "Sunset Valley Chardonnay",
+        grapeVariety: "Chardonnay",
+        sales: 810175,
+        materialNumber: "FERT298"
+      }  
+      ];
+      let sphereDataList = [];
+
+      // 하단 푯말 설정
+      const SIGNPOST_WIDTH = 90; 
+      const SIGNPOST_HEIGHT = 35; 
+      const SIGNPOST_TEXT_COLOR_BOTTOM = "#FFFFFF"; // 하단 푯말 텍스트 색상
+      const SIGNPOST_MARGIN_BOTTOM = 25; 
+      
+      const signposts = [ // 이 배열은 하단 푯말과 상단 범례 모두에 사용됨
+        { city: "Paris", color: "#3498db" },    
+        { city: "New York", color: "#f1c40f" }, 
+        { city: "Tokyo", color: "#e74c3c" },     
+        { city: "Sydney", color: "#2ecc71" }   
+      ];
+      
+      const laneCenter3Dx = [ 
+        -originalLineWidth * 3 / 8, -originalLineWidth * 1 / 8, 
+         originalLineWidth * 1 / 8,  originalLineWidth * 3 / 8  
+      ];
+
+      // 상단 범례 설정
+      const LEGEND_MARGIN_TOP = 40; 
+      const LEGEND_MARGIN_RIGHT = 20;
+      const LEGEND_RECT_SIZE = 15;
+      const LEGEND_TEXT_COLOR = "#E0E0E0";
+      const LEGEND_FONT = "13px Arial";
+      const LEGEND_ITEM_SPACING_VERTICAL = 8; 
+      const LEGEND_RECT_TEXT_SPACING = 8; 
+
+
+      function initializeDateMarkers() {
+        dateMarkers = [];
+        const dateFormatter = new Intl.DateTimeFormat("en-US", { month: "short", day: "2-digit", timeZone: "UTC" });
+        let currentDate = new Date(TIMELINE_START_DATE_CONFIG.getTime());
+        let dateIndex = 0;
+        while (currentDate.getTime() < MAX_VISIBLE_DATE_CUTOFF_CONFIG.getTime()) {
+          dateMarkers.push({
+            date: new Date(currentDate.getTime()),
+            name: dateFormatter.format(currentDate),
+            worldZ: dateIndex * Z_SPACING,
+          });
+          currentDate.setUTCDate(currentDate.getUTCDate() + 14);
+          dateIndex++;
+        }
+      }
+
+      function initializeWeeklyTicks() {
+        weeklyTickWorldZs = [];
+        let currentDate = new Date(TIMELINE_START_DATE_CONFIG.getTime());
+        let weeklyIndex = 0;
+        const endTimeWithMargin = MAX_VISIBLE_DATE_CUTOFF_CONFIG.getTime() + (14 * 24 * 3600 * 1000);
+        while (currentDate.getTime() < endTimeWithMargin) {
+          const tickZ = weeklyIndex * (Z_SPACING / 2.0);
+          weeklyTickWorldZs.push(tickZ);
+          currentDate.setUTCDate(currentDate.getUTCDate() + 7);
+          weeklyIndex++;
+        }
+      }
+
+      function initializeDailyTicks() {
+        dailyTickWorldZs = [];
+        let currentDate = new Date(TIMELINE_START_DATE_CONFIG.getTime());
+        let dailyIndex = 0;
+        const endTimeWithMargin = MAX_VISIBLE_DATE_CUTOFF_CONFIG.getTime() + (14 * 24 * 3600 * 1000);
+        while (currentDate.getTime() < endTimeWithMargin) {
+            const tickZ = dailyIndex * (Z_SPACING / 14.0);
+            dailyTickWorldZs.push(tickZ);
+            currentDate.setUTCDate(currentDate.getUTCDate() + 1);
+            dailyIndex++;
+        }
+      }
+
+      function setupSphereData() {
+        sphereDataList = [];
+        if (!dateMarkers || dateMarkers.length === 0) {
+          SPHERE_DATA_LIST_CONFIG.forEach((config) => sphereDataList.push({ ...config, worldZ: -1, error: "No date markers" }));
+          return;
+        }
+        const fourteenDaysInMs = 14 * 24 * 3600 * 1000;
+        SPHERE_DATA_LIST_CONFIG.forEach((config) => {
+          const targetTime = config.date.getTime();
+          let foundWorldZ = -1; let determined = false;
+          if (targetTime < dateMarkers[0].date.getTime()) {
+            const first = dateMarkers[0];
+            foundWorldZ = first.worldZ - ((first.date.getTime() - targetTime) / fourteenDaysInMs) * Z_SPACING;
+            determined = true;
+          } else if (targetTime > dateMarkers[dateMarkers.length - 1].date.getTime()) {
+            const last = dateMarkers[dateMarkers.length - 1];
+            foundWorldZ = last.worldZ + ((targetTime - last.date.getTime()) / fourteenDaysInMs) * Z_SPACING;
+            determined = true;
+          } else {
+            for (let i = 0; i < dateMarkers.length; i++) {
+              const curr = dateMarkers[i];
+              if (targetTime === curr.date.getTime()) { foundWorldZ = curr.worldZ; determined = true; break; }
+              if (i + 1 < dateMarkers.length) {
+                const next = dateMarkers[i + 1];
+                if (targetTime > curr.date.getTime() && targetTime < next.date.getTime()) {
+                  const ratio = (targetTime - curr.date.getTime()) / (next.date.getTime() - curr.date.getTime());
+                  foundWorldZ = curr.worldZ + ratio * (next.worldZ - curr.worldZ); determined = true; break;
+                }
+              }
+            }
+          }
+          if (determined) { sphereDataList.push({ ...config, worldZ: foundWorldZ }); }
+          else if (dateMarkers.length > 0 && targetTime === dateMarkers[dateMarkers.length - 1].date.getTime()) {
+            sphereDataList.push({ ...config, worldZ: dateMarkers[dateMarkers.length - 1].worldZ });
+          } else { sphereDataList.push({ ...config, worldZ: -1, error: "Z determination failed" }); }
+        });
+      }
+
+      function initializeLines() {
+        lines = [];
+        if (dateMarkers && dateMarkers.length > 0) {
+          dateMarkers.forEach((marker) => lines.push({ z: marker.worldZ }));
+          const lastMarkerZ = dateMarkers[dateMarkers.length - 1].worldZ;
+          const scrollRange = (lastMarkerZ + Z_SPACING * 2) / scrollSensitivity;
+          scrollContentSizer.style.height = scrollRange + canvasHeightPx + "px";
+        } else { scrollContentSizer.style.height = canvasHeightPx + "px"; }
+      }
+
+      function project3DTo2D(x3D, y3D, z3D) {
+        const effectiveZ = z3D + focalLength;
+        if (effectiveZ <= 1e-5) return { x: NaN, y: NaN, scale: 0 }; 
+
+        const scale = focalLength / effectiveZ;
+        return {
+          x: x3D * scale + canvasWidthPx / 2,
+          y: y3D * scale + canvasHeightPx * VANISHING_POINT_Y_SCREEN_FACTOR,
+          scale: scale,
+        };
+      }
+
+      function getSphereAtPosition(targetX, targetY) {
+        const scrollOffsetZ = scrollDriver.scrollTop * scrollSensitivity;
+        let foundSphere = null;
+        for (let i = sphereDataList.length - 1; i >= 0; i--) {
+          const sphere = sphereDataList[i];
+          if (sphere.worldZ === -1 || sphere.error) continue;
+          const sphereRenderZ = sphere.worldZ - scrollOffsetZ;
+          const currentSphereX = sphere.xPos !== undefined ? sphere.xPos : DEFAULT_SPHERE_X_3D;
+          const currentCenterY3D = sphere.yPos !== undefined ? sphere.yPos : lineWorldY - 3 * SPHERE_WORLD_RADIUS;
+          const proj = project3DTo2D(currentSphereX, currentCenterY3D, sphereRenderZ);
+          if (!isNaN(proj.x) && proj.scale > 0) {
+            const screenRadius = SPHERE_WORLD_RADIUS * proj.scale;
+            if (screenRadius < 0.5) continue;
+            const distance = Math.sqrt(Math.pow(targetX - proj.x, 2) + Math.pow(targetY - proj.y, 2));
+            if (distance <= screenRadius) { foundSphere = sphere; break; }
+          }
+        }
+        return foundSphere;
+      }
+
+      function checkSphereHover() {
+        hoveredSphereInfo = null; let cursorShouldBePointer = false;
+        const sphereUnderMouse = getSphereAtPosition(mouseX, mouseY);
+        if (sphereUnderMouse) {
+          hoveredSphereInfo = {
+            text: sphereUnderMouse.materialNumber ? `Mat: ${sphereUnderMouse.materialNumber}` : `Color: ${sphereUnderMouse.color}`,
+            dateString: sphereUnderMouse.date.toLocaleDateString("ko-KR", { year: "numeric", month: "long", day: "numeric", timeZone: "UTC" }),
+          };
+          cursorShouldBePointer = true;
+        }
+        canvas.style.cursor = cursorShouldBePointer ? "pointer" : "default";
+      }
+
+      function showSphereInfo(sphere) {
+        if (!sphere) { hideSphereInfo(); return; }
+        clickedSphereData = sphere;
+
+        if (sphere.materialNumber && sphere.materialNumber.trim() !== "") {
+          sphereInfoTitle.textContent = `Material Number: ${sphere.materialNumber}`;
+        } else {
+          sphereInfoTitle.textContent = "Item Details";
+        }
+
+        sphereInfoDate.textContent = `Launch Date: ${sphere.date.toLocaleDateString("ko-KR", { year: "numeric", month: "long", day: "numeric", timeZone: "UTC" })}`;
+        // sphereInfoColor.textContent = `Color: ${sphere.color}`;
+
+        if (sphere.product && sphere.product.trim() !== "") {
+          sphereInfoProduct.textContent = `Product: ${sphere.product}`;
+          sphereInfoProduct.style.display = "block";
+        } else {
+          sphereInfoProduct.textContent = "";
+          sphereInfoProduct.style.display = "none";
+        }
+
+        if (sphere.grapeVariety && sphere.grapeVariety.trim() !== "") {
+          sphereInfoGrapeVariety.textContent = `Grape Variety: ${sphere.grapeVariety}`;
+          sphereInfoGrapeVariety.style.display = "block";
+        } else {
+          sphereInfoGrapeVariety.textContent = "";
+          sphereInfoGrapeVariety.style.display = "none";
+        }
+
+        if (typeof sphere.sales === 'number') {
+          sphereInfoSales.textContent = `Sales: $${sphere.sales.toLocaleString()}`;
+          sphereInfoSales.style.display = "block";
+        } else {
+          sphereInfoSales.textContent = "";
+          sphereInfoSales.style.display = "none";
+        }
+
+        sphereInfoCustomText.textContent = sphere.infoText || "No additional information available.";
+
+        if (sphere.imageSrc) {
+          sphereInfoImage.src = sphere.imageSrc;
+          sphereInfoImage.alt = `${sphere.materialNumber || sphere.product || sphere.color} image`;
+          sphereInfoImage.style.display = "block";
+        } else {
+          sphereInfoImage.style.display = "none";
+        }
+        sphereInfoDisplay.style.display = "block";
+      }
+
+      function hideSphereInfo() { clickedSphereData = null; sphereInfoDisplay.style.display = "none"; }
+
+      function drawSignpostLegend() {
+        ctx.save(); 
+
+        let currentY = LEGEND_MARGIN_TOP;
+        ctx.font = LEGEND_FONT;
+        ctx.textBaseline = "middle";
+
+        let maxTextWidth = 0;
+        for (const signpost of signposts) {
+            const metrics = ctx.measureText(signpost.city);
+            if (metrics.width > maxTextWidth) {
+                maxTextWidth = metrics.width;
+            }
+        }
+        const totalLegendItemWidth = LEGEND_RECT_SIZE + LEGEND_RECT_TEXT_SPACING + maxTextWidth;
+        const legendBlockStartX = canvasWidthPx - LEGEND_MARGIN_RIGHT - totalLegendItemWidth;
+
+        for (const signpost of signposts) {
+            const rectX = legendBlockStartX;
+            const textX = legendBlockStartX + LEGEND_RECT_SIZE + LEGEND_RECT_TEXT_SPACING;
+
+            ctx.fillStyle = signpost.color;
+            ctx.fillRect(rectX, currentY, LEGEND_RECT_SIZE, LEGEND_RECT_SIZE);
+
+            ctx.fillStyle = LEGEND_TEXT_COLOR;
+            ctx.textAlign = "left"; 
+            ctx.fillText(signpost.city, textX, currentY + LEGEND_RECT_SIZE / 2);
+
+            currentY += LEGEND_RECT_SIZE + LEGEND_ITEM_SPACING_VERTICAL;
+        }
+        ctx.restore(); 
+      }
+
+
+      function draw() {
+        ctx.clearRect(0, 0, canvasWidthPx, canvasHeightPx);
+        const scrollOffsetZ = scrollDriver.scrollTop * scrollSensitivity;
+        
+        const roadEdgeXLeft3D = -originalLineWidth / 2;
+        const laneDividerXLeft3D = -originalLineWidth / 4;
+        const roadCenterX3D = 0;
+        const laneDividerXRight3D = originalLineWidth / 4;
+        const roadEdgeXRight3D = originalLineWidth / 2;
+
+        let renderZ_near_road = -focalLength + 10;
+        if (focalLength + renderZ_near_road <= 1e-5) renderZ_near_road = -focalLength + 1.01; 
+        
+        let renderZ_far_road;
+        const lastKnownZ = Math.max(
+            dateMarkers.length > 0 ? dateMarkers[dateMarkers.length-1].worldZ : 0,
+            weeklyTickWorldZs.length > 0 ? weeklyTickWorldZs[weeklyTickWorldZs.length-1] : 0,
+            dailyTickWorldZs.length > 0 ? dailyTickWorldZs[dailyTickWorldZs.length-1] : 0
+        );
+        renderZ_far_road = (lastKnownZ - scrollOffsetZ) + Z_SPACING * 15; 
+        if (renderZ_far_road <= renderZ_near_road) renderZ_far_road = renderZ_near_road + 100;
+
+        ctx.save();
+        ctx.strokeStyle = "#C0C0C0"; 
+        ctx.lineWidth = 1.0;
+        const drawRoadLine = (x3D) => {
+            const nearPt = project3DTo2D(x3D, lineWorldY, renderZ_near_road); 
+            const farPt = project3DTo2D(x3D, lineWorldY, renderZ_far_road);
+            if (!isNaN(nearPt.x) && !isNaN(nearPt.y) && !isNaN(farPt.x) && !isNaN(farPt.y)) {
+                ctx.beginPath(); ctx.moveTo(nearPt.x, nearPt.y); ctx.lineTo(farPt.x, farPt.y); ctx.stroke();
+            }
+        };
+        drawRoadLine(roadEdgeXLeft3D); 
+        drawRoadLine(laneDividerXLeft3D);
+        drawRoadLine(roadCenterX3D); 
+        drawRoadLine(laneDividerXRight3D);
+        drawRoadLine(roadEdgeXRight3D);
+        ctx.restore();
+
+        ctx.save();
+        ctx.strokeStyle = "#E0E0E0"; 
+        ctx.lineWidth = 0.3; 
+        const dailyTickLength3D = 4; 
+        dailyTickWorldZs.forEach(tickZ => {
+            const renderZ = tickZ - scrollOffsetZ;
+            if (focalLength + renderZ <= 1e-5) return; 
+            const projScaleCheck = focalLength / (renderZ + focalLength);
+            if (projScaleCheck <= 0.002 && renderZ > 0) return; 
+            const p_left_edge = project3DTo2D(roadEdgeXLeft3D, lineWorldY, renderZ);
+            const p_left_tick_end = project3DTo2D(roadEdgeXLeft3D - dailyTickLength3D, lineWorldY, renderZ); 
+            if (!isNaN(p_left_edge.x) && !isNaN(p_left_tick_end.x)) {
+                ctx.beginPath(); ctx.moveTo(p_left_edge.x, p_left_edge.y); ctx.lineTo(p_left_tick_end.x, p_left_tick_end.y); ctx.stroke();
+            }
+            const p_right_edge = project3DTo2D(roadEdgeXRight3D, lineWorldY, renderZ);
+            const p_right_tick_end = project3DTo2D(roadEdgeXRight3D + dailyTickLength3D, lineWorldY, renderZ); 
+            if (!isNaN(p_right_edge.x) && !isNaN(p_right_tick_end.x)) {
+                ctx.beginPath(); ctx.moveTo(p_right_edge.x, p_right_edge.y); ctx.lineTo(p_right_tick_end.x, p_right_tick_end.y); ctx.stroke();
+            }
+        });
+        ctx.restore();
+
+        ctx.save();
+        ctx.strokeStyle = "#EEEEEE"; 
+        ctx.lineWidth = 0.5; 
+        const weeklyTickLength3D = 6; 
+        weeklyTickWorldZs.forEach(tickZ => {
+            const renderZ = tickZ - scrollOffsetZ;
+            if (focalLength + renderZ <= 1e-5) return;
+            const projScaleCheck = focalLength / (renderZ + focalLength);
+            if (projScaleCheck <= 0.004 && renderZ > 0) return; 
+            const p_left_edge = project3DTo2D(roadEdgeXLeft3D, lineWorldY, renderZ);
+            const p_left_tick_end = project3DTo2D(roadEdgeXLeft3D - weeklyTickLength3D, lineWorldY, renderZ); 
+            if (!isNaN(p_left_edge.x) && !isNaN(p_left_tick_end.x)) {
+                ctx.beginPath(); ctx.moveTo(p_left_edge.x, p_left_edge.y); ctx.lineTo(p_left_tick_end.x, p_left_tick_end.y); ctx.stroke();
+            }
+            const p_right_edge = project3DTo2D(roadEdgeXRight3D, lineWorldY, renderZ);
+            const p_right_tick_end = project3DTo2D(roadEdgeXRight3D + weeklyTickLength3D, lineWorldY, renderZ); 
+            if (!isNaN(p_right_edge.x) && !isNaN(p_right_tick_end.x)) {
+                ctx.beginPath(); ctx.moveTo(p_right_edge.x, p_right_edge.y); ctx.lineTo(p_right_tick_end.x, p_right_tick_end.y); ctx.stroke();
+            }
+        });
+        ctx.restore();
+
+        ctx.save();
+        ctx.strokeStyle = "#FAFAFA"; 
+        ctx.lineWidth = 0.75; 
+        const mainDateEdgeTickLength3D = 8; 
+        dateMarkers.forEach(marker => { 
+            const renderZ = marker.worldZ - scrollOffsetZ;
+            if (focalLength + renderZ <= 1e-5) return;
+            const projScaleCheck = focalLength / (renderZ + focalLength);
+            if (projScaleCheck <= 0.005 && renderZ > 0) return; 
+            const p_left_edge = project3DTo2D(roadEdgeXLeft3D, lineWorldY, renderZ);
+            const p_left_tick_end = project3DTo2D(roadEdgeXLeft3D - mainDateEdgeTickLength3D, lineWorldY, renderZ); 
+              if (!isNaN(p_left_edge.x) && !isNaN(p_left_tick_end.x)) {
+                ctx.beginPath(); ctx.moveTo(p_left_edge.x, p_left_edge.y); ctx.lineTo(p_left_tick_end.x, p_left_tick_end.y); ctx.stroke();
+            }
+            const p_right_edge = project3DTo2D(roadEdgeXRight3D, lineWorldY, renderZ);
+            const p_right_tick_end = project3DTo2D(roadEdgeXRight3D + mainDateEdgeTickLength3D, lineWorldY, renderZ); 
+            if (!isNaN(p_right_edge.x) && !isNaN(p_right_tick_end.x)) {
+                ctx.beginPath(); ctx.moveTo(p_right_edge.x, p_right_edge.y); ctx.lineTo(p_right_tick_end.x, p_right_tick_end.y); ctx.stroke();
+            }
+        });
+        ctx.restore();
+
+        ctx.save();
+        ctx.strokeStyle = "#E8E8E8"; 
+        const horizontalDateLine3DExtension = DATE_TEXT_OFFSET_X * 0.85;
+        const horizontalDateLine3DHalfWidth = (originalLineWidth / 2) + horizontalDateLine3DExtension;
+        lines.forEach((line) => { 
+          const currentZ = line.z - scrollOffsetZ;
+          const proj = project3DTo2D(0, lineWorldY, currentZ);
+          if (isNaN(proj.x) || proj.scale <= 0) return;
+          const projectedHalfWidth = horizontalDateLine3DHalfWidth * proj.scale;
+          const xStart = proj.x - projectedHalfWidth; const xEnd = proj.x + projectedHalfWidth;
+          ctx.beginPath(); ctx.moveTo(xStart, proj.y); ctx.lineTo(xEnd, proj.y);
+          ctx.lineWidth = Math.max(0.3, lineVisualThickness * proj.scale); 
+          ctx.stroke();
+        });
+        ctx.restore();
+
+        ctx.fillStyle = "#F0F0F0"; 
+        dateMarkers.forEach((marker) => { 
+          const renderZ = marker.worldZ - scrollOffsetZ;
+          [-1, 1].forEach((side) => {
+            const proj = project3DTo2D(side * (originalLineWidth / 2 + DATE_TEXT_OFFSET_X), lineWorldY, renderZ);
+            if (!isNaN(proj.x) && proj.scale > 0.015) { 
+              const fontSize = Math.max(5, DATE_TEXT_BASE_SIZE * proj.scale);
+              ctx.font = `${fontSize}px Arial`; ctx.textAlign = side === -1 ? "right" : "left";
+              ctx.fillText(marker.name, proj.x, proj.y + fontSize / 3.5);
+            }
+          });
+        });
+
+        sphereDataList.forEach((sphere) => {
+          if (sphere.worldZ === -1 || sphere.error) return;
+          const renderZ = sphere.worldZ - scrollOffsetZ;
+          const currentSphereX = sphere.xPos !== undefined ? sphere.xPos : DEFAULT_SPHERE_X_3D;
+          const currentCenterY3D = sphere.yPos !== undefined ? sphere.yPos : lineWorldY - 3 * SPHERE_WORLD_RADIUS;
+          const sphereProj = project3DTo2D(currentSphereX, currentCenterY3D, renderZ);
+          
+          if (isNaN(sphereProj.x) || sphereProj.scale <= 0) return;
+          const radius = SPHERE_WORLD_RADIUS * sphereProj.scale;
+          if (radius < 0.5) return;
+
+          // Draw Sphere
+          ctx.beginPath(); 
+          ctx.arc(sphereProj.x, sphereProj.y, radius, 0, 2 * Math.PI);
+          let currentFillStyle = sphere.color;
+          if (clickedSphereData === sphere) {
+            currentFillStyle = lightenColor(sphere.color, 30);
+            ctx.strokeStyle = "white"; 
+            ctx.lineWidth = Math.max(0.3, 1 * sphereProj.scale);
+            ctx.stroke();
+          }
+          ctx.fillStyle = currentFillStyle; 
+          ctx.fill();
+
+          // Draw Vertical Connector
+          const groundProj = project3DTo2D(currentSphereX, lineWorldY, renderZ);
+          if (!isNaN(groundProj.x)) {
+            ctx.beginPath(); 
+            ctx.moveTo(sphereProj.x, sphereProj.y); 
+            ctx.lineTo(sphereProj.x, groundProj.y);
+            ctx.strokeStyle = VERTICAL_CONNECTOR_COLOR; 
+            ctx.lineWidth = VERTICAL_CONNECTOR_WIDTH;
+            ctx.stroke();
+          }
+
+          // --- START: Draw Material Number above sphere ---
+          if (sphere.materialNumber && sphere.materialNumber.trim() !== "" && sphereProj.scale > 0.01) { // Only draw if reasonably visible
+            const text = sphere.materialNumber;
+            // Scale font size with perspective, but with a minimum size
+            const textFontSize = Math.max(SPHERE_MATERIAL_TEXT_MIN_SIZE, SPHERE_MATERIAL_TEXT_BASE_SIZE * sphereProj.scale);
+            
+            ctx.font = `bold ${textFontSize}px Arial`;
+            ctx.fillStyle = "#FFFFFF"; // White color for better contrast
+            ctx.textAlign = "center";
+            ctx.textBaseline = "bottom"; // Align bottom of text to the calculated Y
+
+            // Position text slightly above the sphere
+            // The offset is also scaled slightly by textFontSize to maintain relative position
+            const textYPosition = sphereProj.y - radius - (textFontSize * SPHERE_MATERIAL_TEXT_Y_OFFSET_FACTOR); 
+            
+            ctx.fillText(text, sphereProj.x, textYPosition);
+          }
+          // --- END: Draw Material Number above sphere ---
+        });
+        
+        // --- 하단 푯말 그리기 (기존 로직 유지) ---
+        ctx.save();
+        const bottomSignpostY = canvasHeightPx - SIGNPOST_MARGIN_BOTTOM - SIGNPOST_HEIGHT;
+        const bottomSignpostPoleHeight = 15; 
+        const bottomSignpostPoleWidth = 8;  
+
+        signposts.forEach((sign, index) => {
+            if (index >= laneCenter3Dx.length) return; 
+            const projectedLaneCenterX = laneCenter3Dx[index] + canvasWidthPx / 2;
+            const signX = projectedLaneCenterX - (SIGNPOST_WIDTH / 2);
+            
+            if (isNaN(signX)) return;
+
+            ctx.fillStyle = "#555555"; 
+            ctx.fillRect(
+                signX + (SIGNPOST_WIDTH / 2) - (bottomSignpostPoleWidth / 2),
+                bottomSignpostY + SIGNPOST_HEIGHT -2, 
+                bottomSignpostPoleWidth,
+                bottomSignpostPoleHeight
+            );
+            ctx.fillStyle = sign.color;
+            ctx.fillRect(signX, bottomSignpostY, SIGNPOST_WIDTH, SIGNPOST_HEIGHT);
+            ctx.fillStyle = SIGNPOST_TEXT_COLOR_BOTTOM; 
+            ctx.font = "bold 13px Arial";
+            ctx.textAlign = "center";
+            ctx.textBaseline = "middle";
+            ctx.fillText(sign.city, signX + SIGNPOST_WIDTH / 2, bottomSignpostY + SIGNPOST_HEIGHT / 2);
+        });
+        ctx.restore();
+        // --- 하단 푯말 그리기 끝 ---
+
+        // --- 상단 범례 그리기 ---
+        drawSignpostLegend();
+        // --- 상단 범례 그리기 끝 ---
+
+        if (hoveredSphereInfo) {
+          const text = `${hoveredSphereInfo.text}, Date: ${hoveredSphereInfo.dateString}`;
+          ctx.font = "13px Arial"; const metrics = ctx.measureText(text);
+          const w = metrics.width + 16, h = 28; let x = mouseX + 15, y = mouseY + 10;
+          if (x + w > canvasWidthPx - 5) x = mouseX - w - 15; if (y + h > canvasHeightPx - 5) y = mouseY - h - 10;
+          if (x < 5) x = 5; if (y < 5) y = 5;
+          ctx.fillStyle = "rgba(40,40,40,0.85)"; ctx.fillRect(x, y, w, h);
+          ctx.fillStyle = "#f0f0f0"; ctx.textAlign = "left"; ctx.textBaseline = "middle";
+          ctx.fillText(text, x + 8, y + h / 2);
+        }
+      } // draw() 함수 끝
+
+      function lightenColor(colorStr, percent) {
+        let r = 0, g = 0, b = 0; const P = Math.floor(255 * (percent/100));
+        if (colorStr.startsWith('#')) {
+            const num = parseInt(colorStr.slice(1), 16); r = (num >> 16); g = (num >> 8) & 0x00FF; b = num & 0x0000FF;
+        } else {
+            const tempCtx = document.createElement('canvas').getContext('2d'); tempCtx.fillStyle = colorStr; const hexColor = tempCtx.fillStyle;
+            if (hexColor.startsWith('#')) { const num = parseInt(hexColor.slice(1), 16); r = (num >> 16); g = (num >> 8) & 0x00FF; b = num & 0x0000FF;
+            } else { return colorStr; }
+        }
+        r = Math.min(255, Math.max(0, r + P)); g = Math.min(255, Math.max(0, g + P)); b = Math.min(255, Math.max(0, b + P));
+        return `rgb(${r},${g},${b})`;
+      }
+
+      window.addEventListener("resize", () => {
+        setupCanvasDimensions();
+        initializeDateMarkers();
+        initializeWeeklyTicks();
+        initializeDailyTicks();
+        setupSphereData();
+        initializeLines();
+        hideSphereInfo();
+        draw();
+      });
+      scrollDriver.addEventListener("scroll", () => { checkSphereHover(); draw(); });
+      canvas.addEventListener("mousemove", (event) => {
+        const rect = canvas.getBoundingClientRect(); mouseX = event.clientX - rect.left; mouseY = event.clientY - rect.top;
+        checkSphereHover(); draw();
+      });
+      canvas.addEventListener("mouseout", () => {
+        mouseX = -1000; mouseY = -1000; hoveredSphereInfo = null; canvas.style.cursor = "default"; draw();
+      });
+      canvas.addEventListener("click", (event) => {
+        const rect = canvas.getBoundingClientRect(); const clickX = event.clientX - rect.left; const clickY = event.clientY - rect.top;
+        const clickedObject = getSphereAtPosition(clickX, clickY);
+        if (clickedObject) { showSphereInfo(clickedObject); } else { hideSphereInfo(); }
+        draw();
+      });
+
+      setupCanvasDimensions();
+      initializeDateMarkers();
+      initializeWeeklyTicks();
+      initializeDailyTicks();
+      setupSphereData();
+      initializeLines();
+      draw();
+      console.log("Initial draw complete with material numbers, bottom signposts and top-right legend.");
+    </script>
+  </body>
+</html>
