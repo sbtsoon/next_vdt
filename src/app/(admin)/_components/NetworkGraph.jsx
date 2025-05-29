@@ -85,6 +85,11 @@ export default function NetworkGraph({ isActive }) {
         {
           selector: "node",
           style: {
+            shape: (ele) => {
+              const level = parseNeo4jInt(ele.data("level"));
+              if (level === 0 || level === 1 || level === 2) return "eclipse";
+              else return "rectangle";
+            },
             label: (ele) => ele.data("name"),
             "text-valign": "top",
             "text-margin-y": -1.5,
@@ -274,9 +279,7 @@ export default function NetworkGraph({ isActive }) {
     cy.edges().forEach((edge) => showEdge(edge, 0));
     cy.layout({ name: "cose", animate: true, padding: 30 }).run();
 
-    cy.style()
-      .selector("node")
-      .style({ shape: "ellipse", width: "20px", height: "20px" });
+    cy.style().selector("node").style({ width: "20px", height: "20px" });
     cy.style().selector("edge").style({ "curve-style": "straight" }).update();
   };
 
