@@ -28,6 +28,7 @@ import SimulationGraph from "@/app/(admin)/_components/SimulationGraph";
 import GraphDataTable from "./_components/GraphDataTable";
 import { GraphMetrics } from "./_components/GraphMetrics";
 import TimeLineGraph from "./_components/TimeLineGraph";
+import GeoMapGraph from "./_components/GeoMapGraph";
 
 function classNames(...classes: string[]) {
   return classes.filter(Boolean).join(" ");
@@ -48,7 +49,7 @@ export default function EcommerceTabs() {
     { name: "Network Graph", icon: Squares2X2Icon },
     { name: "Simulation", icon: BellIcon },
     { name: "Timeline", icon: UserGroupIcon },
-    { name: "3D Graph", icon:CubeTransparentIcon  },
+    { name: "3D Graph", icon: CubeTransparentIcon },
     { name: "Exmple2", icon: ChartBarIcon },
   ];
 
@@ -276,10 +277,7 @@ export default function EcommerceTabs() {
             // 기존 <div className="flex flex-col h-full w-full ..."> 를 제거하고, containerRef가 그 역할을 하도록 합니다.
             className="flex flex-col h-full relative overflow-hidden"
           >
-            <div
-              style={{ height: `${topHeight}%` }}
-              className="transition-all"
-            >
+            <div style={{ height: `${topHeight}%` }} className="transition-all">
               <div className="bg-white dark:bg-gray-900 rounded shadow p-4 h-full">
                 <GraphMetrics />
                 <NetworkGraph isActive={selectedIndex === 0} />
@@ -358,10 +356,7 @@ export default function EcommerceTabs() {
             <div
               className={`flex flex-col h-full w-full transition-all duration-300 ease-in-out`}
             >
-              <div
-                style={{ height: `${85}%` }}
-                className="transition-all"
-              >
+              <div style={{ height: `${85}%` }} className="transition-all">
                 <div className="shadow p-4 h-full">
                   <GraphMetrics />
                   <SimulationGraph isActive={selectedIndex === 1} />
@@ -455,40 +450,40 @@ export default function EcommerceTabs() {
         </Tab.Panel>
         {/* 4. 프랑스 지도 */}
         <Tab.Panel className="h-full">
-                <div
-                  ref={containerRef}
-                  className="flex h-full relative overflow-hidden"
-                >
-                  <div
-                    style={{ width: `${leftWidth}%` }}
-                    className="flex flex-col transition-all duration-100"
-                  >
-                    <div
-                      style={{ height: `${topHeight}%` }}
-                      className="transition-all"
-                    >
-                      <div className="bg-white dark:bg-gray-900 rounded shadow p-4 h-full">
-                        <EcommerceMetrics />
-                        <TimeLineGraph />
-                      </div>
-                    </div>
-                  </div>
-
-                  <div
-                    onMouseDown={startHorizontalDrag}
-                    className="w-1 cursor-col-resize bg-gray-100 dark:bg-gray-800 hover:bg-blue-500 transition-colors duration-150"
-                    style={{ zIndex: 50 }}
-                  />
-
-                  <div
-                    style={{ width: `${100 - leftWidth}%`, minWidth: "280px" }}
-                    className="bg-white dark:bg-gray-900 rounded shadow p-2 h-full flex flex-col gap-4"
-                  >
-                    <AIChatPanel />
-                    <DefaultInputs />
-                  </div>
+          <div
+            ref={containerRef}
+            className="flex h-full relative overflow-hidden"
+          >
+            <div
+              style={{ width: `${leftWidth}%` }}
+              className="flex flex-col transition-all duration-100"
+            >
+              <div
+                style={{ height: `${topHeight}%` }}
+                className="transition-all"
+              >
+                <div className="bg-white dark:bg-gray-900 rounded shadow p-4 h-full">
+                  <EcommerceMetrics />
+                  <GeoMapGraph />
                 </div>
-              </Tab.Panel>
+              </div>
+            </div>
+
+            <div
+              onMouseDown={startHorizontalDrag}
+              className="w-1 cursor-col-resize bg-gray-100 dark:bg-gray-800 hover:bg-blue-500 transition-colors duration-150"
+              style={{ zIndex: 50 }}
+            />
+
+            <div
+              style={{ width: `${100 - leftWidth}%`, minWidth: "280px" }}
+              className="bg-white dark:bg-gray-900 rounded shadow p-2 h-full flex flex-col gap-4"
+            >
+              <AIChatPanel />
+              <DefaultInputs />
+            </div>
+          </div>
+        </Tab.Panel>
 
         {/* 5. Exmple2 Tab Panel (좌우/상하 리사이징 유지, 필터/AI 영역 포함) */}
         <Tab.Panel className="h-full">
@@ -505,7 +500,6 @@ export default function EcommerceTabs() {
                 className="transition-all"
               >
                 <div className="bg-white dark:bg-gray-900 rounded shadow p-4 h-full">
-
                   <GraphMetrics />
                   <MonthlySalesChart />
                 </div>
@@ -515,8 +509,8 @@ export default function EcommerceTabs() {
                 onMouseDown={startVerticalDrag}
                 className="h-1 cursor-row-resize bg-gray-100 dark:bg-gray-800 hover:bg-blue-500"
                 style={{ zIndex: 9990 }}
-              /> {/* <--- 이 부분이 위로 이동했습니다. */}
-
+              />{" "}
+              {/* <--- 이 부분이 위로 이동했습니다. */}
               <div
                 style={{ height: `${100 - topHeight}%` }}
                 className="transition-all h-full"
