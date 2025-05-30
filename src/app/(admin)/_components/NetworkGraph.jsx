@@ -16,53 +16,53 @@ import { updateMetricDataHelper } from "@/helpers/metricHelper";
 
 const iconMap = new Map([
   // 매출 관련
-  ["매출이익", "profit.png"],
-  ["매출액", "sales.png"],
-  ["매출원가", "cogs.png"],
+  ["매출이익", "매출이익.png"],
+  ["매출액", "매출액.png"],
+  ["매출원가", "매출원가.png"],
 
   // 제품군 / 재고
-  ["FERT100s", "winebox.jpg"],
-  ["FERT200s", "winebox.jpg"],
-  ["기초재고", "bi.png"],
-  ["기말재고", "ei.png"],
-  ["당기제품제조원가", "cpmc.png"],
+  ["FERT100s", "와인박스.png"],
+  ["FERT200s", "와인박스.png"],
+  ["기초재고", "기초재고.png"],
+  ["기말재고", "기말재고.png"],
+  ["당기제품제조원가", "비용2.png"],
 
   // 제품 단위
-  ["FERT101", "winebottle.jpg"],
-  ["FERT102", "winebottle.jpg"],
-  ["FERT103", "winebottle.jpg"],
-  ["FERT104", "winebottle.jpg"],
-  ["FERT105", "winebottle.jpg"],
-  ["FERT106", "winebottle.jpg"],
-  ["FERT201", "winebottle.jpg"],
-  ["FERT202", "winebottle.jpg"],
-  ["FERT203", "winebottle.jpg"],
+  ["FERT101", "와인.png"],
+  ["FERT102", "와인.png"],
+  ["FERT103", "와인.png"],
+  ["FERT104", "와인.png"],
+  ["FERT105", "와인.png"],
+  ["FERT106", "와인.png"],
+  ["FERT201", "와인.png"],
+  ["FERT202", "와인.png"],
+  ["FERT203", "와인.png"],
 
   // 제조비용
-  ["당기제조비용", "cmc.png"],
-  ["재공품", "wip.png"],
-  ["액티비티배부", "ad.png"],
-  ["액티비티단수차", "aqd.png"],
+  ["당기제조비용", "비용.png"],
+  ["재공품", "재공품.png"],
+  ["액티비티배부", "비용2.png"],
+  ["액티비티단수차", "비용2.png"],
 
   // 세부 원가
-  ["원재료비", "rmc.png"],
-  ["부재료비", "smc.png"],
-  ["가공비", "pc.png"],
-  ["생산입고", "pr.png"],
-  ["공정출고", "fd.png"],
-  ["액티비티단가합", "ps.png"],
-  ["액티비티수차합", "ps.png"],
+  ["원재료비", "비용.png"],
+  ["부재료비", "비용.png"],
+  ["가공비", "비용.png"],
+  ["생산입고", "생산입고.png"],
+  ["공정출고", "공정출고.png"],
+  ["액티비티단가합", "비용2.png"],
+  ["액티비티수차합", "비용2.png"],
 
   // 포도 재료
-  ["ROH0001누적", "grape.jpg"],
-  ["ROH0002누적", "grape.jpg"],
-  ["ROH0003누적", "grape.jpg"],
-  ["ROH2001누적", "grape.jpg"],
-  ["ROH2002누적", "grape.jpg"],
-  ["ROH2003누적", "grape.jpg"],
+  ["ROH0001누적", "포도.png"],
+  ["ROH0002누적", "포도.png"],
+  ["ROH0003누적", "포도.png"],
+  ["ROH2001누적", "포도.png"],
+  ["ROH2002누적", "포도.png"],
+  ["ROH2003누적", "포도.png"],
 
   // 비용 계획
-  ["비용계획합", "cp.png"],
+  ["비용계획합", "비용.png"],
 ]);
 
 export default function NetworkGraph({ isActive }) {
@@ -87,38 +87,50 @@ export default function NetworkGraph({ isActive }) {
           style: {
             shape: (ele) => {
               const level = parseNeo4jInt(ele.data("level"));
-              if (level === 0 || level === 1 || level === 2) return "eclipse";
-              else return "rectangle";
+              return level <= 2 ? "ellipse" : "rectangle";
             },
-            label: (ele) => ele.data("name"),
-            "text-valign": "top",
-            "text-margin-y": -1.5,
-            "text-halign": "center",
-            "font-size": "4px",
-            backgroundColor: "#FFF",
+
+            width: "20px", // 노드 크기 키움
+            height: "20px",
+            "background-color": "#FFF",
+
+            // 🔽 아이콘 크기 조절 핵심
+            "background-fit": "none",
+            "background-width": "10px", // 아이콘 너비 직접 설정
+            "background-height": "10px", // 아이콘 높이 직접 설정
+            "background-position-x": "50%", // 중앙 정렬
+            "background-position-y": "50%",
+
+            "background-clip": "node",
+            "background-image-opacity": 1,
+
             "background-image": (ele) => {
               const name = ele.data("name");
               const icon = iconMap.get(name);
               return icon ? `/images/network-graph-node/${icon}` : undefined;
             },
-            "background-fit": "cover",
+
+            label: (ele) => ele.data("name"),
+            "text-valign": "top",
+            "text-halign": "center",
+            "text-margin-y": -1.5,
+            "font-size": "4px",
+            backgroundColor: "#FFF",
+
             "border-color": (ele) => {
               const level = parseNeo4jInt(ele.data("level"));
-              if (level === 0) return "#BF512C"; // Coach Red
-              else if (level === 1) return "#DA9828"; // Orange
-              else if (level === 2) return "#FBCFA1"; // Soft Yellow
-              else if (level === 3) return "#277d5f"; // Mint
-              else if (level === 4) return "#376f9f"; // Navy
-              else return "#7A7A7A"; // fallback gray
+              if (level === 0) return "#BF512C";
+              else if (level === 1) return "#DA9828";
+              else if (level === 2) return "#FBCFA1";
+              else if (level === 3) return "#277d5f";
+              else if (level === 4) return "#376f9f";
+              else return "#7A7A7A";
             },
-            // "border-color": "#2a9d8f",
             "border-width": 1,
             "border-style": "solid",
-            color: "#333",
-            width: "20px",
-            height: "20px",
             "text-wrap": "wrap",
             "text-max-width": "20px",
+            color: "#333",
           },
         },
         {
