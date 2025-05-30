@@ -315,7 +315,7 @@ export default function SimulationGraph({ isActive }) {
               return `${ele.data("role") === "negative" ? "-" : "+"}`;
             },
             color: (ele) => {
-              return ele.data("role") === "negative" ? "red" : "black";
+              return ele.data("role") === "negative" ? "red" : "white";
             },
             width: 0.3,
             "font-size": "30px",
@@ -374,13 +374,12 @@ export default function SimulationGraph({ isActive }) {
 
           const expanded = ref.expanded === true;
           const toggleSymbol = expanded
-          ? `<svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-gray-600" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+            ? `<svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-gray-600" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
                <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5" />
              </svg>`
-          : `<svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-gray-600" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+            : `<svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-gray-600" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
                <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
              </svg>`;
-
 
           const allChildNodes = node.predecessors("node");
           const isLeaf = allChildNodes.length === 0;
@@ -419,7 +418,9 @@ export default function SimulationGraph({ isActive }) {
 
                     <div class="node-header-container">
                         <div class="node-header-info">
-                            <div class="node-name text-xl text-gray-300">${data.name}</div>
+                            <div class="node-name text-xl text-gray-300">${
+                              data.name
+                            }</div>
                             ${
                               !excludedNames.includes(data.name)
                                 ? `<div class="percentage text-xl ${
@@ -435,7 +436,9 @@ export default function SimulationGraph({ isActive }) {
                         <div class="text-sm text-gray-400">Unit: 백만원</div>
                     </div>
 
-                    <div class="text-2xl">₩ ${amountValue.toLocaleString("ko-KR")}</div>
+                    <div class="text-2xl">₩ ${amountValue.toLocaleString(
+                      "ko-KR"
+                    )}</div>
 
                             ${
                               excludedNames.includes(data.name)
