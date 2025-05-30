@@ -52,7 +52,6 @@ export const GraphMetrics = () => {
       <div className="flex-[1] grid grid-cols-3 border border-gray-700 pt-3   bg-white   dark:text-white dark:bg-[#1e1d2b] ">
       {metrics.map((metric, idx) => {
         const { amount, percentage, scaledHistoryData } = metricMap[metric.key];
-
         const borderClass = idx > 0 ? "border-l" : "";
 
         return (
@@ -71,7 +70,7 @@ export const GraphMetrics = () => {
                   </span>
                   <span
                     className= {`${
-                      percentage >= 0 ? "text-blue-400" : "text-red-400"
+                      percentage >= 0 ? "text-green-400" : "text-red-400"
                     } flex items-center  px-2.5 pb-0.5 justify-center gap-1 rounded-full font-medium text-sm bg-gray-100 dark:bg-white/5`}
                   >
                     {percentage >= 0 ? (

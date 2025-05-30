@@ -92,7 +92,7 @@ export default function NetworkGraph({ isActive }) {
 
             width: "20px", // 노드 크기 키움
             height: "20px",
-            "background-color": "#FFF",
+            "background-color": "#FFFfff23",
 
             // 🔽 아이콘 크기 조절 핵심
             "background-fit": "none",
@@ -115,7 +115,7 @@ export default function NetworkGraph({ isActive }) {
             "text-halign": "center",
             "text-margin-y": -1.5,
             "font-size": "4px",
-            backgroundColor: "#FFF",
+            backgroundColor: "#fff",
 
             "border-color": (ele) => {
               const level = parseNeo4jInt(ele.data("level"));
@@ -130,7 +130,7 @@ export default function NetworkGraph({ isActive }) {
             "border-style": "solid",
             "text-wrap": "wrap",
             "text-max-width": "20px",
-            color: "#333",
+            color: "#97b2d8",
           },
         },
         {
@@ -155,7 +155,7 @@ export default function NetworkGraph({ isActive }) {
               ele.data("role") === "negative" ? "#d62828" : "#2a9d8f",
             "edge-text-rotation": "autorotate",
             "text-background-shape": "rectangle",
-            "text-background-opacity": 0.1,
+            "text-background-opacity": 0.3,
             "text-background-color": "#222",
             "text-background-radius": "5px",
           },

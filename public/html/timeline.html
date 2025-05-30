@@ -299,7 +299,7 @@
         },
         {
           date: new Date(Date.UTC(2025, 5, 10)),
-          color: "gray",
+          color: "#f7bd0b",
           xPos: 106,
           yPos: 291,
           imageSrc:
@@ -425,7 +425,7 @@
         },
         {
           date: new Date(Date.UTC(2025, 3, 12)),
-          color: "#f4a261",
+          color: "#a3c9f9",
           xPos: -171,
           yPos: 251,
           imageSrc:
@@ -453,6 +453,7 @@
         },
       ];
       let sphereDataList = [];
+
 
       // 하단 푯말 설정
       const SIGNPOST_WIDTH = 90;
@@ -977,8 +978,8 @@
         ctx.restore();
 
         ctx.save();
-        ctx.strokeStyle = "#E8E8E8";
-        const horizontalDateLine3DExtension = DATE_TEXT_OFFSET_X * 0.85;
+        ctx.strokeStyle = "#344353";
+        const horizontalDateLine3DExtension = DATE_TEXT_OFFSET_X * 0.5;
         const horizontalDateLine3DHalfWidth =
           originalLineWidth / 2 + horizontalDateLine3DExtension;
         lines.forEach((line) => {
@@ -1036,16 +1037,28 @@
           // Draw Sphere
           ctx.beginPath();
           ctx.arc(sphereProj.x, sphereProj.y, radius, 0, 2 * Math.PI);
-          let currentFillStyle = sphere.color;
+
+          // 🎨 입체감을 위한 Radial Gradient 설정
+          const gradient = ctx.createRadialGradient(
+            sphereProj.x - radius * 0.4, // 중심을 약간 위쪽으로 오프셋
+            sphereProj.y - radius * 0.3,
+            radius * 0.1,                // 중심 밝은 영역
+            sphereProj.x,
+            sphereProj.y,
+            radius                      // 외곽 어두운 영역
+          );
+          gradient.addColorStop(0, lightenColor(sphere.color, 20)); // 중심: 밝은 색
+          gradient.addColorStop(1, sphere.color);                   // 외곽: 원래 색
+
+          ctx.fillStyle = gradient;
+          ctx.fill();
+
+          // 클릭된 상태일 경우 외곽선 강조
           if (clickedSphereData === sphere) {
-            currentFillStyle = lightenColor(sphere.color, 30);
             ctx.strokeStyle = "white";
             ctx.lineWidth = Math.max(0.3, 1 * sphereProj.scale);
             ctx.stroke();
           }
-          ctx.fillStyle = currentFillStyle;
-          ctx.fill();
-
           // Draw Vertical Connector
           const groundProj = project3DTo2D(currentSphereX, lineWorldY, renderZ);
           if (!isNaN(groundProj.x)) {
