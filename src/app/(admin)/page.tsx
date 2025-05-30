@@ -30,6 +30,8 @@ import GraphDataTable from "./_components/GraphDataTable";
 import { GraphMetrics } from "./_components/GraphMetrics";
 import TimeLineGraph from "./_components/TimeLineGraph";
 import GeoMapGraph from "./_components/GeoMapGraph";
+import { parseNeo4jInt } from "@/utils/neo4jUtils";
+import { updateMetricDataHelper } from "@/helpers/metricHelper";
 
 function classNames(...classes: string[]) {
   return classes.filter(Boolean).join(" ");
@@ -116,14 +118,35 @@ export default function EcommerceTabs() {
   };
 
   const loadGraph = async (query = null) => {
-    initStoreData();
+    // initStoreData();
     const res = await fetch(query ? "/api/query" : "/api/graph", {
       method: query ? "POST" : "GET",
       headers: { "Content-Type": "application/json" },
       body: query ? JSON.stringify({ query }) : null,
     });
     const { data, rawRecords } = await res.json();
-    setGraphData(data);
+    
+    // nodes, edges 데이터가 없어서 그래프가 그려지지 않는다면 기존 그래프 유지지
+    if (data.nodes.length !== 0 && data.edges.length !== 0) {
+      initStoreData();
+      setGraphData(data);
+      // metric card 정보 업데이트
+      data.nodes.forEach((node) => {
+        const { name, amount } = node.data || {};
+        const parsedAmount = Math.round(parseNeo4jInt(amount) / 1_000_000);
+        const percentage = 0;
+        if (name) {
+          updateMetricDataHelper(
+            name,
+            parsedAmount,
+            percentage,
+            [],
+            setMetricData
+          );
+        }
+      });
+    }
+    // setGraphData(data);
     setRawRecords(rawRecords);
     setIsSimple(isSimpleTable(rawRecords));
   };
@@ -429,7 +452,7 @@ export default function EcommerceTabs() {
                 className="transition-all"
               >
                 <div className="bg-white dark:bg-gray-900 rounded shadow  h-full">
-                  <EcommerceMetrics />
+                  <GraphMetrics />
                   <TimeLineGraph />
                 </div>
               </div>
@@ -465,7 +488,7 @@ export default function EcommerceTabs() {
                 className="transition-all"
               >
                 <div className="bg-white dark:bg-gray-900 rounded shadow  h-full">
-                  <EcommerceMetrics />
+                  <GraphMetrics />
                   <GeoMapGraph />
                 </div>
               </div>
@@ -538,8 +561,8 @@ export default function EcommerceTabs() {
             </div>
           </div>
         </Tab.Panel>
-         {/* 6. Exmple3 Tab Panel (좌우/상하 리사이징 유지, 필터/AI 영역 포함) */}
-         <Tab.Panel className="h-full">
+        {/* 6. Exmple3 Tab Panel (좌우/상하 리사이징 유지, 필터/AI 영역 포함) */}
+        <Tab.Panel className="h-full">
           <div
             ref={containerRef}
             className="flex h-full relative overflow-hidden"

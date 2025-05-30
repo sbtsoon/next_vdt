@@ -273,13 +273,12 @@ export default function NetworkGraph({ isActive }) {
     cy.add([...graphData.nodes, ...graphData.edges]);
 
     // metric card 정보 업데이트
-    cy.nodes().forEach((node) => {
-      const name = node.data("name");
-      const amount = Math.round(parseNeo4jInt(node.data("amount")) / 1_000_000);
-      const percentage = 0;
-      updateMetricDataHelper(name, amount, percentage, [], setMetricData);
-    });
-
+    // cy.nodes().forEach((node) => {
+    //   const name = node.data("name");
+    //   const amount = Math.round(parseNeo4jInt(node.data("amount")) / 1_000_000);
+    //   const percentage = 0;
+    //   updateMetricDataHelper(name, amount, percentage, [], setMetricData);
+    // });
     cyInstanceRef.current = cy;
 
     applyRadialLayout();
@@ -289,10 +288,27 @@ export default function NetworkGraph({ isActive }) {
     const cy = cyInstanceRef.current;
     cy.nodes().forEach((node) => showNode(node, 0));
     cy.edges().forEach((edge) => showEdge(edge, 0));
-    cy.layout({ name: "cose", animate: true, padding: 30 }).run();
+    const layout = cy.layout({ name: "cose", padding: 30 }).run();
 
     cy.style().selector("node").style({ width: "20px", height: "20px" });
     cy.style().selector("edge").style({ "curve-style": "straight" }).update();
+
+    layout.on("layoutstop", () => {
+      const rootNodes = cy
+        .nodes()
+        .filter((node) => parseNeo4jInt(node.data("level")) === 0);
+
+      cy.animate(
+        {
+          center: { eles: rootNodes },
+          zoom: 4,
+        },
+        {
+          duration: 800, // 서서히 줌 (ms)
+          easing: "ease-in-out",
+        }
+      );
+    });
   };
 
   return (
