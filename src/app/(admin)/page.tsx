@@ -188,7 +188,7 @@ export default function EcommerceTabs() {
           onClick={() =>
             setActivePanel(activePanel === "aiAssistant" ? null : "aiAssistant")
           }
-          className={`fixed top-1/2 -translate-y-1/2 bg-gray-780 shadow-soon text-white py-2 px-3 rounded-l-full hover:bg-gray-600 z-50 active:bg-blue-600 transition-all duration-300 ease-in-out flex items-center gap-2`}
+          className={`fixed top-1/2 -translate-y-1/2    dark:bg-gray-780 shadow-soon dark:text-white py-2 px-3 rounded-l-full hover:bg-gray-600 z-50 active:bg-blue-600 transition-all duration-300 ease-in-out flex items-center gap-2`}
           style={{
             right: activePanel ? `${sidebarWidth}px` : "0px",
             top: `calc(20% - 20px)`,
@@ -217,7 +217,7 @@ export default function EcommerceTabs() {
               activePanel === "defaultInputs" ? null : "defaultInputs"
             )
           }
-          className={`fixed top-1/2 -translate-y-1/2 bg-gray-780 shadow-soon text-white py-2 px-3 rounded-l-full shadow-lg hover:bg-gray-600 z-50 transition-all duration-300 ease-in-out flex items-center gap-2`}
+          className={`fixed top-1/2 -translate-y-1/2   dark:bg-gray-780 shadow-soon dark:text-white py-2 px-3 rounded-l-full shadow-lg hover:bg-gray-600 z-50 transition-all duration-300 ease-in-out flex items-center gap-2`}
           style={{
             right: activePanel ? `${sidebarWidth}px` : "0px",
             top: `calc(20% + 30px)`,
@@ -246,7 +246,7 @@ export default function EcommerceTabs() {
               activePanel === "monthlyTarget" ? null : "monthlyTarget"
             )
           }
-          className={`fixed top-1/2 -translate-y-1/2 bg-gray-780 shadow-soon text-white py-2 px-3 rounded-l-full shadow-lg hover:bg-gray-600 z-50 transition-all duration-300 ease-in-out flex items-center gap-2`}
+          className={`fixed top-1/2 -translate-y-1/2   dark:bg-gray-780 shadow-soon dark:text-white py-2 px-3 rounded-l-full shadow-lg hover:bg-gray-600 z-50 transition-all duration-300 ease-in-out flex items-center gap-2`}
           style={{
             right: activePanel ? `${sidebarWidth}px` : "0px",
             top: `calc(20% + 80px)`,

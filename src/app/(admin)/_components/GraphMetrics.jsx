@@ -49,7 +49,7 @@ export const GraphMetrics = () => {
   return (
     <div className="flex gap-2 w-full mb-3 ">
       {/* 1/2 section: Metrics */}
-      <div className="flex-[1] grid grid-cols-3 border border-gray-700 pt-3  bg-[#1e1d2b] ">
+      <div className="flex-[1] grid grid-cols-3 border border-gray-700 pt-3   bg-white   dark:text-white dark:bg-[#1e1d2b] ">
       {metrics.map((metric, idx) => {
         const { amount, percentage, scaledHistoryData } = metricMap[metric.key];
 
@@ -58,21 +58,21 @@ export const GraphMetrics = () => {
         return (
           <div
             key={idx}
-            className={`text-white px-5 h-[60px] flex flex-col justify-between ${borderClass}`}
+            className={` dark:text-white px-5 h-[60px] flex flex-col justify-between ${borderClass}`}
             style={{
               borderLeftWidth: idx > 0 ? "1px" : undefined,
               borderLeftColor: idx > 0 ? "#4f4f50" : undefined, // ← 여기에 색상 적용!
             }}
           >
               <div className="flex justify-between items-center">
-                <div className="text-sm flex items-center gap-1">
+                <div className="text-sm flex items-center  gap-1">
                   <span className="text-gray-200 font-medium">
                     {metric.label}:
                   </span>
                   <span
                     className= {`${
                       percentage >= 0 ? "text-blue-400" : "text-red-400"
-                    } flex items-center  px-2.5 py-0.5 justify-center gap-1 rounded-full font-medium text-sm bg-gray-100 dark:bg-white/5`}
+                    } flex items-center  px-2.5 pb-0.5 justify-center gap-1 rounded-full font-medium text-sm bg-gray-100 dark:bg-white/5`}
                   >
                     {percentage >= 0 ? (
                       <ArrowUpIcon className="w-3 h-3" />
@@ -95,7 +95,7 @@ export const GraphMetrics = () => {
       </div>
 
       {/* 1/2 section: Label Summary */}
-      <div className="flex-[1] border border-gray-700 bg-[#1e1d2b] text-white text-sm p-4 min-w-[240px] flex flex-col gap-4  w-1/2">
+      <div className="flex-[1] border border-gray-700 dark:bg-[#1e1d2b] dark:text-white text-sm p-4 min-w-[240px] flex flex-col gap-4  w-1/2">
         <div className="flex flex-wrap  gap-2 items-center ">
           <div className="w-1/2">
             <h4 className="mb-2 font-semibold">Node labels</h4>

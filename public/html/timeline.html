@@ -5,12 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Perspective Lines - Signposts & Legend with Material Numbers</title>
     <style>
-      body {
-        margin: 0;
-        overflow: hidden;
-        background-color: #1a1a1a;
-        font-family: Arial, sans-serif;
-      }
+
       #canvasViewPort {
         position: fixed;
         top: 0;
@@ -23,7 +18,7 @@
         display: block;
         width: 100%;
         height: 100%;
-        background-color: #2c2c2c;
+        background: radial-gradient(circle at 50% 00%,  #225a7b 0%, #1b1e27 40%);
         cursor: default;
       }
       #scrollDriver {
@@ -48,7 +43,7 @@
         top: 20px;
         left: 20px;
         z-index: 30;
-        background-color: rgba(50, 50, 50, 0.85);
+        background-color: rgba(54, 54, 54, 0.475);
         color: #e0e0e0;
         padding: 15px;
         border-radius: 8px;
@@ -72,11 +67,13 @@
       #sphereInfoDisplay p {
         margin-bottom: 5px;
         font-size: 0.9em;
+        color: #c6c6c6;
         word-wrap: break-word;
       }
     </style>
   </head>
   <body>
+    <h2>Timeline </h2>
     <div id="sphereInfoDisplay">
       <img
         id="sphereInfoImage"
@@ -166,8 +163,8 @@
 
       const DEFAULT_SPHERE_X_3D = -100;
       const SPHERE_WORLD_RADIUS = 20;
-      const VERTICAL_CONNECTOR_COLOR = "#D0D0D0";
-      const VERTICAL_CONNECTOR_WIDTH = 0.75;
+      const VERTICAL_CONNECTOR_COLOR = "#80838f";
+      const VERTICAL_CONNECTOR_WIDTH = 1;
 
       const SPHERE_MATERIAL_TEXT_BASE_SIZE = 15; // Base font size for material number
       const SPHERE_MATERIAL_TEXT_MIN_SIZE = 4; // Minimum font size for material number
@@ -176,7 +173,7 @@
       const SPHERE_DATA_LIST_CONFIG = [
         {
           date: new Date(Date.UTC(2025, 4, 26)),
-          color: "blue",
+          color: "#0d2c47",
           xPos: -17,
           yPos: 250,
           imageSrc:
@@ -190,7 +187,7 @@
         },
         {
           date: new Date(Date.UTC(2025, 6, 8)),
-          color: "green",
+          color: "#2b5749",
           xPos: 62,
           yPos: 227,
           imageSrc:
@@ -204,7 +201,7 @@
         },
         {
           date: new Date(Date.UTC(2025, 9, 7)),
-          color: "pink",
+          color: "#bf571c",
           xPos: -126,
           yPos: 291,
           imageSrc:
@@ -218,7 +215,7 @@
         },
         {
           date: new Date(Date.UTC(2025, 10, 1)),
-          color: "orange",
+          color: "#e63946",
           xPos: 194,
           yPos: 262,
           imageSrc:
@@ -232,7 +229,7 @@
         },
         {
           date: new Date(Date.UTC(2025, 11, 9)),
-          color: "gold",
+          color: "#e76f51",
           xPos: -114,
           yPos: 234,
           imageSrc:
@@ -246,7 +243,7 @@
         },
         {
           date: new Date(Date.UTC(2025, 6, 14)),
-          color: "gray",
+          color: "#fbd29d",
           xPos: -85,
           yPos: 270,
           imageSrc:
@@ -260,7 +257,7 @@
         },
         {
           date: new Date(Date.UTC(2025, 2, 24)),
-          color: "green",
+          color: "#1f2b3a",
           xPos: 200,
           yPos: 294,
           imageSrc:
@@ -288,7 +285,7 @@
         },
         {
           date: new Date(Date.UTC(2025, 0, 22)),
-          color: "red",
+          color: "#e76f51",
           xPos: 71,
           yPos: 261,
           imageSrc:
@@ -316,7 +313,7 @@
         },
         {
           date: new Date(Date.UTC(2025, 11, 28)),
-          color: "teal",
+          color: "#fbd29d",
           xPos: -72,
           yPos: 256,
           imageSrc:
@@ -330,7 +327,7 @@
         },
         {
           date: new Date(Date.UTC(2025, 11, 9)),
-          color: "brown",
+          color: "#a8c0aa",
           xPos: -144,
           yPos: 243,
           imageSrc:
@@ -344,7 +341,7 @@
         },
         {
           date: new Date(Date.UTC(2025, 6, 7)),
-          color: "green",
+          color: "#d6cdc5",
           xPos: 22,
           yPos: 228,
           imageSrc:
@@ -358,7 +355,7 @@
         },
         {
           date: new Date(Date.UTC(2025, 9, 10)),
-          color: "blue",
+          color: "#1359b9",
           xPos: -132,
           yPos: 277,
           imageSrc:
@@ -372,7 +369,7 @@
         },
         {
           date: new Date(Date.UTC(2025, 1, 24)),
-          color: "pink",
+          color: "#2eb913",
           xPos: -74,
           yPos: 246,
           imageSrc:
@@ -386,7 +383,7 @@
         },
         {
           date: new Date(Date.UTC(2025, 3, 14)),
-          color: "teal",
+          color: "#8813b9",
           xPos: -164,
           yPos: 295,
           imageSrc:
@@ -400,7 +397,7 @@
         },
         {
           date: new Date(Date.UTC(2025, 10, 1)),
-          color: "red",
+          color: "#3d8a85",
           xPos: -107,
           yPos: 238,
           imageSrc:
@@ -414,7 +411,7 @@
         },
         {
           date: new Date(Date.UTC(2025, 9, 2)),
-          color: "gold",
+          color: "#e76f51",
           xPos: -186,
           yPos: 266,
           imageSrc:
@@ -428,7 +425,7 @@
         },
         {
           date: new Date(Date.UTC(2025, 3, 12)),
-          color: "blue",
+          color: "#f4a261",
           xPos: -171,
           yPos: 251,
           imageSrc:
@@ -442,7 +439,7 @@
         },
         {
           date: new Date(Date.UTC(2025, 4, 22)),
-          color: "brown",
+          color: "#bf571c",
           xPos: -16,
           yPos: 300,
           imageSrc:
@@ -465,10 +462,10 @@
 
       const signposts = [
         // 이 배열은 하단 푯말과 상단 범례 모두에 사용됨
-        { city: "Paris", color: "#3498db" },
-        { city: "New York", color: "#f1c40f" },
-        { city: "Tokyo", color: "#e74c3c" },
-        { city: "Sydney", color: "#2ecc71" },
+        { city: "Paris", color: "	#0d2c47" },
+        { city: "New York", color: "#daa328" },
+        { city: "Tokyo", color: "#2b5749" },
+        { city: "Sydney", color: "#bf571c" },
       ];
 
       const laneCenter3Dx = [
@@ -823,7 +820,7 @@
           renderZ_far_road = renderZ_near_road + 100;
 
         ctx.save();
-        ctx.strokeStyle = "#C0C0C0";
+        ctx.strokeStyle = "#010101";
         ctx.lineWidth = 1.0;
         const drawRoadLine = (x3D) => {
           const nearPt = project3DTo2D(x3D, lineWorldY, renderZ_near_road);
@@ -848,7 +845,7 @@
         ctx.restore();
 
         ctx.save();
-        ctx.strokeStyle = "#E0E0E0";
+        ctx.strokeStyle = "#0b4394";
         ctx.lineWidth = 0.3;
         const dailyTickLength3D = 4;
         dailyTickWorldZs.forEach((tickZ) => {
@@ -892,7 +889,7 @@
         ctx.restore();
 
         ctx.save();
-        ctx.strokeStyle = "#EEEEEE";
+        ctx.strokeStyle = "#999";
         ctx.lineWidth = 0.5;
         const weeklyTickLength3D = 6;
         weeklyTickWorldZs.forEach((tickZ) => {
@@ -936,8 +933,8 @@
         ctx.restore();
 
         ctx.save();
-        ctx.strokeStyle = "#FAFAFA";
-        ctx.lineWidth = 0.75;
+        ctx.strokeStyle = "#fff";
+        ctx.lineWidth = 0.9;
         const mainDateEdgeTickLength3D = 8;
         dateMarkers.forEach((marker) => {
           const renderZ = marker.worldZ - scrollOffsetZ;
@@ -999,7 +996,7 @@
         });
         ctx.restore();
 
-        ctx.fillStyle = "#F0F0F0";
+        ctx.fillStyle = "#Fff";
         dateMarkers.forEach((marker) => {
           const renderZ = marker.worldZ - scrollOffsetZ;
           [-1, 1].forEach((side) => {
@@ -1075,7 +1072,7 @@
             );
 
             ctx.font = `bold ${textFontSize}px Arial`;
-            ctx.fillStyle = "#FFFFFF"; // White color for better contrast
+            ctx.fillStyle = "#F6f6f6"; // White color for better contrast
             ctx.textAlign = "center";
             ctx.textBaseline = "bottom"; // Align bottom of text to the calculated Y
 
