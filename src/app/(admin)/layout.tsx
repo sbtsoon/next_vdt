@@ -33,7 +33,7 @@ export default function AdminLayout({
         {/* Header */}
         <AppHeader />
         {/* Page Content */}
-        <div className="mx-auto max-w-(--breakpoint-3xl) md:p-4 w-full ">{children}</div>
+        <div className="mx-auto max-w-(--breakpoint-2xl) md:p-4 w-full ">{children}</div>
       </div>
     </div>
   );

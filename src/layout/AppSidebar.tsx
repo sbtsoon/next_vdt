@@ -38,7 +38,7 @@ const navItems: NavItem[] = [
   {
     name: "QSA",
     icon: <ListIcon />,
-    subItems: [{ name: "Form Elements", path: "/form-elements", pro: false }],
+    path: "DataImport",
   },
   {
     name: "BOM",

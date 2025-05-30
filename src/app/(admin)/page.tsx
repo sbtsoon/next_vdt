@@ -17,6 +17,7 @@ import {
   ChevronRightIcon,
   ChatBubbleLeftEllipsisIcon,
   Cog8ToothIcon,
+  WalletIcon,
   ChartPieIcon,
   CubeTransparentIcon,
 } from "@heroicons/react/24/outline";
@@ -48,7 +49,8 @@ export default function EcommerceTabs() {
   const tabs = [
     { name: "Network Graph", icon: Squares2X2Icon },
     { name: "Simulation", icon: BellIcon },
-    { name: "Timeline", icon: UserGroupIcon },
+    { name: "Timeline", icon: WalletIcon },
+   /* { name: "Timeline", icon: UserGroupIcon },*/
     { name: "3D Graph", icon: CubeTransparentIcon },
     { name: "Exmple2", icon: ChartBarIcon },
   ];
@@ -189,7 +191,7 @@ export default function EcommerceTabs() {
           onClick={() =>
             setActivePanel(activePanel === "aiAssistant" ? null : "aiAssistant")
           }
-          className={`fixed top-1/2 -translate-y-1/2    dark:bg-gray-780 shadow-soon dark:text-white py-2 px-3 rounded-l-full hover:bg-gray-600 z-50 active:bg-blue-600 transition-all duration-300 ease-in-out flex items-center gap-2`}
+          className={`fixed top-1/2 -translate-y-1/2    bg-gray-780 shadow-soon dark:text-white py-2 px-3 rounded-l-full hover:bg-gray-600 z-50 active:bg-blue-600 transition-all duration-300 ease-in-out flex items-center gap-2`}
           style={{
             right: activePanel ? `${sidebarWidth}px` : "0px",
             top: `calc(20% - 20px)`,
@@ -218,7 +220,7 @@ export default function EcommerceTabs() {
               activePanel === "defaultInputs" ? null : "defaultInputs"
             )
           }
-          className={`fixed top-1/2 -translate-y-1/2   dark:bg-gray-780 shadow-soon dark:text-white py-2 px-3 rounded-l-full shadow-lg hover:bg-gray-600 z-50 transition-all duration-300 ease-in-out flex items-center gap-2`}
+          className={`fixed top-1/2 -translate-y-1/2   bg-gray-780 shadow-soon dark:text-white py-2 px-3 rounded-l-full shadow-lg hover:bg-gray-600 z-50 transition-all duration-300 ease-in-out flex items-center gap-2`}
           style={{
             right: activePanel ? `${sidebarWidth}px` : "0px",
             top: `calc(20% + 30px)`,
@@ -247,7 +249,7 @@ export default function EcommerceTabs() {
               activePanel === "monthlyTarget" ? null : "monthlyTarget"
             )
           }
-          className={`fixed top-1/2 -translate-y-1/2   dark:bg-gray-780 shadow-soon dark:text-white py-2 px-3 rounded-l-full shadow-lg hover:bg-gray-600 z-50 transition-all duration-300 ease-in-out flex items-center gap-2`}
+          className={`fixed top-1/2 -translate-y-1/2   bg-gray-780 shadow-soon dark:text-white py-2 px-3 rounded-l-full shadow-lg hover:bg-gray-600 z-50 transition-all duration-300 ease-in-out flex items-center gap-2`}
           style={{
             right: activePanel ? `${sidebarWidth}px` : "0px",
             top: `calc(20% + 80px)`,
@@ -268,7 +270,7 @@ export default function EcommerceTabs() {
         </button>
       )}
 
-      <Tab.Panels className="mt-4 h-[calc(100%-60px)] relative">
+      <Tab.Panels className="mt-2 h-[calc(100%-60px)] relative">
         {/* 1. Network Graph Tab Panel (팝업 사이드바) */}
         <Tab.Panel className="h-full" unmount={true}>
           <div
@@ -278,7 +280,7 @@ export default function EcommerceTabs() {
             className="flex flex-col h-full relative overflow-hidden"
           >
             <div style={{ height: `${topHeight}%` }} className="transition-all">
-              <div className="bg-white dark:bg-gray-900 rounded shadow p-4 h-full">
+              <div className="bg-white dark:bg-gray-900 rounded shadow  h-full">
                 <GraphMetrics />
                 <NetworkGraph isActive={selectedIndex === 0} />
               </div>
@@ -357,7 +359,7 @@ export default function EcommerceTabs() {
               className={`flex flex-col h-full w-full transition-all duration-300 ease-in-out`}
             >
               <div style={{ height: `${85}%` }} className="transition-all">
-                <div className="shadow p-4 h-full">
+                <div className="shadow  h-full">
                   <GraphMetrics />
                   <SimulationGraph isActive={selectedIndex === 1} />
                 </div>
@@ -426,7 +428,7 @@ export default function EcommerceTabs() {
                 style={{ height: `${topHeight}%` }}
                 className="transition-all"
               >
-                <div className="bg-white dark:bg-gray-900 rounded shadow p-4 h-full">
+                <div className="bg-white dark:bg-gray-900 rounded shadow  h-full">
                   <EcommerceMetrics />
                   <TimeLineGraph />
                 </div>
@@ -462,7 +464,7 @@ export default function EcommerceTabs() {
                 style={{ height: `${topHeight}%` }}
                 className="transition-all"
               >
-                <div className="bg-white dark:bg-gray-900 rounded shadow p-4 h-full">
+                <div className="bg-white dark:bg-gray-900 rounded shadow  h-full">
                   <EcommerceMetrics />
                   <GeoMapGraph />
                 </div>
@@ -499,7 +501,7 @@ export default function EcommerceTabs() {
                 style={{ height: `${topHeight}%` }}
                 className="transition-all"
               >
-                <div className="bg-white dark:bg-gray-900 rounded shadow p-4 h-full">
+                <div className="bg-white dark:bg-gray-900 rounded shadow  h-full">
                   <GraphMetrics />
                   <MonthlySalesChart />
                 </div>

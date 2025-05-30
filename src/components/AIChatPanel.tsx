@@ -106,7 +106,7 @@ const AIChatPanel: React.FC = () => {
           </button>
         </div>
       </div>
-      <div className="flex-1 overflow-y-auto p-4 custom-scrollbar space-y-3 max-h-[350px] border dark:border-gray-700">
+      <div className="h-[350px] overflow-y-auto p-4 custom-scrollbar space-y-3 border dark:border-gray-700">
         {messages.length === 0 ? (
           <p className="text-gray-500 dark:text-gray-400 text-sm">
             Start a conversation...
@@ -116,7 +116,7 @@ const AIChatPanel: React.FC = () => {
             {messages.map((msg, idx) => (
               <div
                 key={idx}
-                className={`p-2 rounded-lg max-w-[80%] w-fit whitespace-pre-wrap text-sm ${
+                className={`p-2 rounded-lg w-[80%]  whitespace-pre-wrap text-sm ${
                   msg.role === "user"
                     ? "ml-auto bg-brand-500/50 text-gray-200"
                     : "bg-gray-100 dark:bg-gray-600 text-gray-800 dark:text-white"
