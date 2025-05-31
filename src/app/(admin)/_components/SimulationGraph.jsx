@@ -115,6 +115,7 @@ export default function SimulationGraph({ isActive }) {
       const amount = nodeRef.current[nodeId].amount;
       const percentage = nodeRef.current[nodeId].percentage;
       const scaledHistoryData = nodeRef.current[nodeId].scaledHistoryData;
+
       updateMetricDataHelper(
         name,
         amount,
@@ -365,7 +366,6 @@ export default function SimulationGraph({ isActive }) {
           const amountValue =
             ref.amount === undefined ? initialAmount : ref.amount;
           ref.amount = amountValue;
-
           if (!ref.percentage) {
             ref.percentage = 0;
           }
@@ -593,41 +593,90 @@ export default function SimulationGraph({ isActive }) {
 
       cy.center(roots);
 
-      const OFFSET_X = -50;
-      const nodePositions = {
-        매출원가: { x: 798.3342288998895, y: 704.8898453135909 },
-        매출액: { x: 798.3342288998895, y: 968.24288111116 },
-        당기제품제조원가: { x: 1347.24006, y: 347.0353200556658 },
-        기초재고: { x: 1374.8861906279813, y: 525.3371253720223 },
-        기말재고: { x: 1401.164721046636, y: 705.6113923763377 },
-        FERT100s: { x: 1404.4980606279814, y: 880.7656582299755 },
-        FERT200s: { x: 1402.8313908373088, y: 1058.8715207419013 },
-        당기제조비용: { x: 1948.7291706279816, y: 64.39271855322282 },
-        재공품: { x: 1987.308, y: 247.7019956226425 },
-        액티비티단수차: { x: 1987.3079999999993, y: 435.6673726920622 },
-        액티비티배부: { x: 1948.7291706279816, y: 625.0334101801366 },
-        가공비: { x: 2561.788617629735, y: -123.62142290129071 },
-        부재료비: { x: 2562.5938048081102, y: 63.04208671492896 },
-        원재료비: { x: 2565.064991986484, y: 247.10429232439049 },
-      };
+      // const OFFSET_X = -50;
+      // const nodePositions = {
+      //   매출원가: { x: 798.3342288998895, y: 704.8898453135909 },
+      //   매출액: { x: 798.3342288998895, y: 968.24288111116 },
+      //   당기제품제조원가: { x: 1347.24006, y: 347.0353200556658 },
+      //   기초재고: { x: 1374.8861906279813, y: 525.3371253720223 },
+      //   기말재고: { x: 1401.164721046636, y: 705.6113923763377 },
+      //   FERT100s: { x: 1404.4980606279814, y: 880.7656582299755 },
+      //   FERT200s: { x: 1402.8313908373088, y: 1058.8715207419013 },
+      //   당기제조비용: { x: 1948.7291706279816, y: 64.39271855322282 },
+      //   재공품: { x: 1987.308, y: 247.7019956226425 },
+      //   액티비티단수차: { x: 1987.3079999999993, y: 435.6673726920622 },
+      //   액티비티배부: { x: 1948.7291706279816, y: 625.0334101801366 },
+      //   가공비: { x: 2561.788617629735, y: -123.62142290129071 },
+      //   부재료비: { x: 2562.5938048081102, y: 63.04208671492896 },
+      //   원재료비: { x: 2565.064991986484, y: 247.10429232439049 },
+      // };
 
-      cy.nodes().forEach((node) => {
-        const name = node.data("name");
-        const position = nodePositions[name];
-        if (position) {
-          node.position({
-            x: position.x + OFFSET_X,
-            y: position.y,
-          });
-        }
-      });
+      // cy.nodes().forEach((node) => {
+      //   const name = node.data("name");
+      //   const position = nodePositions[name];
+      //   if (position) {
+      //     node.position({
+      //       x: position.x + OFFSET_X,
+      //       y: position.y,
+      //     });
+      //   }
+      // });
     });
 
     cyInstanceRef.current = cy;
   }, [graphData]);
 
+  const clickExpandBtn = () => {
+    if (!cyInstanceRef.current) return;
+    const cy = cyInstanceRef.current;
+    const roots = cy
+      .nodes()
+      .filter((node) => node.incomers("node").length === 0);
+    const visited = new Set();
+
+    const queue = [...roots];
+    while (queue.length > 0) {
+      const current = queue.shift();
+      const currentId = current.id();
+      const ref = nodeRef.current[currentId];
+
+      if (visited.has(currentId)) continue;
+      visited.add(currentId);
+
+      if (!ref.expanded) {
+        expandNode(currentId);
+        ref.expanded = true;
+        forceReRenderNode(currentId);
+      }
+
+      const children = current.outgoers("node");
+      children.forEach((child) => {
+        if (!visited.has(child.id())) {
+          queue.push(child);
+        }
+      });
+    }
+  };
+
   return (
     <div className="overflow-hidden  border border-gray-200 bg-white px-5 pt-5 dark:border-gray-800 dark:bg-white/[0.03] sm:px-6 sm:pt-6">
+      <div
+        style={{
+          position: "fixed",
+          top: "250px",
+          left: "96px",
+          zIndex: 1000,
+          backgroundColor: "rgba(255, 255, 255, 0.9)",
+          border: "1px solid #ccc",
+          borderRadius: "2px",
+          padding: "4px",
+          cursor: "pointer",
+          fontSize: "8px",
+        }}
+        onClick={clickExpandBtn}
+      >
+        Expand All
+      </div>
       <div id="cy" ref={cyRef} style={{ width: "100%", minHeight: "800px" }} />
       <div id="tooltip" className="graph-tool-tip" />
     </div>
