@@ -298,6 +298,9 @@ export default function SimulationGraph({ isActive }) {
       nodeRef.current = {};
     }
 
+    const panzoom = require("cytoscape-panzoom");
+    panzoom(cytoscape);
+
     const cy = cytoscape({
       container: cyRef.current,
       style: [
@@ -331,6 +334,9 @@ export default function SimulationGraph({ isActive }) {
     });
 
     cy.add([...graphData.nodes, ...graphData.edges]);
+
+    const defaults = {};
+    cy.panzoom(defaults);
 
     const layout = cy
       .layout({
