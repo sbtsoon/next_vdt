@@ -79,9 +79,6 @@ export default function Example3() {
       cyInstanceRef.current = null;
     }
 
-    const panzoom = require("cytoscape-panzoom");
-    panzoom(cytoscape);
-
     const cy = cytoscape({
       container: cyRef.current,
       style: [
@@ -274,9 +271,6 @@ export default function Example3() {
     });
 
     cy.add([...graphData.nodes, ...graphData.edges]);
-
-    const defaults = {};
-    cy.panzoom(defaults);
 
     // metric card 정보 업데이트
     // cy.nodes().forEach((node) => {
