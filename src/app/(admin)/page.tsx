@@ -125,8 +125,8 @@ export default function EcommerceTabs() {
       body: query ? JSON.stringify({ query }) : null,
     });
     const { data, rawRecords } = await res.json();
-    
-    // nodes, edges 데이터가 없어서 그래프가 그려지지 않는다면 기존 그래프 유지지
+
+    // nodes, edges 데이터가 없어서 그래프가 그려지지 않는다면 기존 그래프 유지
     if (data.nodes.length !== 0 && data.edges.length !== 0) {
       initStoreData();
       setGraphData(data);
@@ -164,6 +164,23 @@ export default function EcommerceTabs() {
 
   useEffect(() => {
     setActivePanel(null);
+
+    // =========== 추후 제거 예정 ===========
+    // metric card 정보 업데이트
+    graphData.nodes.forEach((node) => {
+      const { name, amount } = node.data || {};
+      const parsedAmount = Math.round(parseNeo4jInt(amount) / 1_000_000);
+      const percentage = 0;
+      if (name) {
+        updateMetricDataHelper(
+          name,
+          parsedAmount,
+          percentage,
+          [],
+          setMetricData
+        );
+      }
+    });
   }, [selectedIndex]);
 
   function isSimpleTable(records: any) {

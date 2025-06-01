@@ -79,6 +79,9 @@ export default function NetworkGraph({ isActive }) {
       cyInstanceRef.current = null;
     }
 
+    const panzoom = require("cytoscape-panzoom");
+    panzoom(cytoscape);
+
     const cy = cytoscape({
       container: cyRef.current,
       style: [
@@ -272,6 +275,9 @@ export default function NetworkGraph({ isActive }) {
 
     cy.add([...graphData.nodes, ...graphData.edges]);
 
+    const defaults = {};
+    cy.panzoom(defaults);
+
     // metric card 정보 업데이트
     // cy.nodes().forEach((node) => {
     //   const name = node.data("name");
@@ -279,6 +285,7 @@ export default function NetworkGraph({ isActive }) {
     //   const percentage = 0;
     //   updateMetricDataHelper(name, amount, percentage, [], setMetricData);
     // });
+
     cyInstanceRef.current = cy;
 
     applyRadialLayout();
