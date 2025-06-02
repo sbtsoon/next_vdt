@@ -33,6 +33,7 @@ import GeoMapGraph from "./_components/GeoMapGraph";
 import { parseNeo4jInt } from "@/utils/neo4jUtils";
 import { updateMetricDataHelper } from "@/helpers/metricHelper";
 import Example3 from "./_components/Example3";
+import Example4 from "./_components/Example4";
 
 function classNames(...classes: string[]) {
   return classes.filter(Boolean).join(" ");
@@ -632,7 +633,7 @@ export default function EcommerceTabs() {
           </div>
         </Tab.Panel>
 
-        {/* 6. Exmple4 Tab Panel (좌우/상하 리사이징 유지, 필터/AI 영역 포함) */}
+        {/* 7. Exmple4 Tab Panel (좌우/상하 리사이징 유지, 필터/AI 영역 포함) */}
         <Tab.Panel className="h-full">
           <div
             ref={containerRef}
@@ -648,7 +649,7 @@ export default function EcommerceTabs() {
               >
                 <div className="bg-white dark:bg-gray-900 rounded shadow  h-full">
                   <GraphMetrics />
-                  <Example3 />
+                  <Example4 />
                 </div>
               </div>
               {/* 여기에 수직 크기 조절 막대를 배치합니다. 상단 div의 바깥, 하단 div의 바로 위입니다. */}
