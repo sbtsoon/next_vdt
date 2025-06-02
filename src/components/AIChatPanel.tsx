@@ -127,7 +127,7 @@ const AIChatPanel: React.FC = () => {
             ))}
             {loading && (
               <div className="p-2 rounded-lg bg-gray-100 dark:bg-gray-800 text-sm text-gray-600 dark:text-gray-300 w-fit">
-                <span className="animate-pulse">Assistant is typing...</span>
+                <span className="animate-pulse">Assistant is thinking...</span>
               </div>
             )}
             <div ref={messagesEndRef} />
