@@ -7,7 +7,7 @@
   padding: 10px;
   width: 400px;
   font-weight: 400;
-  color:#fff;
+  color: #fff;
   position: relative;
 }
 
@@ -116,7 +116,8 @@
   display: none;
   background-color: #141e27;
   width: 100%;
-  padding: 5px 8px;border-radius: 5px;
+  padding: 5px 8px;
+  border-radius: 5px;
 }
 
 .range-input-display-box {
@@ -139,13 +140,16 @@
   padding: 3px 8px;
   opacity: 1;
   border-radius: 5px;
-  background-color:
-  color-mix(in oklab, var(--color-blue-500) 20%, transparent);    color: var(--color-blue-400);
+  background-color: color-mix(in oklab, var(--color-blue-500) 20%, transparent);
+  color: var(--color-blue-400);
 }
-.keep-button:hover{ background-color:
-  color-mix(in oklab, var(--color-blue-500) 30%, transparent);    color: var(--color-blue-400);}
+
+.keep-button:hover {
+  background-color: color-mix(in oklab, var(--color-blue-500) 30%, transparent);
+  color: var(--color-blue-400);
+}
 .graph-tool-tip {
-  position: absolute;
+  position: fixed;
   background-color: #fff;
   border: 1px solid #ccc;
   padding: 4px 8px;
