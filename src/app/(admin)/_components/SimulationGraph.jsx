@@ -274,11 +274,11 @@ export default function SimulationGraph({ isActive }) {
       const rect = barElement.getBoundingClientRect();
 
       tooltip.textContent = `${percentage}%`;
-      const mouseX = event.clientX + window.scrollX;
-      const mouseY = event.clientY + window.scrollY;
+      const mouseX = event.clientX;
+      const mouseY = event.clientY;
 
-      // tooltip.style.left = `${mouseX + 2}px`; // 약간 오른쪽
-      //tooltip.style.top = `${mouseY - 2}px`; // 약간 위쪽
+      tooltip.style.left = `${mouseX + 10}px`; 
+      tooltip.style.top = `${mouseY + 10}px`; 
       tooltip.style.display = "block";
 
       setTimeout(() => {
