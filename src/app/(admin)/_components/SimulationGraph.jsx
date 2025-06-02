@@ -16,7 +16,7 @@ import {
 import { updateMetricDataHelper } from "@/helpers/metricHelper";
 import styles from "./simulationGraph.css";
 
-export default function SimulationGraph({ isActive }) {
+export default function SimulationGraph() {
   const cyRef = useRef(null);
   const cyInstanceRef = useRef(null);
   const [graphData] = useAtom(graphDataAtom);
@@ -333,7 +333,9 @@ export default function SimulationGraph({ isActive }) {
       ],
     });
 
-    cy.add([...graphData.nodes, ...graphData.edges]);
+    const deepCopyData = structuredClone(graphData);
+    cy.add([...deepCopyData.nodes, ...deepCopyData.edges]);
+    // cy.add([...graphData.nodes, ...graphData.edges]);
 
     const defaults = {};
     cy.panzoom(defaults);

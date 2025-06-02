@@ -270,7 +270,9 @@ export default function Example3() {
       itemTextShadowColor: "transparent",
     });
 
-    cy.add([...graphData.nodes, ...graphData.edges]);
+    // cy.add([...graphData.nodes, ...graphData.edges]);
+    const deepCopyData = structuredClone(graphData);
+    cy.add([...deepCopyData.nodes, ...deepCopyData.edges]);
 
     // metric card 정보 업데이트
     // cy.nodes().forEach((node) => {
