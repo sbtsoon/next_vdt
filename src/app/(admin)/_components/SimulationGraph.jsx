@@ -16,12 +16,14 @@ import {
 import { updateMetricDataHelper } from "@/helpers/metricHelper";
 import styles from "./simulationGraph.css";
 
-export default function SimulationGraph() {
+export default function SimulationGraph({ isActive }) {
   const cyRef = useRef(null);
   const cyInstanceRef = useRef(null);
   const [graphData] = useAtom(graphDataAtom);
   const [, setMetricData] = useAtom(metricMapAtom);
   const nodeRef = useRef({});
+  const layoutRef = useRef(null);
+  const didInitialize = useRef(false);
 
   const expandNode = (nodeId) => {
     const cy = cyInstanceRef.current;
@@ -296,6 +298,10 @@ export default function SimulationGraph() {
 
     if (nodeRef.current) {
       nodeRef.current = {};
+    }
+
+    if (didInitialize.current) {
+      didInitialize.current = false;
     }
 
     const panzoom = require("cytoscape-panzoom");
@@ -583,11 +589,21 @@ export default function SimulationGraph() {
       hideEdge(edge, 2);
     });
 
-    const roots = cy
-      .nodes()
-      .filter((node) => node.outgoers("edge").length === 0);
+    cyInstanceRef.current = cy;
+    layoutRef.current = layout;
+  }, [graphData]);
 
-    layout.on("layoutstop", () => {
+  useEffect(() => {
+    if (!isActive || didInitialize.current || !cyInstanceRef.current) return;
+    const cy = cyInstanceRef.current;
+    didInitialize.current = true; // 처음 한번만 실행
+
+    requestAnimationFrame(() => {
+      // isActive===true라고 해서, 바로 DOM이 렌더링 완료되는 것이 아니기 때문에, 의도적으로 지연하여 안정성 확보
+      cy.resize(); // 탭이 비활성화 일 때, 잘못 계산된 size를 재계산
+      const roots = cy
+        .nodes()
+        .filter((node) => node.outgoers("edge").length === 0);
       roots.forEach((root) => {
         showNode(root, 2);
         const rootId = root.id();
@@ -598,9 +614,7 @@ export default function SimulationGraph() {
       cy.zoom({
         level: 0.6,
       });
-
       cy.center(roots);
-
       const OFFSET_X = -50;
       const nodePositions = {
         매출원가: { x: 798.3342288998895, y: 704.8898453135909 },
@@ -625,14 +639,12 @@ export default function SimulationGraph() {
         액티비티수차합: { x: 2502.310186322719, y: 446.57359373876614 },
         액티비티단가합: { x: 2449.995481117116, y: 625.4181075762423 },
         비용계획합: { x: 2903.202914105695, y: -401.01035949159933 },
-
         FERT101: { x: 2946.6635023857293, y: 888.9510872451323 },
         FERT102: { x: 2870.3583398903847, y: 1115.7534849313272 },
         FERT103: { x: 2775.78644077191, y: 1352.4690521094726 },
         FERT104: { x: 2689.881831225508, y: 1581.7646718201397 },
         FERT105: { x: 2604.9951251342463, y: 1806.937392717706 },
         FERT106: { x: 2540.464402190489, y: 2015.3884534790848 },
-
         ROH0001누적: { x: 3473.87079917938, y: 2.6317058812969503 },
         ROH0002누적: { x: 3439.8521835017586, y: 214.00036899174603 },
         ROH0003누적: { x: 3386.574548317458, y: 435.4222352384621 },
@@ -640,7 +652,6 @@ export default function SimulationGraph() {
         ROH2002누적: { x: 3470.3554648643294, y: -416.9836287512874 },
         ROH2003누적: { x: 3526.152592648285, y: -218.4055762519053 },
       };
-
       cy.nodes().forEach((node) => {
         const name = node.data("name");
         const position = nodePositions[name];
@@ -652,9 +663,7 @@ export default function SimulationGraph() {
         }
       });
     });
-
-    cyInstanceRef.current = cy;
-  }, [graphData]);
+  }, [isActive]);
 
   const clickExpandBtn = () => {
     if (!cyInstanceRef.current) return;
