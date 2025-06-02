@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>3D Graph - 줌/팬 기능 최종 수정 v3</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <button id="menuToggleButton">&gt;</button>
+
+    <div id="controls">
+      <div>
+        <label for="groupFilter">Filter Groups:</label>
+        <select id="groupFilter" multiple size="6">
+          <option value="all" selected>All</option>
+        </select>
+      </div>
+      <div>
+        <label for="sourceNode">Source Node:</label>
+        <select id="sourceNode"></select>
+      </div>
+      <div>
+        <label for="targetNode">Target Node:</label>
+        <select id="targetNode"></select>
+      </div>
+      <button id="highlightPathBtn">Highlight Shortest Path</button>
+      <button id="resetBtn">Reset Path</button>
+      <hr />
+      <div>
+        <label for="showLabels">Show Node Names:</label>
+        <input type="checkbox" id="showLabels" checked />
+      </div>
+      <div>
+        <label for="labelFontSize">Label Font Size:</label>
+        <input
+          type="number"
+          id="labelFontSize"
+          value="48"
+          min="12"
+          max="120"
+          step="4"
+        />
+      </div>
+    </div>
+
+    <div id="node-info">Click a node to see details.</div>
+    <div id="3d-graph"></div>
+
+    <div id="view-controls">
+      <div class="control-row">
+        <button id="zoomInBtn" title="Zoom In">+</button>
+        <button id="zoomOutBtn" title="Zoom Out">-</button>
+      </div>
+      <div class="control-row">
+        <button id="panLeftBtn" title="Pan Left">&larr;</button>
+        <button id="panUpBtn" title="Pan Up">&uarr;</button>
+        <button id="panDownBtn" title="Pan Down">&darr;</button>
+        <button id="panRightBtn" title="Pan Right">&rarr;</button>
+      </div>
+      <div class="control-row">
+        <button id="resetViewBtn" title="Reset View">Reset</button>
+        <button id="topViewBtn" title="Top View">Top</button>
+        <button id="frontViewBtn" title="Front View">Front</button>
+      </div>
+    </div>
+
+    <script src="https://unpkg.com/three@0.152.2/build/three.min.js"></script>
+    <script src="https://unpkg.com/3d-force-graph"></script>
+    <script src="data.js"></script>
+    <script src="script.js"></script>
+  </body>
+</html>

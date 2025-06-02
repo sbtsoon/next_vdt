@@ -65,7 +65,7 @@ const iconMap = new Map([
   ["비용계획합", "비용.png"],
 ]);
 
-export default function NetworkGraph({ isActive }) {
+export default function Example3() {
   const cyRef = useRef(null);
   const cyInstanceRef = useRef(null);
   const [graphData] = useAtom(graphDataAtom);
@@ -78,9 +78,6 @@ export default function NetworkGraph({ isActive }) {
       cyInstanceRef.current.destroy();
       cyInstanceRef.current = null;
     }
-
-    const panzoom = require("cytoscape-panzoom");
-    panzoom(cytoscape);
 
     const cy = cytoscape({
       container: cyRef.current,
@@ -173,9 +170,9 @@ export default function NetworkGraph({ isActive }) {
         {
           content: "숨김",
           select: function (ele) {
-            hideNode(ele, 0);
+            hideNode(ele, 1);
             ele.connectedEdges().forEach((edge) => {
-              hideEdge(edge, 0);
+              hideEdge(edge, 1);
             });
           },
         },
@@ -201,14 +198,14 @@ export default function NetworkGraph({ isActive }) {
                 if (isOutgoing) {
                   const next = target;
                   if (nodeId !== rootId) return;
-                  showEdge(edge, 0);
-                  showNode(next, 0);
+                  showEdge(edge, 1);
+                  showNode(next, 1);
                   queue.push({ node: next, from: nodeId });
                 } else {
                   const prev = source;
                   if (target.id() !== rootId && prev.data("isHidden")) return;
-                  showEdge(edge, 0);
-                  showNode(prev, 0);
+                  showEdge(edge, 1);
+                  showNode(prev, 1);
                   queue.push({ node: prev, from: nodeId });
                 }
               });
@@ -232,8 +229,8 @@ export default function NetworkGraph({ isActive }) {
 
               incomingEdges.forEach((edge) => {
                 const source = edge.source();
-                hideEdge(edge, 0);
-                hideNode(source, 0);
+                hideEdge(edge, 1);
+                hideNode(source, 1);
                 queue.push(source);
               });
             }
@@ -275,9 +272,6 @@ export default function NetworkGraph({ isActive }) {
 
     cy.add([...graphData.nodes, ...graphData.edges]);
 
-    const defaults = {};
-    cy.panzoom(defaults);
-
     // metric card 정보 업데이트
     // cy.nodes().forEach((node) => {
     //   const name = node.data("name");
@@ -288,34 +282,42 @@ export default function NetworkGraph({ isActive }) {
 
     cyInstanceRef.current = cy;
 
-    applyRadialLayout();
+    applyDagreLayout();
   }, [graphData]);
 
-  const applyRadialLayout = () => {
+  const applyDagreLayout = () => {
     const cy = cyInstanceRef.current;
-    cy.nodes().forEach((node) => showNode(node, 0));
-    cy.edges().forEach((edge) => showEdge(edge, 0));
-    const layout = cy.layout({ name: "cose", padding: 30 }).run();
-
-    cy.style().selector("node").style({ width: "20px", height: "20px" });
-    cy.style().selector("edge").style({ "curve-style": "straight" }).update();
-
-    layout.on("layoutstop", () => {
-      const rootNodes = cy
-        .nodes()
-        .filter((node) => parseNeo4jInt(node.data("level")) === 0);
-
-      cy.animate(
-        {
-          center: { eles: rootNodes },
-          zoom: 4,
-        },
-        {
-          duration: 800, // 서서히 줌 (ms)
-          easing: "ease-in-out",
-        }
-      );
+    cy.nodes().forEach((node) => {
+      showNode(node, 1);
     });
+    cy.edges().forEach((edge) => {
+      showEdge(edge, 1);
+    });
+
+    const layout = cy
+      .layout({
+        name: "random", // 또는 'preset'
+        animate: false, // 초기 위치는 즉시 적용
+      })
+      .run();
+
+    cy.layout({
+      name: "dagre",
+      rankDir: "RL",
+      nodeSep: 5, // 같은 레벨에서 노드 간 간격
+      rankSep: 40, // 레벨 간 edge 길이
+      edgeSep: 30, // 동일 레벨에서의 edge 길이
+      padding: 20,
+      animate: true,
+    }).run();
+
+    cy.style().selector("node").style({
+      shape: "ellipse",
+      width: "20px",
+      height: "20px",
+    });
+
+    cy.style().selector("edge").style({ "curve-style": "round-taxi" }).update(); // "straight"
   };
 
   return (

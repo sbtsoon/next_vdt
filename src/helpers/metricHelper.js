@@ -14,6 +14,9 @@ export function updateMetricDataHelper(
   const key = metricNameMap[name];
   if (!key) return;
 
+  if (amount === undefined || amount === null) return;
+  if (percentage === undefined || percentage === null) return;
+
   setMetricData((prev) => ({
     ...prev,
     [key]: {

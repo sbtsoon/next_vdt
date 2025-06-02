@@ -27,6 +27,7 @@
     "cytoscape-cxtmenu": "^3.5.0",
     "cytoscape-dagre": "^2.5.0",
     "cytoscape-node-html-label": "^1.2.2",
+    "cytoscape-panzoom": "^2.5.3",
     "flatpickr": "^4.6.13",
     "jotai": "^2.12.4",
     "neo4j-driver": "^5.28.1",

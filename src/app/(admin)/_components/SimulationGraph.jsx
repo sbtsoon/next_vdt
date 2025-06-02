@@ -115,6 +115,7 @@ export default function SimulationGraph({ isActive }) {
       const amount = nodeRef.current[nodeId].amount;
       const percentage = nodeRef.current[nodeId].percentage;
       const scaledHistoryData = nodeRef.current[nodeId].scaledHistoryData;
+
       updateMetricDataHelper(
         name,
         amount,
@@ -297,6 +298,9 @@ export default function SimulationGraph({ isActive }) {
       nodeRef.current = {};
     }
 
+    const panzoom = require("cytoscape-panzoom");
+    panzoom(cytoscape);
+
     const cy = cytoscape({
       container: cyRef.current,
       style: [
@@ -330,6 +334,9 @@ export default function SimulationGraph({ isActive }) {
     });
 
     cy.add([...graphData.nodes, ...graphData.edges]);
+
+    const defaults = {};
+    cy.panzoom(defaults);
 
     const layout = cy
       .layout({
@@ -365,7 +372,6 @@ export default function SimulationGraph({ isActive }) {
           const amountValue =
             ref.amount === undefined ? initialAmount : ref.amount;
           ref.amount = amountValue;
-
           if (!ref.percentage) {
             ref.percentage = 0;
           }
@@ -606,9 +612,31 @@ export default function SimulationGraph({ isActive }) {
         재공품: { x: 1987.308, y: 247.7019956226425 },
         액티비티단수차: { x: 1987.3079999999993, y: 435.6673726920622 },
         액티비티배부: { x: 1948.7291706279816, y: 625.0334101801366 },
-        가공비: { x: 2561.788617629735, y: -123.62142290129071 },
-        부재료비: { x: 2562.5938048081102, y: 63.04208671492896 },
-        원재료비: { x: 2565.064991986484, y: 247.10429232439049 },
+        가공비: { x: 2456.55923882003, y: -401.6180286126659 },
+        FERT201: { x: 2011.91221064616, y: 1196.5029406541853 },
+        FERT202: { x: 1986.6887174199474, y: 1427.2064964627455 },
+        FERT203: { x: 1936.2417309675197, y: 1667.0822316262913 },
+        부재료비: { x: 2487.364425998405, y: -216.56017066438633 },
+        원재료비: { x: 2546.731658653151, y: -34.56237434227623 },
+        생산입고: { x: 2463.3286336951332, y: 325.4501012670632 },
+        공정출고: { x: 2466.6619670284667, y: 170.44829371390944 },
+        액티비티수차합: { x: 2502.310186322719, y: 446.57359373876614 },
+        액티비티단가합: { x: 2449.995481117116, y: 625.4181075762423 },
+        비용계획합: { x: 2903.202914105695, y: -401.01035949159933 },
+
+        FERT101: { x: 2946.6635023857293, y: 888.9510872451323 },
+        FERT102: { x: 2870.3583398903847, y: 1115.7534849313272 },
+        FERT103: { x: 2775.78644077191, y: 1352.4690521094726 },
+        FERT104: { x: 2689.881831225508, y: 1581.7646718201397 },
+        FERT105: { x: 2604.9951251342463, y: 1806.937392717706 },
+        FERT106: { x: 2540.464402190489, y: 2015.3884534790848 },
+
+        ROH0001누적: { x: 3473.87079917938, y: 2.6317058812969503 },
+        ROH0002누적: { x: 3439.8521835017586, y: 214.00036899174603 },
+        ROH0003누적: { x: 3386.574548317458, y: 435.4222352384621 },
+        ROH2001누적: { x: 3429.372069069061, y: -617.4707944957579 },
+        ROH2002누적: { x: 3470.3554648643294, y: -416.9836287512874 },
+        ROH2003누적: { x: 3526.152592648285, y: -218.4055762519053 },
       };
 
       cy.nodes().forEach((node) => {
@@ -626,8 +654,66 @@ export default function SimulationGraph({ isActive }) {
     cyInstanceRef.current = cy;
   }, [graphData]);
 
+  const clickExpandBtn = () => {
+    if (!cyInstanceRef.current) return;
+    const cy = cyInstanceRef.current;
+    const roots = cy
+      .nodes()
+      .filter((node) => node.incomers("node").length === 0);
+    const visited = new Set();
+
+    const queue = [...roots];
+    while (queue.length > 0) {
+      const current = queue.shift();
+      const currentId = current.id();
+      const ref = nodeRef.current[currentId];
+
+      if (visited.has(currentId)) continue;
+      visited.add(currentId);
+
+      if (!ref.expanded) {
+        expandNode(currentId);
+        ref.expanded = true;
+        forceReRenderNode(currentId);
+      }
+
+      const children = current.outgoers("node");
+      children.forEach((child) => {
+        if (!visited.has(child.id())) {
+          queue.push(child);
+        }
+      });
+    }
+  };
+
   return (
-    <div className="overflow-hidden  border border-gray-200 bg-white px-5 pt-5 dark:border-gray-800 dark:bg-white/[0.03] sm:px-6 sm:pt-6">
+    <div
+      style={{ position: "relative" }}
+      className="overflow-hidden  border border-gray-200 bg-white px-5 pt-5 dark:border-gray-800 dark:bg-white/[0.03] sm:px-6 sm:pt-6"
+    >
+      <div
+        style={{
+          position: "absolute",
+          top: "20px",
+          left: "20px",
+          zIndex: 9999, // 충분히 높은 값
+        }}
+      >
+        <button
+          style={{
+            backgroundColor: "black",
+            color: "white",
+            borderRadius: "2px",
+            padding: "6px 8px",
+            cursor: "pointer",
+            fontSize: "10px",
+          }}
+          onClick={clickExpandBtn}
+        >
+          Expand All
+        </button>
+      </div>
+
       <div id="cy" ref={cyRef} style={{ width: "100%", minHeight: "800px" }} />
       <div id="tooltip" className="graph-tool-tip" />
     </div>
