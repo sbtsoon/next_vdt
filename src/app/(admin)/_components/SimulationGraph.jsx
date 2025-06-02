@@ -22,7 +22,6 @@ export default function SimulationGraph({ isActive }) {
   const [graphData] = useAtom(graphDataAtom);
   const [, setMetricData] = useAtom(metricMapAtom);
   const nodeRef = useRef({});
-  const layoutRef = useRef(null);
   const didInitialize = useRef(false);
 
   const expandNode = (nodeId) => {
@@ -590,7 +589,6 @@ export default function SimulationGraph({ isActive }) {
     });
 
     cyInstanceRef.current = cy;
-    layoutRef.current = layout;
   }, [graphData]);
 
   useEffect(() => {
