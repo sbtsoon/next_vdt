@@ -189,7 +189,9 @@ export default function MonthlySalesChart() {
       itemTextShadowColor: "transparent",
     });
 
-    cy.add([...graphData.nodes, ...graphData.edges]);
+    const deepCopyData = structuredClone(graphData);
+    cy.add([...deepCopyData.nodes, ...deepCopyData.edges]);
+    // cy.add([...graphData.nodes, ...graphData.edges]);
     cyInstanceRef.current = cy;
 
     applyRadialLayout();

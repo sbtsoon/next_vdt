@@ -65,7 +65,7 @@ const iconMap = new Map([
   ["비용계획합", "비용.png"],
 ]);
 
-export default function NetworkGraph({ isActive }) {
+export default function NetworkGraph() {
   const cyRef = useRef(null);
   const cyInstanceRef = useRef(null);
   const [graphData] = useAtom(graphDataAtom);
@@ -273,7 +273,9 @@ export default function NetworkGraph({ isActive }) {
       itemTextShadowColor: "transparent",
     });
 
-    cy.add([...graphData.nodes, ...graphData.edges]);
+    const deepCopyData = structuredClone(graphData);
+    cy.add([...deepCopyData.nodes, ...deepCopyData.edges]);
+    // cy.add([...graphData.nodes, ...graphData.edges]);
 
     const defaults = {};
     cy.panzoom(defaults);

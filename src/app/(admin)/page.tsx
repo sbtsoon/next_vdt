@@ -315,7 +315,7 @@ export default function EcommerceTabs() {
 
       <Tab.Panels className="mt-2 h-[calc(100%-60px)] relative">
         {/* 1. Network Graph Tab Panel (팝업 사이드바) */}
-        <Tab.Panel className="h-full">
+        <Tab.Panel className="h-full" unmount={true}>
           <div
             ref={containerRef}
             // ✨ 변경: containerRef에 직접 flex-col 속성 부여
@@ -325,7 +325,7 @@ export default function EcommerceTabs() {
             <div style={{ height: `${topHeight}%` }} className="transition-all">
               <div className="bg-white dark:bg-gray-900 rounded shadow  h-full">
                 <GraphMetrics />
-                <NetworkGraph isActive={selectedIndex === 0} />
+                <NetworkGraph />
               </div>
             </div>
 
@@ -392,7 +392,7 @@ export default function EcommerceTabs() {
         </Tab.Panel>
 
         {/* 2. Simulation Tab Panel (메인 콘텐츠가 밀려나는 방식) */}
-        <Tab.Panel className="h-full">
+        <Tab.Panel className="h-full" unmount={true}>
           <div
             ref={containerRef}
             className="flex h-full relative overflow-hidden"
@@ -404,7 +404,7 @@ export default function EcommerceTabs() {
               <div style={{ height: `${85}%` }} className="transition-all">
                 <div className="shadow  h-full">
                   <GraphMetrics />
-                  <SimulationGraph isActive={selectedIndex === 1} />
+                  <SimulationGraph />
                 </div>
               </div>
             </div>
