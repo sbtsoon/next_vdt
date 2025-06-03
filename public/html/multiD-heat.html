@@ -1,0 +1,788 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>SBT Winery</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/renderers/CSS2DRenderer.js"></script>
+    <style>
+      body {
+        font-family: sans-serif;
+        background-color: #1e1e1e;
+        color: #e0e0e0;
+        margin: 0;
+        padding: 0;
+        overflow: hidden; /* 전체 페이지 스크롤 방지 */
+      }
+
+      #app-layout {
+        display: flex;
+        width: 100vw;
+        height: 100vh;
+      }
+
+      #left-sidebar {
+        width: 280px; /* 사이드바 너비 조정 */
+        background-color: #1a1a1a; /* 약간 더 어두운 배경 */
+        padding: 20px;
+        box-sizing: border-box;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        overflow-y: auto; /* 슬라이더 많을 경우 스크롤 */
+        box-shadow: 3px 0px 5px rgba(0, 0, 0, 0.2);
+        z-index: 20; /* 다른 요소 위에 표시 */
+      }
+
+      .controls-container {
+        display: flex;
+        flex-direction: column; /* 슬라이더 그룹들을 세로로 쌓음 */
+        align-items: center;
+        width: 100%;
+        background-color: #2a2a2a;
+        padding: 15px 10px; /* 패딩 약간 조정 */
+        border-radius: 8px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+        box-sizing: border-box;
+      }
+
+      .control-group {
+        /* Renamed from slider-group for more general use */
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        margin: 10px 0;
+        width: 100%;
+      }
+      .control-group label {
+        margin-bottom: 8px;
+        font-size: 0.9em;
+        text-align: center;
+      }
+      .control-group input[type="range"],
+      .control-group select {
+        width: 90%;
+        max-width: 220px;
+        cursor: pointer;
+        padding: 5px;
+        background-color: #333;
+        color: #e0e0e0;
+        border: 1px solid #555;
+        border-radius: 4px;
+        box-sizing: border-box;
+      }
+      .control-group input[type="range"] {
+        padding: 0; /* Reset padding for range inputs specifically */
+      }
+      .control-group span {
+        margin-top: 5px;
+        font-size: 0.85em;
+        min-width: 20px;
+        text-align: center;
+      }
+
+      #main-visualization-area {
+        flex-grow: 1;
+        height: 100%;
+        position: relative;
+        display: flex;
+      }
+
+      .main-container {
+        display: flex;
+        width: 100%;
+        height: 100%;
+      }
+
+      #threejs-canvas-container {
+        flex-grow: 1;
+        height: 100%;
+        position: relative;
+      }
+      #infoPanel {
+        width: 280px;
+        margin-left: 10px;
+        margin-right: 10px;
+        margin-top: 10px;
+        margin-bottom: 10px;
+        background-color: #2a2a2a;
+        padding: 15px;
+        border-radius: 8px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+        overflow-y: auto;
+        height: calc(100% - 20px);
+        box-sizing: border-box;
+        z-index: 10;
+      }
+      #infoPanel h3 {
+        margin-top: 0;
+        color: #ffffff;
+        border-bottom: 1px solid #444;
+        padding-bottom: 10px;
+      }
+      #infoPanel h4 {
+        margin-top: 15px;
+        margin-bottom: 5px;
+        color: #cccccc;
+      }
+      #totalSales {
+        font-size: 1.1em;
+        font-weight: bold;
+        margin-bottom: 15px;
+        color: #4caf50;
+      }
+      #exportDataButton {
+        /* Style for the new button */
+        margin-top: 10px;
+        margin-bottom: 15px;
+        padding: 8px 15px;
+        background-color: #007bff; /* A slightly different color for distinction */
+        color: white;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        width: 100%;
+        font-size: 0.9em;
+      }
+      #exportDataButton:hover {
+        background-color: #0056b3;
+      }
+      #cubeList {
+        list-style-type: none;
+        padding-left: 0;
+        font-size: 0.8em;
+        max-height: calc(100% - 160px); /* Adjusted to make space for button */
+        overflow-y: auto;
+      }
+      #cubeList li {
+        padding: 2px 0;
+        border-bottom: 1px dashed #3a3a3a;
+      }
+      #cubeList li:last-child {
+        border-bottom: none;
+      }
+
+      .axis-label {
+        color: #e0e0e0;
+        font-size: 12px;
+        padding: 2px 5px;
+        background-color: rgba(0, 0, 0, 0.5);
+        border-radius: 3px;
+      }
+      #colorbar-container {
+        position: absolute;
+        bottom: 20px;
+        left: 20px;
+        width: 150px;
+        background-color: rgba(42, 42, 42, 0.8);
+        padding: 10px;
+        border-radius: 5px;
+        z-index: 5;
+      }
+      #colorbar-gradient {
+        width: 100%;
+        height: 20px;
+      }
+      #colorbar-labels {
+        display: flex;
+        justify-content: space-between;
+        font-size: 0.75em;
+        margin-top: 5px;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="app-layout">
+      <div id="left-sidebar">
+        <div class="controls-container">
+          <div class="control-group">
+            <label for="colorSchemeSelector">색상 스킴 선택:</label>
+            <select id="colorSchemeSelector"></select>
+          </div>
+          <hr style="width: 80%; border-color: #444; margin: 15px 0" />
+          <div class="control-group">
+            <label for="xMinSlider">X 축 최소값 (제품 카테고리):</label>
+            <input type="range" id="xMinSlider" min="1" max="10" value="1" />
+            <span id="xMinValue">1</span>
+          </div>
+          <div class="control-group">
+            <label for="xMaxSlider">X 축 최대값 (제품 카테고리):</label>
+            <input type="range" id="xMaxSlider" min="1" max="10" value="10" />
+            <span id="xMaxValue">10</span>
+          </div>
+          <hr style="width: 80%; border-color: #444; margin: 15px 0" />
+          <div class="control-group">
+            <label for="yMinSlider">Y 축 최소값 (지역):</label>
+            <input type="range" id="yMinSlider" min="1" max="10" value="1" />
+            <span id="yMinValue">1</span>
+          </div>
+          <div class="control-group">
+            <label for="yMaxSlider">Y 축 최대값 (지역):</label>
+            <input type="range" id="yMaxSlider" min="1" max="10" value="10" />
+            <span id="yMaxValue">10</span>
+          </div>
+          <hr style="width: 80%; border-color: #444; margin: 15px 0" />
+          <div class="control-group">
+            <label for="zMinSlider">Z 축 최소값 (시간 분기):</label>
+            <input type="range" id="zMinSlider" min="1" max="10" value="1" />
+            <span id="zMinValue">1</span>
+          </div>
+          <div class="control-group">
+            <label for="zMaxSlider">Z 축 최대값 (시간 분기):</label>
+            <input type="range" id="zMaxSlider" min="1" max="10" value="10" />
+            <span id="zMaxValue">10</span>
+          </div>
+        </div>
+      </div>
+      <div id="main-visualization-area">
+        <div class="main-container">
+          <div id="threejs-canvas-container">
+            <div id="colorbar-container">
+              <div>판매량 범례</div>
+              <div id="colorbar-gradient"></div>
+              <div id="colorbar-labels">
+                <span id="colorbar-min">0</span>
+                <span id="colorbar-max">1000</span>
+              </div>
+            </div>
+          </div>
+          <div id="infoPanel">
+            <h3>선택된 제품 수량 정보</h3>
+            <div id="totalSales">총 판매량: 0</div>
+            <button id="exportDataButton">Export Data</button>
+            <h4>제품 리스트:</h4>
+            <ul id="cubeList"></ul>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      let scene, camera, renderer, controls, labelRenderer;
+      const cubesGroup = new THREE.Group();
+      const allCubes = [];
+      let originalData = [];
+      const N = 10; // Grid size
+      const CUBE_SIZE = 0.8;
+      const GRID_SPACING = 1;
+
+      let xMinSlider,
+        xMaxSlider,
+        yMinSlider,
+        yMaxSlider,
+        zMinSlider,
+        zMaxSlider;
+      let xMinValueSpan,
+        xMaxValueSpan,
+        yMinValueSpan,
+        yMaxValueSpan,
+        zMinValueSpan,
+        zMaxValueSpan;
+      let colorSchemeSelector;
+
+      const totalSalesDiv = document.getElementById("totalSales");
+      const cubeListUl = document.getElementById("cubeList");
+      const canvasContainer = document.getElementById(
+        "threejs-canvas-container"
+      );
+      // New: Export button
+      let exportDataButton;
+
+      const colorSchemes = [
+        {
+          name: "기본 (노랑-빨강)",
+          minColor: new THREE.Color(0xffff99),
+          maxColor: new THREE.Color(0xff3300),
+        },
+        {
+          name: "Viridis 스타일 (파랑-노랑)",
+          minColor: new THREE.Color(0x440154),
+          maxColor: new THREE.Color(0xfde725),
+        },
+        {
+          name: "Plasma 스타일 (보라-주황)",
+          minColor: new THREE.Color(0x0d0887),
+          maxColor: new THREE.Color(0xf0f921),
+        },
+        {
+          name: "Inferno 스타일 (검정-빨강-노랑)",
+          minColor: new THREE.Color(0x000004),
+          maxColor: new THREE.Color(0xfcffa4),
+        }, // Approx
+        {
+          name: "회색조 (밝음-어두움)",
+          minColor: new THREE.Color(0xe0e0e0),
+          maxColor: new THREE.Color(0x202020),
+        },
+        {
+          name: "파랑 계열",
+          minColor: new THREE.Color(0xadd8e6),
+          maxColor: new THREE.Color(0x00008b),
+        }, // Corrected: LightBlue to DarkBlue
+        {
+          name: "초록 계열",
+          minColor: new THREE.Color(0x90ee90),
+          maxColor: new THREE.Color(0x006400),
+        }, // LightGreen to DarkGreen
+        {
+          name: "빨강-파랑 (발산형)",
+          minColor: new THREE.Color(0xff0000),
+          maxColor: new THREE.Color(0x0000ff),
+        }, // Red to Blue
+      ];
+      let currentMinSalesColor = colorSchemes[0].minColor;
+      let currentMaxSalesColor = colorSchemes[0].maxColor;
+
+      let minSalesGlobal = 0,
+        maxSalesGlobal = 1000;
+
+      function init() {
+        scene = new THREE.Scene();
+        scene.background = new THREE.Color(0x1e1e1e);
+
+        camera = new THREE.PerspectiveCamera(
+          75,
+          canvasContainer.clientWidth / canvasContainer.clientHeight,
+          0.1,
+          1000
+        );
+        camera.position.set(
+          N * GRID_SPACING * 0.8,
+          N * GRID_SPACING * 0.7,
+          N * GRID_SPACING * 1.2
+        );
+        camera.lookAt(
+          (N * GRID_SPACING) / 2,
+          (N * GRID_SPACING) / 2,
+          (N * GRID_SPACING) / 2
+        );
+
+        renderer = new THREE.WebGLRenderer({ antialias: true });
+        renderer.setSize(
+          canvasContainer.clientWidth,
+          canvasContainer.clientHeight
+        );
+        canvasContainer.appendChild(renderer.domElement);
+
+        labelRenderer = new THREE.CSS2DRenderer();
+        labelRenderer.setSize(
+          canvasContainer.clientWidth,
+          canvasContainer.clientHeight
+        );
+        labelRenderer.domElement.style.position = "absolute";
+        labelRenderer.domElement.style.top = "0px";
+        labelRenderer.domElement.style.pointerEvents = "none";
+        canvasContainer.appendChild(labelRenderer.domElement);
+
+        const ambientLight = new THREE.AmbientLight(0xcccccc, 0.6);
+        scene.add(ambientLight);
+        const directionalLight = new THREE.DirectionalLight(0xffffff, 0.8);
+        directionalLight.position.set(1, 1, 0.5).normalize();
+        scene.add(directionalLight);
+
+        controls = new THREE.OrbitControls(camera, renderer.domElement);
+        controls.target.set(
+          (N * GRID_SPACING) / 2,
+          (N * GRID_SPACING) / 2,
+          (N * GRID_SPACING) / 2
+        );
+        controls.enableDamping = true;
+        controls.dampingFactor = 0.05;
+
+        // Initialize sliders and value spans
+        xMinSlider = document.getElementById("xMinSlider");
+        xMaxSlider = document.getElementById("xMaxSlider");
+        yMinSlider = document.getElementById("yMinSlider");
+        yMaxSlider = document.getElementById("yMaxSlider");
+        zMinSlider = document.getElementById("zMinSlider");
+        zMaxSlider = document.getElementById("zMaxSlider");
+
+        xMinValueSpan = document.getElementById("xMinValue");
+        xMaxValueSpan = document.getElementById("xMaxValue");
+        yMinValueSpan = document.getElementById("yMinValue");
+        yMaxValueSpan = document.getElementById("yMaxValue");
+        zMinValueSpan = document.getElementById("zMinValue");
+        zMaxValueSpan = document.getElementById("zMaxValue");
+
+        colorSchemeSelector = document.getElementById("colorSchemeSelector");
+        colorSchemes.forEach((scheme, index) => {
+          const option = document.createElement("option");
+          option.value = index;
+          option.textContent = scheme.name;
+          colorSchemeSelector.appendChild(option);
+        });
+        colorSchemeSelector.addEventListener("change", onColorSchemeChange);
+        currentMinSalesColor = colorSchemes[0].minColor;
+        currentMaxSalesColor = colorSchemes[0].maxColor;
+
+        // Initialize Export Button
+        exportDataButton = document.getElementById("exportDataButton");
+        exportDataButton.addEventListener("click", exportVisibleDataToCsv);
+
+        xMinSlider.value = "1";
+        xMaxSlider.value = N.toString();
+        yMinSlider.value = "1";
+        yMaxSlider.value = N.toString();
+        zMinSlider.value = "1";
+        zMaxSlider.value = N.toString();
+
+        xMaxSlider.min = xMinSlider.value;
+        xMinSlider.max = xMaxSlider.value;
+        yMaxSlider.min = yMinSlider.value;
+        yMinSlider.max = yMaxSlider.value;
+        zMaxSlider.min = zMinSlider.value;
+        zMinSlider.max = zMaxSlider.value;
+
+        const MAX_SALES_AT_CENTER = 2000;
+        const MIN_SALES_AT_EDGE = 50;
+        const GRID_CENTER_X = (N + 1) / 2.0;
+        const GRID_CENTER_Y = (N + 1) / 2.0;
+        const GRID_CENTER_Z = (N + 1) / 2.0;
+
+        const maxPossibleDist = Math.sqrt(
+          Math.pow(1 - GRID_CENTER_X, 2) +
+            Math.pow(1 - GRID_CENTER_Y, 2) +
+            Math.pow(1 - GRID_CENTER_Z, 2)
+        );
+
+        const coreRadius = 3.0;
+        let salesValuesForMinMax = [];
+        originalData = [];
+
+        for (let i = 1; i <= N; i++) {
+          for (let j = 1; j <= N; j++) {
+            for (let k = 1; k <= N; k++) {
+              const distFromCenter = Math.sqrt(
+                Math.pow(i - GRID_CENTER_X, 2) +
+                  Math.pow(j - GRID_CENTER_Y, 2) +
+                  Math.pow(k - GRID_CENTER_Z, 2)
+              );
+
+              let sales;
+              if (distFromCenter <= coreRadius) {
+                sales =
+                  MAX_SALES_AT_CENTER -
+                  Math.random() * MAX_SALES_AT_CENTER * 0.05;
+              } else {
+                let t = 0;
+                if (maxPossibleDist > coreRadius) {
+                  t = Math.min(
+                    1,
+                    (distFromCenter - coreRadius) /
+                      (maxPossibleDist - coreRadius)
+                  );
+                } else {
+                  t = 0;
+                }
+
+                const falloffExponent = 2.0;
+                const falloffFactor = Math.pow(1 - t, falloffExponent);
+                sales =
+                  MIN_SALES_AT_EDGE +
+                  (MAX_SALES_AT_CENTER * 0.95 - MIN_SALES_AT_EDGE) *
+                    falloffFactor;
+              }
+
+              sales += (Math.random() - 0.5) * 30;
+              sales = Math.floor(sales);
+              sales = Math.max(
+                MIN_SALES_AT_EDGE,
+                Math.min(MAX_SALES_AT_CENTER, sales)
+              );
+
+              originalData.push({ x: i, y: j, z: k, sales: sales });
+              salesValuesForMinMax.push(sales);
+            }
+          }
+        }
+        if (salesValuesForMinMax.length > 0) {
+          minSalesGlobal = Math.min(...salesValuesForMinMax);
+          maxSalesGlobal = Math.max(...salesValuesForMinMax);
+        } else {
+          minSalesGlobal = MIN_SALES_AT_EDGE;
+          maxSalesGlobal = MAX_SALES_AT_CENTER;
+        }
+
+        updateColorbarLegend();
+
+        const cubeGeometry = new THREE.BoxGeometry(
+          CUBE_SIZE,
+          CUBE_SIZE,
+          CUBE_SIZE
+        );
+        originalData.forEach((data) => {
+          const salesRange = maxSalesGlobal - minSalesGlobal;
+          const normalizedSales =
+            salesRange > 0 ? (data.sales - minSalesGlobal) / salesRange : 0.5;
+
+          const color = new THREE.Color().lerpColors(
+            currentMinSalesColor,
+            currentMaxSalesColor,
+            normalizedSales
+          );
+          const material = new THREE.MeshStandardMaterial({ color: color });
+          const cube = new THREE.Mesh(cubeGeometry, material);
+          cube.position.set(
+            (data.x - 0.5) * GRID_SPACING,
+            (data.y - 0.5) * GRID_SPACING,
+            (data.z - 0.5) * GRID_SPACING
+          );
+          cube.userData = {
+            x: data.x,
+            y: data.y,
+            z: data.z,
+            sales: data.sales,
+            normalizedSales: normalizedSales,
+          };
+          allCubes.push(cube);
+          cubesGroup.add(cube);
+        });
+        scene.add(cubesGroup);
+        cubesGroup.position.set(
+          -0.5 * GRID_SPACING,
+          -0.5 * GRID_SPACING,
+          -0.5 * GRID_SPACING
+        );
+        drawAxes();
+
+        setupSliderInteractions(xMinSlider, xMaxSlider);
+        setupSliderInteractions(yMinSlider, yMaxSlider);
+        setupSliderInteractions(zMinSlider, zMaxSlider);
+
+        updatePlotVisibility();
+        animate();
+        window.addEventListener("resize", onWindowResize, false);
+      }
+
+      function onColorSchemeChange(event) {
+        const selectedSchemeIndex = parseInt(event.target.value);
+        const selectedScheme = colorSchemes[selectedSchemeIndex];
+        currentMinSalesColor = selectedScheme.minColor;
+        currentMaxSalesColor = selectedScheme.maxColor;
+        applyColorScheme();
+      }
+
+      function applyColorScheme() {
+        allCubes.forEach((cube) => {
+          const color = new THREE.Color().lerpColors(
+            currentMinSalesColor,
+            currentMaxSalesColor,
+            cube.userData.normalizedSales
+          );
+          cube.material.color.set(color);
+        });
+        updateColorbarLegend();
+      }
+
+      function setupSliderInteractions(minSlider, maxSlider) {
+        minSlider.addEventListener("input", () => {
+          let minValue = parseInt(minSlider.value);
+          let maxValue = parseInt(maxSlider.value);
+          if (minValue > maxValue) {
+            maxSlider.value = minValue;
+          }
+          maxSlider.min = minValue;
+          updatePlotVisibility();
+        });
+
+        maxSlider.addEventListener("input", () => {
+          let maxValue = parseInt(maxSlider.value);
+          let minValue = parseInt(minSlider.value);
+          if (maxValue < minValue) {
+            minSlider.value = maxValue;
+          }
+          minSlider.max = maxValue;
+          updatePlotVisibility();
+        });
+      }
+
+      function updateColorbarLegend() {
+        const gradientDiv = document.getElementById("colorbar-gradient");
+        if (
+          currentMinSalesColor instanceof THREE.Color &&
+          currentMaxSalesColor instanceof THREE.Color
+        ) {
+          gradientDiv.style.background = `linear-gradient(to right, ${currentMinSalesColor.getStyle()}, ${currentMaxSalesColor.getStyle()})`;
+        } else {
+          gradientDiv.style.background = `linear-gradient(to right, #ffffff, #000000)`;
+          console.error(
+            "Color scheme colors are not properly initialized for color bar."
+          );
+        }
+        document.getElementById("colorbar-min").textContent =
+          minSalesGlobal.toLocaleString();
+        document.getElementById("colorbar-max").textContent =
+          maxSalesGlobal.toLocaleString();
+      }
+
+      function drawAxes() {
+        const axisLength = N * GRID_SPACING + GRID_SPACING;
+        const createAxis = (start, end, color) => {
+          const material = new THREE.LineBasicMaterial({ color: color });
+          const points = [start, end];
+          const geometry = new THREE.BufferGeometry().setFromPoints(points);
+          const line = new THREE.Line(geometry, material);
+          scene.add(line);
+        };
+        createAxis(
+          new THREE.Vector3(0, 0, 0),
+          new THREE.Vector3(axisLength, 0, 0),
+          0xff0000
+        );
+        createAxis(
+          new THREE.Vector3(0, 0, 0),
+          new THREE.Vector3(0, axisLength, 0),
+          0x00ff00
+        );
+        createAxis(
+          new THREE.Vector3(0, 0, 0),
+          new THREE.Vector3(0, 0, axisLength),
+          0x0000ff
+        );
+        const createLabel = (text, position) => {
+          const div = document.createElement("div");
+          div.className = "axis-label";
+          div.textContent = text;
+          const label = new THREE.CSS2DObject(div);
+          label.position.copy(position);
+          scene.add(label);
+          return label;
+        };
+        const labelOffset = GRID_SPACING * 1.5;
+        createLabel(
+          "X 축 (제품 카테고리)",
+          new THREE.Vector3(axisLength + labelOffset, 0, 0)
+        );
+        createLabel(
+          "Y 축 (지역)",
+          new THREE.Vector3(0, axisLength + labelOffset, 0)
+        );
+        createLabel(
+          "Z 축 (시간 분기)",
+          new THREE.Vector3(0, 0, axisLength + labelOffset)
+        );
+        for (let i = 1; i <= N; i += N - 1 || 1) {
+          const pos = (i - 0.5) * GRID_SPACING;
+          if (i === 1 || i === N) {
+            createLabel(
+              i.toString(),
+              new THREE.Vector3(pos - 0.5 * GRID_SPACING, -labelOffset * 0.5, 0)
+            );
+            createLabel(
+              i.toString(),
+              new THREE.Vector3(-labelOffset * 0.5, pos - 0.5 * GRID_SPACING, 0)
+            );
+            createLabel(
+              i.toString(),
+              new THREE.Vector3(-labelOffset * 0.5, 0, pos - 0.5 * GRID_SPACING)
+            );
+          }
+        }
+      }
+
+      function updatePlotVisibility() {
+        const minX = parseInt(xMinSlider.value);
+        const maxX = parseInt(xMaxSlider.value);
+        const minY = parseInt(yMinSlider.value);
+        const maxY = parseInt(yMaxSlider.value);
+        const minZ = parseInt(zMinSlider.value);
+        const maxZ = parseInt(zMaxSlider.value);
+
+        xMinValueSpan.textContent = minX;
+        xMaxValueSpan.textContent = maxX;
+        yMinValueSpan.textContent = minY;
+        yMaxValueSpan.textContent = maxY;
+        zMinValueSpan.textContent = minZ;
+        zMaxValueSpan.textContent = maxZ;
+
+        let currentTotalSales = 0;
+        cubeListUl.innerHTML = "";
+        allCubes.forEach((cube) => {
+          const data = cube.userData;
+          const isVisible =
+            data.x >= minX &&
+            data.x <= maxX &&
+            data.y >= minY &&
+            data.y <= maxY &&
+            data.z >= minZ &&
+            data.z <= maxZ;
+          cube.visible = isVisible; // This is key for the export function
+          if (isVisible) {
+            currentTotalSales += data.sales;
+            const listItem = document.createElement("li");
+            listItem.textContent = `(X:${data.x}, Y:${data.y}, Z:${
+              data.z
+            }) - 판매량: ${data.sales.toLocaleString()}`;
+            cubeListUl.appendChild(listItem);
+          }
+        });
+        totalSalesDiv.textContent = `총 판매량: ${currentTotalSales.toLocaleString()}`;
+      }
+
+      // New function to export data to CSV
+      function exportVisibleDataToCsv() {
+        const csvHeader = "X (제품 카테고리),Y (지역),Z (시간 분기),판매량\n";
+        let csvRows = "";
+        let dataFound = false;
+
+        allCubes.forEach((cube) => {
+          // Check the 'visible' property which is updated by updatePlotVisibility
+          if (cube.visible) {
+            const data = cube.userData;
+            csvRows += `${data.x},${data.y},${data.z},${data.sales}\n`;
+            dataFound = true;
+          }
+        });
+
+        if (!dataFound) {
+          alert(
+            "내보낼 선택된 데이터가 없습니다. 슬라이더를 조정하여 데이터를 선택하세요."
+          );
+          return;
+        }
+
+        const csvContent = csvHeader + csvRows;
+        // Add BOM for Excel to recognize UTF-8 correctly, especially for Korean characters
+        const blob = new Blob(["\uFEFF" + csvContent], {
+          type: "text/csv;charset=utf-8;",
+        });
+
+        const link = document.createElement("a");
+        if (link.download !== undefined) {
+          // Check for browser support
+          const url = URL.createObjectURL(blob);
+          link.setAttribute("href", url);
+          link.setAttribute("download", "exported_sales_data.csv");
+          link.style.visibility = "hidden";
+          document.body.appendChild(link);
+          link.click();
+          document.body.removeChild(link);
+          URL.revokeObjectURL(url);
+        } else {
+          alert("현재 브라우저에서는 파일 다운로드를 지원하지 않습니다.");
+        }
+      }
+
+      function animate() {
+        requestAnimationFrame(animate);
+        controls.update();
+        renderer.render(scene, camera);
+        labelRenderer.render(scene, camera);
+      }
+
+      function onWindowResize() {
+        const newWidth = canvasContainer.clientWidth;
+        const newHeight = canvasContainer.clientHeight;
+        if (newWidth > 0 && newHeight > 0) {
+          camera.aspect = newWidth / newHeight;
+          camera.updateProjectionMatrix();
+          renderer.setSize(newWidth, newHeight);
+          labelRenderer.setSize(newWidth, newHeight);
+        }
+      }
+      init();
+    </script>
+  </body>
+</html>
