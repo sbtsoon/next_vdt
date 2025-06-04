@@ -3,7 +3,7 @@ export default function MultiDHeat() {
     <div
       style={{
         width: "100%",
-        height: "700px",
+        height: "900px",
         border: "none",
         margin: "20px 0 0 ",
       }}

@@ -916,7 +916,7 @@ export default function EcommerceTabs() {
               className="flex flex-col w-full transition-all duration-100"
             >
               <div
-                style={{ height: `${topHeight}%` }}
+                style={{ height: `90%` }}
                 className="transition-all"
               >
                 <div className="bg-white dark:bg-gray-900 rounded shadow  h-full">
