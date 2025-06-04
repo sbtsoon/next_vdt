@@ -13,10 +13,10 @@ body {
 #menuToggleButton {
   position: fixed;
   top: 15px;
-  left: 15px;
+  left: 0px;
   z-index: 1005;
   padding: 10px 12px;
-  background-color: #4a90e2;
+  background-color: #053f80;
   color: white;
   border: none;
   border-radius: 0 5px 5px 0;
@@ -32,8 +32,8 @@ body {
 /* 컨트롤 패널 전체 스타일 */
 #controls {
   position: fixed;
-  top: 15px;
-  left: 0;
+  top: 0px;
+  left: -15px;
   width: 270px;
   height: calc(100vh - 30px);
   overflow-y: auto;
@@ -41,15 +41,12 @@ body {
   transform: translateX(calc(-100% - 1px));
   transition: transform 0.35s ease-in-out;
   z-index: 1000;
-
   background: rgba(30, 35, 45, 0.92);
   color: #e8eaed;
   padding: 20px;
+  border:1px solid #36383b;
   border-radius: 0 10px 10px 0;
   box-shadow: 0 6px 18px rgba(0, 0, 0, 0.4);
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
-    Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji",
-    "Segoe UI Symbol";
 }
 
 #controls.expanded {

@@ -35,7 +35,128 @@
         box-shadow: 3px 0px 5px rgba(0, 0, 0, 0.2);
         z-index: 20; /* 다른 요소 위에 표시 */
       }
+      .scroller {
+  --scrollbar-color-thumb: hotpink;
+  --scrollbar-color-track: blue;
+  --scrollbar-width: thin;
+  --scrollbar-width-legacy: 0.5rem;
+}
 
+@supports (scrollbar-width: auto) {
+  .scroller {
+    scrollbar-color: var(--scrollbar-color-thumb) var(--scrollbar-color-track);
+    scrollbar-width: var(--scrollbar-width);
+  }
+}
+
+@supports selector(::-webkit-scrollbar) {
+  .scroller {
+    text-align: justify;
+  }
+  .scroller::-webkit-scrollbar-thumb {
+    background: var(--scrollbar-color-thumb);
+  }
+  .scroller::-webkit-scrollbar-track {
+    background: var(--scrollbar-color-track);
+  }
+  .scroller::-webkit-scrollbar {
+    max-width: var(--scrollbar-width-legacy);
+    max-height: var(--scrollbar-width-legacy);
+  }
+}
+
+.scroller {
+  border: 1px solid #000;
+  width: 100%;
+  height: 50vh;
+
+  position: relative;
+  container-type: inline-size;
+
+  &:has(.content) {
+    background: white;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+  }
+
+  .content {
+    min-height: 75vh;
+    padding: 1rem 1rem;
+
+    *:first-child {
+      margin-top: 0;
+    }
+    *:last-child {
+      margin-bottom: 0;
+    }
+  }
+}
+
+@layer base {
+  html,
+  body {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+  }
+
+  html {
+    font-family: system-ui, "Segoe UI", Roboto, Helvetica, Arial, sans-serif,
+      "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+    font-size: 20px;
+  }
+
+  body {
+    display: grid;
+    place-content: safe center;
+  }
+
+  main {
+    max-width: 40em;
+    width: 90vw;
+  }
+
+  h1 {
+    text-align: center;
+  }
+
+  .controls {
+    display: flex;
+    justify-content: center;
+    gap: 0.5rem;
+    padding: 1rem 0;
+  }
+}
+
+@layer warning {
+  .warning {
+    box-sizing: border-box;
+    padding: 1em;
+    margin: 1em 0;
+    border: 1px solid #ccc;
+    background: rgba(255 255 205 / 0.8);
+  }
+
+  .warning > :first-child {
+    margin-top: 0;
+  }
+
+  .warning > :last-child {
+    margin-bottom: 0;
+  }
+
+  .warning a {
+    color: blue;
+  }
+  .warning--info {
+    border: 1px solid #123456;
+    background: rgb(205 230 255 / 0.8);
+  }
+  .warning--alarm {
+    border: 1px solid red;
+    background: #ff000010;
+  }
+}
       .controls-container {
         display: flex;
         flex-direction: column; /* 슬라이더 그룹들을 세로로 쌓음 */
@@ -58,15 +179,15 @@
       }
       .control-group label {
         margin-bottom: 8px;
-        font-size: 0.9em;
-        text-align: center;
+        font-size: 0.6em;
+        text-align: left;
       }
       .control-group input[type="range"],
       .control-group select {
         width: 90%;
         max-width: 220px;
         cursor: pointer;
-        padding: 5px;
+        padding: 4px;
         background-color: #333;
         color: #e0e0e0;
         border: 1px solid #555;
@@ -111,7 +232,7 @@
         padding: 15px;
         border-radius: 8px;
         box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
-        overflow-y: auto;
+        overflow: hidden;
         height: calc(100% - 20px);
         box-sizing: border-box;
         z-index: 10;

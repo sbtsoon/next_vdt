@@ -77,7 +77,7 @@ const Graph = ForceGraph3D()(document.getElementById("3d-graph"))
   .graphData(graphData)
   .nodeThreeObject((node) => {
     const nodeContainer = new THREE.Group();
-    
+
     // 수정된 색상 계산 로직: 문자열 그룹 이름을 기반으로 인덱스 사용
     const groupIndex = groupNameToColorIndex[node.group];
     const calculatedFallbackColorValue = groupColors[groupIndex % groupColors.length] || 0xcccccc;
@@ -399,7 +399,7 @@ function findShortestPath(data, startId, endId) {
 const controlsPanel = document.getElementById("controls");
 const menuToggleButton = document.getElementById("menuToggleButton");
 const controlsWidth = 270;
-const panelVisibleLeftOffset = 15;
+const panelVisibleLeftOffset = 0;
 
 menuToggleButton.innerHTML = "&gt;";
 menuToggleButton.style.left = panelVisibleLeftOffset + "px";
@@ -455,7 +455,7 @@ function initializeViewControls() {
   threeControls.enabled = true;
 
   const zoomFactor = 1.2;
-  const panSensitivity = 10; 
+  const panSensitivity = 10;
 
   document.getElementById("zoomInBtn").addEventListener("click", () => {
     console.log("Zoom In button clicked");
@@ -470,7 +470,7 @@ function initializeViewControls() {
       if (
         typeof currentDistance === "number" &&
         !isNaN(currentDistance) &&
-        currentDistance > 0.1 
+        currentDistance > 0.1
       ) {
         const newDistance = currentDistance / zoomFactor;
         const direction = new THREE.Vector3()
@@ -562,18 +562,18 @@ function initializeViewControls() {
 
     const right = new THREE.Vector3();
     const up = new THREE.Vector3();
-    camera.matrix.extractBasis(right, up, new THREE.Vector3()); 
+    camera.matrix.extractBasis(right, up, new THREE.Vector3());
 
     const currentDistance = camera.position.distanceTo(controls.target);
     console.log("panGraphView - currentDistance:", currentDistance);
 
-    const distanceForFactor = Math.max(currentDistance, 50); 
-    const panFactor = distanceForFactor * 0.0005; 
+    const distanceForFactor = Math.max(currentDistance, 50);
+    const panFactor = distanceForFactor * 0.0005;
     console.log("panGraphView - panFactor:", panFactor);
 
     const panOffset = new THREE.Vector3();
     panOffset.addScaledVector(right, -screenDeltaX * panFactor);
-    panOffset.addScaledVector(up, screenDeltaY * panFactor); 
+    panOffset.addScaledVector(up, screenDeltaY * panFactor);
     console.log("panGraphView - panOffset:", JSON.stringify(panOffset));
 
     const newCameraPosition = camera.position.clone().add(panOffset);
@@ -599,14 +599,14 @@ function initializeViewControls() {
   document.getElementById("panUpBtn").addEventListener("click", () => {
     console.log("Pan Up button clicked");
     panGraphView(0, -panSensitivity);
-  }); 
+  });
   document.getElementById("panDownBtn").addEventListener("click", () => {
     console.log("Pan Down button clicked");
     panGraphView(0, panSensitivity);
-  }); 
+  });
 
   const defaultLookAtConstant = new THREE.Vector3(0, 0, 0);
-  let defaultViewDistance = initialCameraDistance; 
+  let defaultViewDistance = initialCameraDistance;
 
   document
     .getElementById("resetViewBtn")

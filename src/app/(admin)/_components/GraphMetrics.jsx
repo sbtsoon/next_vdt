@@ -12,7 +12,7 @@ const HistoryBarGraph = ({ data }) => {
   const normalizedData = data.map((v) => (v / max) * 15); // 기준선 기준 최대 15px
 
   return (
-    <div className="flex items-end gap-[1px] h-[40px] relative">
+    <div className="flex items-end gap-[1px] h-[30px] relative">
       {normalizedData.map((value, i) => (
         <div
           key={i}
@@ -49,7 +49,7 @@ export const GraphMetrics = () => {
   return (
     <div className="flex gap-2 w-full mb-3 ">
       {/* 1/2 section: Metrics */}
-      <div className="flex-[1] grid grid-cols-3 border border-gray-700 pt-3   bg-white   dark:text-white dark:bg-[#1e1d2b] ">
+      <div className="flex-[1] grid grid-cols-3 border border-gray-700 py-2   bg-white   dark:text-white dark:bg-[#1e1d2b] ">
       {metrics.map((metric, idx) => {
         const { amount, percentage, scaledHistoryData } = metricMap[metric.key];
         const borderClass = idx > 0 ? "border-l" : "";
@@ -94,7 +94,7 @@ export const GraphMetrics = () => {
       </div>
 
       {/* 1/2 section: Label Summary */}
-      <div className="flex-[1] border border-gray-700 dark:bg-[#1e1d2b] dark:text-white text-sm p-4 min-w-[240px] flex flex-col gap-4  w-1/2">
+      <div className="flex-[1] border border-gray-700 dark:bg-[#1e1d2b] dark:text-white text-sm px-4 py-2 min-w-[240px] flex flex-col gap-4  w-1/2">
         <div className="flex flex-wrap  gap-2 items-center ">
           <div className="w-1/2">
             <h4 className="mb-2 font-semibold">Node labels</h4>
