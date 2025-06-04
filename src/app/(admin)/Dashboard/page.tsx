@@ -19,19 +19,58 @@ const DashboardPage: React.FC = () => {
   const [currentSlideIndex, setCurrentSlideIndex] = useState(0);
 
   // 프로젝트 데이터 (이미지 파일과 연결될 링크를 포함하도록 수정)
+
   const projects = [
-    { src: "project1.png", link: "/" },
-    { src: "project2.png", link: "/DataImport" },
-    { src: "project3.png", link: "/DataImport" },
-    { src: "project4.png", link: "/" },
-    { src: "project5.png", link: "/" },
-    { src: "project6.png", link: "/" },
-    { src: "project1.png", link: "/" },
-    { src: "project2.png", link: "/project/8" },
-    { src: "project3.png", link: "/project/9" },
-    { src: "project4.png", link: "/project/10" },
-    { src: "project5.png", link: "/" },
-    { src: "project6.png", link: "/" },
+    {
+      src: "project1.png",
+      link: "/",
+      title: "프로젝트 A",
+      description: "데이터 분석 시각화"
+    },
+    {
+      src: "project2.png",
+      link: "/DataImport",
+      title: "데이터 가져오기",
+      description: "외부 데이터 소스를 연결합니다"
+    },
+    {
+      src: "project3.png",
+      link: "/",
+       title: "프로젝트C",
+      description: "Netgrap 생성"
+    },
+    {
+      src: "project4.png",
+      link: "/DataImport",
+         title: "프로젝트C01",
+      description: "지역별생산량"
+    },
+    {
+      src: "project5.png",
+      link: "/",
+        title: "프로젝트5",
+      description: "시각화BI"
+    },
+    {
+      src: "project6.png",
+      link: "/DataImport",
+      title: "데이터 가져오기",
+      description: "외부 데이터 소스를 연결합니다"
+    },
+    {
+      src: "project5.png",
+      link: "/DataImport",
+      title: "프로젝트C",
+      description: "Netgrap 생성"
+    },
+    {
+      src: "project4.png",
+      link: "/DataImport",
+      title: "데이터 가져오기",
+      description: "외부 데이터 소스를 연결합니다"
+    },
+
+    // 나머지도 동일하게 추가
   ];
 
   const ITEM_WIDTH = 240;
@@ -113,19 +152,46 @@ const DashboardPage: React.FC = () => {
               {/* 각 프로젝트 항목에 Link 컴포넌트와 호버 효과 추가 */}
               {projects.map((project, i) => (
                 <Link
-                  key={i}
-                  href={project.link} // Link 컴포넌트의 href 속성
-                  className="w-60 h-36 shrink-0 overflow-hidden rounded-lg border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800
-                             transform transition-all duration-300 hover:scale-105 hover:shadow-xl cursor-pointer" // 호버 효과 및 transition 추가
-                >
-                  <Image
-                    src={`/images/thumbs/${project.src}`} // project.src 사용
-                    alt={`Thumbnail ${i + 1}`}
-                    width={300}
-                    height={200}
-                    className="w-full h-full object-cover"
-                  />
-                </Link>
+                key={i}
+                href={project.link}
+                className="w-60 shrink-0 overflow-hidden rounded-lg border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800
+                           transform transition-all duration-300 hover:scale-105 hover:shadow-xl cursor-pointer flex flex-col justify-between"
+              >
+                <Image
+                  src={`/images/thumbs/${project.src}`}
+                  alt={`Thumbnail ${i + 1}`}
+                  width={300}
+                  height={200}
+                  className="w-full h-36 object-cover"
+                />
+                <div className="p-2 text-left flex flex-col gap-1">
+                  <h3 className="text-sm font-semibold text-gray-800 dark:text-white truncate">
+                    {project.title}
+                  </h3>
+                  <p className="text-xs text-gray-500 dark:text-gray-400 truncate">
+                    {project.description}
+                  </p>
+                  {/* 삭제/편집 버튼 영역 */}
+                  <div className="flex justify-end gap-2 mt-1">
+                    <button
+                      onClick={(e) => {
+                        e.preventDefault(); // Link 클릭 방지
+                        console.log("편집:", project.title);
+                      }}
+                      className="text-xs text-gray-600 hover:underline"
+                    >편집
+                    </button>
+                    <button
+                      onClick={(e) => {
+                        e.preventDefault(); // Link 클릭 방지
+                        console.log("삭제:", project.title);
+                      }}
+                      className="text-xs text-gray-600 hover:underline"
+                    >삭제
+                    </button>
+                  </div>
+                </div>
+              </Link>
               ))}
             </div>
             {/* 좌우 스크롤 버튼 */}
