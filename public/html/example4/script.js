@@ -176,7 +176,7 @@ const Graph = ForceGraph3D()(document.getElementById("3d-graph"))
     link.__highlight ? "#ffffff" : "#cccccc"
   )
   .linkDirectionalParticleWidth((link) => (link.__highlight ? 2 : 1))
-  .backgroundColor("#000010")
+  .backgroundColor("#020f10")
   .onNodeClick((node) => {
     const panel = document.getElementById("node-info");
     const desc = node.description || "No description available.";

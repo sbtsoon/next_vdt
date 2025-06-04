@@ -221,7 +221,7 @@ export default function EcommerceTabs() {
       </Tab.List>
 
       {/* AI Assistant 토글 버튼 (Network Graph (0) 또는 Simulation (1) 탭일 때만 표시) */}
-      {selectedIndex >= 0 && selectedIndex <= 7 && (
+      {selectedIndex >= 0 && selectedIndex <= 8 && (
         <button
           onClick={() =>
             setActivePanel(activePanel === "aiAssistant" ? null : "aiAssistant")
@@ -248,7 +248,7 @@ export default function EcommerceTabs() {
       )}
 
       {/* Default Inputs 토글 버튼 (Network Graph (0) 또는 Simulation (1) 탭일 때만 표시) */}
-      {selectedIndex >= 0 && selectedIndex <= 7 && (
+      {selectedIndex >= 0 && selectedIndex <= 8 && (
         <button
           onClick={() =>
             setActivePanel(
@@ -277,7 +277,7 @@ export default function EcommerceTabs() {
       )}
 
       {/* Analysis 토글 버튼 (Network Graph (0) 또는 Simulation (7) 탭일 때만 표시) */}
-      {selectedIndex >= 0 && selectedIndex <= 7 && (
+      {selectedIndex >= 0 && selectedIndex <= 8 && (
         <button
           onClick={() =>
             setActivePanel(
@@ -615,19 +615,10 @@ export default function EcommerceTabs() {
         <Tab.Panel className="h-full">
           <div
             ref={containerRef}
-            className="flex h-full w-full relative overflow-hidden"
-          >
-            <div
-              className="flex flex-col  transition-all duration-100"
-            >
-              <div
-                style={{ height: `${topHeight}%` }}
-                className="transition-all"
-              >
-                <div className="bg-white dark:bg-gray-900 rounded shadow  h-full">
-                  {/* <GraphMetrics /> */}
+            className="flex h-full w-full relative overflow-hidden">
+            <div className="flex flex-col  transition-all duration-100" >
+                <div className="bg-white dark:bg-gray-900 rounded shadow ">
                   <MonthlySalesChart />
-                </div>
               </div>
               {/* 여기에 수직 크기 조절 막대를 배치합니다. 상단 div의 바깥, 하단 div의 바로 위입니다. */}
               <div
@@ -812,38 +803,11 @@ export default function EcommerceTabs() {
         <div
             ref={containerRef}
             className="flex h-full relative overflow-hidden"
-            style={{ width: `calc(100% - ${totalOpenedSidebarWidth}px)` }}
           >
-            <div
-              className="flex flex-col transition-all duration-100"
-            >
-              <div
-                style={{ height: `80%` }}
-                className="transition-all"
-              >
-                <div className="bg-white dark:bg-gray-900 rounded shadow  h-full">
+           <div className="bg-white dark:bg-gray-900 rounded shadow  h-full w-full">
                   {/* <GraphMetrics /> */}
                   <Example4 />
                 </div>
-              </div>
-              {/* 여기에 수직 크기 조절 막대를 배치합니다. 상단 div의 바깥, 하단 div의 바로 위입니다. */}
-              <div
-                onMouseDown={startVerticalDrag}
-                className="h-1 cursor-row-resize bg-gray-100 dark:bg-gray-800 hover:bg-blue-500"
-                style={{ zIndex: 9990 }}
-              />{" "}
-              {/* <--- 이 부분이 위로 이동했습니다. */}
-              <div
-                style={{ height: `${100 - topHeight}%` }}
-                className="transition-all h-full"
-              >
-                <div className="bg-white dark:bg-gray-900 rounded shadow p-4 h-full">
-                  <GraphDataTable rawRecords={rawRecords} isSimple={isSimple} />
-                </div>
-              </div>
-            </div>
-
-
          {/* 오른쪽 사이드바 - fixed 팝업 방식 (탭 0, 1에서만 활성화) */}
             {/* AIChatPanel 사이드바 */}
             {activePanel === "aiAssistant" && selectedIndex < 7 && (
@@ -949,8 +913,7 @@ export default function EcommerceTabs() {
             className="flex h-full relative overflow-hidden"
           >
             <div
-              style={{ width: `${leftWidth}%` }}
-              className="flex flex-col w-[75%] transition-all duration-100"
+              className="flex flex-col w-full transition-all duration-100"
             >
               <div
                 style={{ height: `${topHeight}%` }}
@@ -978,21 +941,51 @@ export default function EcommerceTabs() {
               </div>
             </div>
 
-            <div
-              onMouseDown={startHorizontalDrag}
-              className="w-1 cursor-col-resize bg-gray-100 dark:bg-gray-800 hover:bg-blue-500 transition-colors duration-150"
-              style={{ zIndex: 50 }}
-            />
-
-            <div
-              style={{ width: `${100 - leftWidth}%`, minWidth: "280px" }}
-              className="bg-white dark:bg-gray-900 rounded shadow p-2 h-full flex flex-col gap-4"
-            >
-              <Inputs />
-              <AIChatPanel />
-            </div>
-          </div>
-        </Tab.Panel>
+      {/* 오른쪽 사이드바 - fixed 팝업 방식 (탭 0, 1에서만 활성화) */}
+                  {/* AIChatPanel 사이드바 */}
+                  {activePanel === "aiAssistant" && selectedIndex < 9 && (
+                      <div
+                        className={`fixed right-0 top-[var(--header-height)] h-[calc(100vh - var(--header-height))] bg-white dark:bg-gray-900 shadow-xl p-2 z-20 transform transition-transform duration-300 ease-in-out
+                        ${
+                          activePanel === "aiAssistant"
+                            ? "translate-x-0"
+                            : "translate-x-full"
+                        }`}
+                        style={{ width: `${sidebarWidth}px` }}
+                      >
+                        <AIChatPanel />
+                      </div>
+                    )}
+                  {/* DefaultInputs 사이드바 */}
+                  {activePanel === "defaultInputs" && selectedIndex < 9 && (
+                      <div
+                        className={`fixed right-0 top-[var(--header-height)] h-[calc(100vh - var(--header-height))] bg-white dark:bg-gray-900 shadow-xl p-2 z-20 transform transition-transform duration-300 ease-in-out
+                        ${
+                          activePanel === "defaultInputs"
+                            ? "translate-x-0"
+                            : "translate-x-full"
+                        }`}
+                        style={{ width: `${sidebarWidth}px` }}
+                      >
+                        <DefaultInputs />
+                      </div>
+                    )}
+                  {/* MonthlyTarget 사이드바 (탭 0, 1에서만 활성화) */}
+                  {activePanel === "monthlyTarget" && selectedIndex < 9 && (
+                      <div
+                        className={`fixed right-0 top-[var(--header-height)] h-[calc(100vh - var(--header-height))] bg-white dark:bg-gray-900 shadow-xl p-2 z-20 transform transition-transform duration-300 ease-in-out
+                        ${
+                          activePanel === "monthlyTarget"
+                            ? "translate-x-0"
+                            : "translate-x-full"
+                        }`}
+                        style={{ width: `${sidebarWidth}px` }}
+                      >
+                        <MonthlyTarget />
+                      </div>
+                    )}
+                </div>
+                </Tab.Panel>
       </Tab.Panels>
     </Tab.Group>
   );
