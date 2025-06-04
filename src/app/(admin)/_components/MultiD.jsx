@@ -13,7 +13,7 @@ export default function MultiD() {
         width="100%"
         height="100%"
         style={{ border: "none" }}
-        title="Geomap Visualization"
+        title="MultiD"
       />
     </div>
   );

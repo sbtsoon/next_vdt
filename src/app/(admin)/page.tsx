@@ -60,8 +60,8 @@ export default function EcommerceTabs() {
     { name: "Exmple2", icon: ChartBarIcon },
     { name: "Exmple3", icon: UserGroupIcon },
     { name: "Exmple4", icon: UserGroupIcon },
-    { name: "MultiD", icon: UserGroupIcon },
     { name: "MultiDHeat", icon: UserGroupIcon },
+    { name: "MultiD", icon: UserGroupIcon },
   ];
 
   const containerRef = useRef<HTMLDivElement>(null);
@@ -688,7 +688,7 @@ export default function EcommerceTabs() {
               >
                 <div className="bg-white dark:bg-gray-900 rounded shadow  h-full">
                   {/* <GraphMetrics /> */}
-                  <MultiD />
+                  <MultiDHeat />
                 </div>
               </div>
               {/* 여기에 수직 크기 조절 막대를 배치합니다. 상단 div의 바깥, 하단 div의 바로 위입니다. */}
@@ -740,7 +740,7 @@ export default function EcommerceTabs() {
               >
                 <div className="bg-white dark:bg-gray-900 rounded shadow  h-full">
                   {/* <GraphMetrics /> */}
-                  <MultiDHeat />
+                  <MultiD />
                 </div>
               </div>
               {/* 여기에 수직 크기 조절 막대를 배치합니다. 상단 div의 바깥, 하단 div의 바로 위입니다. */}
