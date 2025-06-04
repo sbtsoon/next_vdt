@@ -34,6 +34,8 @@ import { parseNeo4jInt } from "@/utils/neo4jUtils";
 import { updateMetricDataHelper } from "@/helpers/metricHelper";
 import Example3 from "./_components/Example3";
 import Example4 from "./_components/Example4";
+import MultiD from "./_components/MultiD";
+import MultiDHeat from "./_components/MultiDHeat";
 
 function classNames(...classes: string[]) {
   return classes.filter(Boolean).join(" ");
@@ -58,6 +60,8 @@ export default function EcommerceTabs() {
     { name: "Exmple2", icon: ChartBarIcon },
     { name: "Exmple3", icon: UserGroupIcon },
     { name: "Exmple4", icon: UserGroupIcon },
+    { name: "MultiDHeat", icon: UserGroupIcon },
+    { name: "MultiD", icon: UserGroupIcon },
   ];
 
   const containerRef = useRef<HTMLDivElement>(null);
@@ -633,6 +637,110 @@ export default function EcommerceTabs() {
                 <div className="bg-white dark:bg-gray-900 rounded shadow  h-full">
                   {/* <GraphMetrics /> */}
                   <Example4 />
+                </div>
+              </div>
+              {/* 여기에 수직 크기 조절 막대를 배치합니다. 상단 div의 바깥, 하단 div의 바로 위입니다. */}
+              <div
+                onMouseDown={startVerticalDrag}
+                className="h-1 cursor-row-resize bg-gray-100 dark:bg-gray-800 hover:bg-blue-500"
+                style={{ zIndex: 9990 }}
+              />{" "}
+              {/* <--- 이 부분이 위로 이동했습니다. */}
+              <div
+                style={{ height: `${100 - topHeight}%` }}
+                className="transition-all h-full"
+              >
+                <div className="bg-white dark:bg-gray-900 rounded shadow p-4 h-full">
+                  <GraphDataTable rawRecords={rawRecords} isSimple={isSimple} />
+                </div>
+              </div>
+            </div>
+
+            <div
+              onMouseDown={startHorizontalDrag}
+              className="w-1 cursor-col-resize bg-gray-100 dark:bg-gray-800 hover:bg-blue-500 transition-colors duration-150"
+              style={{ zIndex: 50 }}
+            />
+
+            <div
+              style={{ width: `${100 - leftWidth}%`, minWidth: "280px" }}
+              className="bg-white dark:bg-gray-900 rounded shadow p-2 h-full flex flex-col gap-4"
+            >
+              <Inputs />
+              <AIChatPanel />
+            </div>
+          </div>
+        </Tab.Panel>
+
+        {/* 8. MultiD */}
+        <Tab.Panel className="h-full">
+          <div
+            ref={containerRef}
+            className="flex h-full relative overflow-hidden"
+          >
+            <div
+              style={{ width: `${leftWidth}%` }}
+              className="flex flex-col w-[75%] transition-all duration-100"
+            >
+              <div
+                style={{ height: `${topHeight}%` }}
+                className="transition-all"
+              >
+                <div className="bg-white dark:bg-gray-900 rounded shadow  h-full">
+                  {/* <GraphMetrics /> */}
+                  <MultiDHeat />
+                </div>
+              </div>
+              {/* 여기에 수직 크기 조절 막대를 배치합니다. 상단 div의 바깥, 하단 div의 바로 위입니다. */}
+              <div
+                onMouseDown={startVerticalDrag}
+                className="h-1 cursor-row-resize bg-gray-100 dark:bg-gray-800 hover:bg-blue-500"
+                style={{ zIndex: 9990 }}
+              />{" "}
+              {/* <--- 이 부분이 위로 이동했습니다. */}
+              <div
+                style={{ height: `${100 - topHeight}%` }}
+                className="transition-all h-full"
+              >
+                <div className="bg-white dark:bg-gray-900 rounded shadow p-4 h-full">
+                  <GraphDataTable rawRecords={rawRecords} isSimple={isSimple} />
+                </div>
+              </div>
+            </div>
+
+            <div
+              onMouseDown={startHorizontalDrag}
+              className="w-1 cursor-col-resize bg-gray-100 dark:bg-gray-800 hover:bg-blue-500 transition-colors duration-150"
+              style={{ zIndex: 50 }}
+            />
+
+            <div
+              style={{ width: `${100 - leftWidth}%`, minWidth: "280px" }}
+              className="bg-white dark:bg-gray-900 rounded shadow p-2 h-full flex flex-col gap-4"
+            >
+              <Inputs />
+              <AIChatPanel />
+            </div>
+          </div>
+        </Tab.Panel>
+
+        {/* 9. MultiD Heat */}
+        <Tab.Panel className="h-full">
+          <div
+            ref={containerRef}
+            className="flex h-full relative overflow-hidden"
+          >
+            <div
+              style={{ width: `${leftWidth}%` }}
+              className="flex flex-col w-[75%] transition-all duration-100"
+            >
+              <div
+                style={{ height: `${topHeight}%` }}
+                className="transition-all"
+              >
+                <div className="bg-white dark:bg-gray-900 rounded shadow  h-full">
+                  {/* <GraphMetrics /> */}
+                  <MultiD />
                 </div>
               </div>
               {/* 여기에 수직 크기 조절 막대를 배치합니다. 상단 div의 바깥, 하단 div의 바로 위입니다. */}
