@@ -277,8 +277,8 @@ export default function SimulationGraph({ isActive }) {
       const mouseX = event.clientX;
       const mouseY = event.clientY;
 
-      tooltip.style.left = `${mouseX + 10}px`; 
-      tooltip.style.top = `${mouseY + 10}px`; 
+      tooltip.style.left = `${mouseX + 10}px`;
+      tooltip.style.top = `${mouseY + 10}px`;
       tooltip.style.display = "block";
 
       setTimeout(() => {
@@ -723,7 +723,7 @@ export default function SimulationGraph({ isActive }) {
         </button>
       </div>
 
-      <div id="cy" ref={cyRef} style={{ width: "100%", minHeight: "800px" }} />
+      <div id="cy" ref={cyRef} style={{ width: "100%", minHeight: "700px" }} />
       <div id="tooltip" className="graph-tool-tip" />
     </div>
   );

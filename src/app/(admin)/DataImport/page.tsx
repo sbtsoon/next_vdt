@@ -159,7 +159,7 @@ const DataImportPage: React.FC = () => {
         </div>
       )}
 
-      <h1 className="text-3xl  mb-6">Project Setup - Income Statement</h1>
+      <h1 className="text-3xl  mb-6">Project Setup</h1>
 
       <div className="mb-4 flex gap-4">
         <div className="w-1/4">

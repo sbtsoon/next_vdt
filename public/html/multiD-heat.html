@@ -312,7 +312,7 @@
       <div id="left-sidebar">
         <div class="controls-container">
           <div class="control-group">
-            <label for="colorSchemeSelector">색상 스킴 선택:</label>
+            <label for="colorSchemeSelector">색상 스킨 선택:</label>
             <select id="colorSchemeSelector"></select>
           </div>
           <hr style="width: 80%; border-color: #444; margin: 15px 0" />
@@ -405,8 +405,13 @@
       let exportDataButton;
 
       const colorSchemes = [
+      {
+          name: "기본 (초록 계열)",
+          minColor: new THREE.Color(0x90ee90),
+          maxColor: new THREE.Color(0x006400),
+        }, // LightGreen to DarkGreen
         {
-          name: "기본 (노랑-빨강)",
+          name: "노랑-빨강",
           minColor: new THREE.Color(0xffff99),
           maxColor: new THREE.Color(0xff3300),
         },
@@ -435,11 +440,7 @@
           minColor: new THREE.Color(0xadd8e6),
           maxColor: new THREE.Color(0x00008b),
         }, // Corrected: LightBlue to DarkBlue
-        {
-          name: "초록 계열",
-          minColor: new THREE.Color(0x90ee90),
-          maxColor: new THREE.Color(0x006400),
-        }, // LightGreen to DarkGreen
+
         {
           name: "빨강-파랑 (발산형)",
           minColor: new THREE.Color(0xff0000),
