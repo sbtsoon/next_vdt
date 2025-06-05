@@ -36,8 +36,8 @@
         z-index: 20; /* 다른 요소 위에 표시 */
       }
       .scroller {
-  --scrollbar-color-thumb: hotpink;
-  --scrollbar-color-track: blue;
+  --scrollbar-color-thumb: rgb(78, 121, 213);
+  --scrollbar-color-track: rgb(53, 60, 82);
   --scrollbar-width: thin;
   --scrollbar-width-legacy: 0.5rem;
 }
@@ -69,10 +69,8 @@
   border: 1px solid #000;
   width: 100%;
   height: 50vh;
-
   position: relative;
   container-type: inline-size;
-
   &:has(.content) {
     background: white;
     overflow-y: auto;
@@ -369,7 +367,7 @@
             <div id="totalSales">총 판매량: 0</div>
             <button id="exportDataButton">Export Data</button>
             <h4>제품 리스트:</h4>
-            <ul id="cubeList"></ul>
+            <ul id="cubeList" class="scroller"></ul>
           </div>
         </div>
       </div>
