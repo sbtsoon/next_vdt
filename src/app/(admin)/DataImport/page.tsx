@@ -281,7 +281,9 @@ const DataImportPage: React.FC = () => {
           <button onClick={handleAIMapFields} className="px-6 py-2 bg-purple-800 hover:bg-purple-800 rounded">
           <span className="text-2xl"> AI Graph DB</span> <br></br> Conversion
           </button>
-          <p className="mt-2 text-sm text-gray-400">AI를 사용한 변환이니, 정확하지 않을 수 있습니다. <br></br>확인 후 진행해주세요 </p>
+          <p className="mt-2 text-sm text-gray-400 word-break text-center ">
+          As this content was generated through AI-based conversion, <br>
+          </br> some inaccuracies may exist.<br></br> Please review carefully before proceeding.</p>
         </div>
 
         <div className="flex-1">

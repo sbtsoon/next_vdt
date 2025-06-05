@@ -72,7 +72,7 @@ export default function EcommerceTabs() {
   const [leftWidth, setLeftWidth] = useState(75); // %
 
   const isDraggingVertical = useRef(false);
-  const [topHeight, setTopHeight] = useState(70); // %
+  const [topHeight, setTopHeight] = useState(65); // %
 
   const startHorizontalDrag = () => {
     isDraggingHorizontal.current = true;
@@ -311,12 +311,13 @@ export default function EcommerceTabs() {
             // 기존 <div className="flex flex-col h-full w-full ..."> 를 제거하고, containerRef가 그 역할을 하도록 합니다.
             className="flex flex-col h-full relative overflow-hidden"
           >
-            <div style={{ height: `${topHeight}%` }} className="transition-all">
-              <div className="bg-white dark:bg-gray-900 rounded shadow  h-full">
-                <GraphMetrics />
-                <NetworkGraph />
-              </div>
+           <div style={{ height: `${topHeight}%` }} className="transition-[height]">
+            <div className="bg-white dark:bg-gray-900 rounded shadow h-full">
+              <GraphMetrics />
+              <NetworkGraph />
             </div>
+          </div>
+
 
             {/* 수직 크기 조절 막대 */}
             <div
@@ -325,10 +326,7 @@ export default function EcommerceTabs() {
               style={{ zIndex: 9990 }}
             />
 
-            <div
-              style={{ height: `${100 - topHeight}%` }}
-              className="transition-all h-full"
-            >
+            <div style={{ height: `${100 - topHeight}%` }} className="flex-grow">
               <div className="bg-white dark:bg-gray-900 rounded shadow p-4 overflow-y-auto h-full">
                 <GraphDataTable rawRecords={rawRecords} isSimple={isSimple} />
               </div>
@@ -618,7 +616,7 @@ export default function EcommerceTabs() {
               className="flex flex-col transition-all duration-100"
             >
               <div
-                style={{ height: `80%` }}
+                style={{ height: `70%` }}
                 className="transition-all"
               >
                 <div className="bg-white dark:bg-gray-900 rounded shadow  h-full">
