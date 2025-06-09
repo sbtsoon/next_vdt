@@ -1,6 +1,6 @@
 "use client";
 
-import cytoscape from "@/lib/cytoscapeWithExtensions";
+import cytoscape from "@/lib/cytoscape/cytoscapeWithExtensions";
 import { graphDataAtom } from "@/store/graphAtoms";
 import { useAtom } from "jotai";
 import { useEffect, useRef } from "react";
