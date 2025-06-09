@@ -11,7 +11,7 @@ import {
   showEdge,
   hideNode,
   hideEdge,
-} from "@/helpers/cytoscapeVisibility";
+} from "@/helpers/cytoscapeVisibilityHelper";
 
 // Layout mode constants
 export const LAYOUT_MODES = Object.freeze({

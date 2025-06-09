@@ -3,7 +3,7 @@ import {
   showEdge,
   hideNode,
   hideEdge,
-} from "@/helpers/cytoscapeVisibility";
+} from "@/helpers/cytoscapeVisibilityHelper";
 
 export default function attackCtxMenu(cy) {
   cy.cxtmenu({

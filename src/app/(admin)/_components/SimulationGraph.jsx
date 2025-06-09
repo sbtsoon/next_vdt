@@ -11,7 +11,7 @@ import {
   showEdge,
   hideNode,
   hideEdge,
-} from "@/helpers/cytoscapeVisibility";
+} from "@/helpers/cytoscapeVisibilityHelper";
 
 import { updateMetricDataHelper } from "@/helpers/metricHelper";
 import styles from "./simulationGraph.css";

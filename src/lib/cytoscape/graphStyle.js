@@ -1,5 +1,5 @@
 import { parseNeo4jInt } from "@/utils/neo4jUtils";
-import { graphIconMap } from "@/constants/graphIconMap";
+import { GRAPH_ICON_MAP } from "@/constants/graphConstant";
 
 export const networkGraphStyle = [
   {
@@ -26,7 +26,7 @@ export const networkGraphStyle = [
 
       "background-image": (ele) => {
         const name = ele.data("name");
-        const icon = graphIconMap.get(name);
+        const icon = GRAPH_ICON_MAP.get(name);
         return icon ? `/images/network-graph-node/${icon}` : undefined;
       },
 

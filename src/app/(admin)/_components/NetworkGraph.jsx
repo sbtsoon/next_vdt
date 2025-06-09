@@ -11,7 +11,7 @@ import {
   showEdge,
   hideNode,
   hideEdge,
-} from "@/helpers/cytoscapeVisibility";
+} from "@/helpers/cytoscapeVisibilityHelper";
 import { updateMetricDataHelper } from "@/helpers/metricHelper";
 import { networkGraphStyle } from "@/lib/cytoscape/graphStyle";
 import attackCtxMenu from "@/lib/cytoscape/ctxMenu";

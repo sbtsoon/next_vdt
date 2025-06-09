@@ -1,5 +1,5 @@
 import { parseNeo4jInt } from "@/utils/neo4jUtils";
-import { showNode, showEdge } from "@/helpers/cytoscapeVisibility";
+import { showNode, showEdge } from "@/helpers/cytoscapeVisibilityHelper";
 
 export function applyNetworkGraphLayout(cy) {
   cy.nodes().forEach((node) => showNode(node, 0));

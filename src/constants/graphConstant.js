@@ -1,4 +1,4 @@
-export const graphIconMap = new Map([
+export const GRAPH_ICON_MAP = new Map([
   // 매출 관련
   ["매출이익", "매출이익.png"],
   ["매출액", "매출액.png"],
