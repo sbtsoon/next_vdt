@@ -227,37 +227,39 @@ export default function SimulationGraph({ isActive, graphData }) {
     window.updateParentNodes = (nodeId) => {
       const cy = cyInstanceRef.current;
       const node = cy.getElementById(nodeId);
+      // TODO: 부모가 여러개
+      const parentNodes = node.outgoers("node");
 
-      // TODO: 부모가 여러개라면?
-      const parentNode = node.outgoers("node");
-      const parentNodeId = parentNode.id();
-      if (!parentNode.data("name")) return;
+      parentNodes.forEach((parentNode) => {
+        const parentNodeId = parentNode.id();
+        if (!parentNode.data("name")) return;
 
-      const childrenEdges = parentNode.incomers("edge");
-      let parentNodeAmount = 0;
-      childrenEdges.forEach((childrenEdge) => {
-        const role = childrenEdge.data("role");
-        const childNodeId = childrenEdge.source().id();
-        const childNodeAmount = nodeRef.current[childNodeId].amount;
-        if (role === "negative") {
-          parentNodeAmount -= childNodeAmount;
-        } else {
-          parentNodeAmount += childNodeAmount;
-        }
+        const childrenEdges = parentNode.incomers("edge");
+        let parentNodeAmount = 0;
+        childrenEdges.forEach((childrenEdge) => {
+          const role = childrenEdge.data("role");
+          const childNodeId = childrenEdge.source().id();
+          const childNodeAmount = nodeRef.current[childNodeId].amount;
+          if (role === "negative") {
+            parentNodeAmount -= childNodeAmount;
+          } else {
+            parentNodeAmount += childNodeAmount;
+          }
+        });
+
+        const parentPercentage = Math.round(
+          (parentNodeAmount / nodeRef.current[parentNodeId].initialAmount - 1) *
+            100
+        ); // TODO: Math.round()
+        nodeRef.current[parentNodeId].amount = parentNodeAmount;
+        nodeRef.current[parentNodeId].percentage = parentPercentage;
+
+        // historyData 추가
+        updateHistoryData(parentNodeId);
+
+        forceReRenderNode(parentNodeId);
+        updateParentNodes(parentNodeId);
       });
-
-      const parentPercentage = Math.round(
-        (parentNodeAmount / nodeRef.current[parentNodeId].initialAmount - 1) *
-          100
-      ); // TODO: Math.round()
-      nodeRef.current[parentNodeId].amount = parentNodeAmount;
-      nodeRef.current[parentNodeId].percentage = parentPercentage;
-
-      // historyData 추가
-      updateHistoryData(parentNodeId);
-
-      forceReRenderNode(parentNodeId);
-      updateParentNodes(parentNodeId);
     };
 
     window.clickHistoryData = (nodeId, index, event) => {
