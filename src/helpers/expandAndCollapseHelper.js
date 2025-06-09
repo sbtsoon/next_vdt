@@ -3,7 +3,7 @@ import {
   showEdge,
   hideNode,
   hideEdge,
-} from "@/helpers/cytoscapeVisibilityHelper";
+} from "@/helpers/showAndHideHelper";
 
 export function expandNode(cy, nodeRef, nodeId) {
   if (!cy || !nodeId) return;

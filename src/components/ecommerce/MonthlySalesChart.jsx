@@ -11,7 +11,7 @@ import {
   showEdge,
   hideNode,
   hideEdge,
-} from "@/helpers/cytoscapeVisibilityHelper";
+} from "@/helpers/showAndHideHelper";
 
 // Layout mode constants
 export const LAYOUT_MODES = Object.freeze({
@@ -27,7 +27,7 @@ export default function MonthlySalesChart({ graphData }) {
   useEffect(() => {
     if (!cyRef.current) return;
     if (!graphData) return; // !graphData 추가해주기
-    
+
     const cy = cytoscape({
       container: cyRef.current,
       style: [

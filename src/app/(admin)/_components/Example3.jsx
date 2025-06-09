@@ -11,7 +11,7 @@ import {
   showEdge,
   hideNode,
   hideEdge,
-} from "@/helpers/cytoscapeVisibilityHelper";
+} from "@/helpers/showAndHideHelper";
 import { updateMetricDataHelper } from "@/helpers/metricHelper";
 
 const iconMap = new Map([
