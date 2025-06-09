@@ -44,18 +44,9 @@ export default function NetworkGraph({ graphData }) {
 
     const deepCopyData = structuredClone(graphData);
     cy.add([...deepCopyData.nodes, ...deepCopyData.edges]);
-    // cy.add([...graphData.nodes, ...graphData.edges]);
 
     const defaults = {};
     cy.panzoom(defaults);
-
-    // metric card 정보 업데이트
-    // cy.nodes().forEach((node) => {
-    //   const name = node.data("name");
-    //   const amount = Math.round(parseNeo4jInt(node.data("amount")) / 1_000_000);
-    //   const percentage = 0;
-    //   updateMetricDataHelper(name, amount, percentage, [], setMetricData);
-    // });
 
     cyInstanceRef.current = cy;
 

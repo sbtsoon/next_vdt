@@ -26,3 +26,17 @@ export function applyNetworkGraphLayout(cy) {
     );
   });
 }
+
+export function applySimulationGraphLayout(cy) {
+  cy.layout({
+    name: "dagre",
+    rankDir: "RL", // 방향: 오른쪽 → 왼쪽
+    nodeSep: 3, // 같은 레벨 노드 간 거리
+    rankSep: 300, // 부모, 자식 노드 간 거리
+    edgeSep: 100,
+    padding: 200,
+    animate: true,
+    animationDuration: 400,
+    animationEasing: "ease-in-out",
+  }).run();
+}
