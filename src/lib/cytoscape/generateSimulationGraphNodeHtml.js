@@ -1,6 +1,6 @@
 import { parseNeo4jInt } from "@/helpers/parseNeo4jIntHelper";
 
-export function generateSimulationGraphNodeLabel(cy, nodeRef) {
+export function generateSimulationGraphNodeHtml(cy, nodeRef) {
   return function tpl(data) {
     const ref = nodeRef.current?.[data.id] || {};
     if (ref.isDisplay === false) return "";
@@ -140,7 +140,7 @@ export function generateSimulationGraphNodeLabel(cy, nodeRef) {
                                                             <div class="negative-history-data-container">
                                                                 ${scaledHistoryData
                                                                   .map(
-                                                                    (h, i) => {                                                                      
+                                                                    (h, i) => {
                                                                       const height =
                                                                         h < 0
                                                                           ? -h

@@ -19,7 +19,7 @@ import { simulationGraphStyle } from "@/lib/cytoscape/graphStyle";
 import { applySimulationGraphLayout } from "@/lib/cytoscape/graphLayout";
 import { useSimulationGraphWindowHandler } from "@/hooks/useSimulationGraphWindowHandler";
 import { SIMULATION_GRAPH_NODE_POSITIONS } from "@/constants/simulationGraphNodePositions";
-import { generateSimulationGraphNodeLabel } from "@/lib/cytoscape/generateSimulationGraphNodeLabel";
+import { generateSimulationGraphNodeHtml } from "@/lib/cytoscape/generateSimulationGraphNodeHtml";
 import { collapseNode, expandNode } from "@/helpers/expandAndCollapseHelper";
 
 export default function SimulationGraph({ isActive, graphData }) {
@@ -75,7 +75,7 @@ export default function SimulationGraph({ isActive, graphData }) {
         query: "node",
         halign: "center",
         valign: "center",
-        tpl: generateSimulationGraphNodeLabel(cy, nodeRef),
+        tpl: generateSimulationGraphNodeHtml(cy, nodeRef),
       },
     ]);
 
