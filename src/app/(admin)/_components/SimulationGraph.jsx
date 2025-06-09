@@ -16,10 +16,9 @@ import {
 import { updateMetricDataHelper } from "@/helpers/metricHelper";
 import styles from "./simulationGraph.css";
 
-export default function SimulationGraph({ isActive }) {
+export default function SimulationGraph({ isActive, graphData }) {
   const cyRef = useRef(null);
   const cyInstanceRef = useRef(null);
-  const [graphData] = useAtom(graphDataAtom);
   const [, setMetricData] = useAtom(metricMapAtom);
   const nodeRef = useRef({});
   const didInitialize = useRef(false);
@@ -289,6 +288,7 @@ export default function SimulationGraph({ isActive }) {
 
   useEffect(() => {
     if (!cyRef.current) return;
+    if (!graphData) return; // !graphData 추가해주기
 
     if (cyInstanceRef.current) {
       cyInstanceRef.current.destroy();

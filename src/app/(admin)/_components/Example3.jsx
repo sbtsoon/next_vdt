@@ -65,14 +65,14 @@ const iconMap = new Map([
   ["비용계획합", "비용.png"],
 ]);
 
-export default function Example3() {
+export default function Example3({ graphData }) {
   const cyRef = useRef(null);
   const cyInstanceRef = useRef(null);
-  const [graphData] = useAtom(graphDataAtom);
   const [, setMetricData] = useAtom(metricMapAtom);
 
   useEffect(() => {
     if (!cyRef.current) return;
+    if (!graphData) return; // !graphData 추가해주기
 
     if (cyInstanceRef.current) {
       cyInstanceRef.current.destroy();

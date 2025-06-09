@@ -1,7 +1,5 @@
 import { atom } from "jotai";
 
-export const graphDataAtom = atom({ nodes: [], edges: [] });
-
 export const metricMapAtom = atom({
   profit: {
     amount: 0,
@@ -21,5 +19,5 @@ export const metricMapAtom = atom({
 });
 
 export const aiQueryAtom = atom({
-  query: "",
+  query: "MATCH (n)-[r]->(m) RETURN n, r, m",
 });

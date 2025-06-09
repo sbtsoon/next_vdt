@@ -24,7 +24,7 @@ import {
 } from "@heroicons/react/24/outline";
 
 import { useAtom } from "jotai";
-import { aiQueryAtom, graphDataAtom, metricMapAtom } from "@/store/graphAtoms";
+import { aiQueryAtom, metricMapAtom } from "@/store/graphAtoms";
 import NetworkGraph from "@/app/(admin)/_components/NetworkGraph";
 import SimulationGraph from "@/app/(admin)/_components/SimulationGraph";
 import GraphDataTable from "./_components/GraphDataTable";
@@ -37,15 +37,39 @@ import Example3 from "./_components/Example3";
 import Example4 from "./_components/Example4";
 import MultiD from "./_components/MultiD";
 import MultiDHeat from "./_components/MultiDHeat";
+import { useGraphByQuery } from "@/hooks/useGraph";
 
 function classNames(...classes: string[]) {
   return classes.filter(Boolean).join(" ");
 }
 
 export default function EcommerceTabs() {
-  const [graphData, setGraphData] = useAtom(graphDataAtom);
-  const [, setMetricData] = useAtom(metricMapAtom);
   const [aiQuery, setAiQuery] = useAtom(aiQueryAtom);
+  const { data } = useGraphByQuery(aiQuery.query, {
+    onSuccess: (data) => {
+      if (data?.data?.nodes.length !== 0) {
+        setGraphData(data.data);
+        // metric card 정보 업데이트
+        data.data.nodes.forEach((node) => {
+          const { name, amount } = node.data || {};
+          const parsedAmount = Math.round(parseNeo4jInt(amount) / 1_000_000);
+          const percentage = 0;
+          if (name) {
+            updateMetricDataHelper(
+              name,
+              parsedAmount,
+              percentage,
+              [],
+              setMetricData
+            );
+          }
+        });
+      }
+      setRawRecords(data?.rawRecords);
+    },
+  });
+  const [graphData, setGraphData] = useState(null);
+  const [, setMetricData] = useAtom(metricMapAtom);
   const [rawRecords, setRawRecords] = useState(null);
   const [isSimple, setIsSimple] = useState(false);
 
@@ -115,60 +139,10 @@ export default function EcommerceTabs() {
     document.removeEventListener("mouseup", stopVerticalDrag);
   };
 
-  const initStoreData = () => {
-    setGraphData({ nodes: [], edges: [] });
-    setMetricData({
-      profit: { amount: 0, percentage: 0, scaledHistoryData: [] },
-      sales: { amount: 0, percentage: 0, scaledHistoryData: [] },
-      cogs: { amount: 0, percentage: 0, scaledHistoryData: [] },
-    });
-    setAiQuery({ query: "" });
-  };
-
-  const loadGraph = async (query = null) => {
-    // initStoreData();
-    const res = await fetch(query ? "/api/query" : "/api/graph", {
-      method: query ? "POST" : "GET",
-      headers: { "Content-Type": "application/json" },
-      body: query ? JSON.stringify({ query }) : null,
-    });
-    const { data, rawRecords } = await res.json();
-
-    // nodes, edges 데이터가 없어서 그래프가 그려지지 않는다면 기존 그래프 유지
-    if (data.nodes.length !== 0 && data.edges.length !== 0) {
-      initStoreData();
-      setGraphData(data);
-      // metric card 정보 업데이트
-      data.nodes.forEach((node) => {
-        const { name, amount } = node.data || {};
-        const parsedAmount = Math.round(parseNeo4jInt(amount) / 1_000_000);
-        const percentage = 0;
-        if (name) {
-          updateMetricDataHelper(
-            name,
-            parsedAmount,
-            percentage,
-            [],
-            setMetricData
-          );
-        }
-      });
-    }
-    // setGraphData(data);
-    setRawRecords(rawRecords);
+  useEffect(() => {
+    if (!rawRecords) return;
     setIsSimple(isSimpleTable(rawRecords));
-  };
-
-  useEffect(() => {
-    loadGraph(null);
-  }, []);
-
-  useEffect(() => {
-    if (aiQuery.query) {
-      console.log(aiQuery.query);
-      loadGraph(aiQuery.query);
-    }
-  }, [aiQuery.query]);
+  }, [rawRecords]);
 
   useEffect(() => {
     setActivePanel(null);
@@ -315,7 +289,7 @@ export default function EcommerceTabs() {
             >
               <div className="bg-white dark:bg-gray-900 rounded shadow h-full">
                 <GraphMetrics />
-                <NetworkGraph />
+                <NetworkGraph graphData={graphData} />
               </div>
             </div>
 
@@ -394,7 +368,10 @@ export default function EcommerceTabs() {
               <div className="transition-all">
                 <div className="shadow  h-full">
                   <GraphMetrics />
-                  <SimulationGraph isActive={selectedIndex === 1} />
+                  <SimulationGraph
+                    isActive={selectedIndex === 1}
+                    graphData={graphData}
+                  />
                 </div>
               </div>
             </div>
@@ -589,7 +566,7 @@ export default function EcommerceTabs() {
             <div className="flex flex-col transition-all duration-100">
               <div style={{ height: `60%` }} className="transition-all">
                 <div className="bg-white dark:bg-gray-900 rounded shadow  h-full">
-                  <MonthlySalesChart />
+                  <MonthlySalesChart graphData={graphData} />
                 </div>
                 {/* 여기에 수직 크기 조절 막대를 배치합니다. 상단 div의 바깥, 하단 div의 바로 위입니다. */}
                 <div
@@ -668,7 +645,7 @@ export default function EcommerceTabs() {
               <div style={{ height: `80%` }} className="transition-all">
                 <div className="bg-white dark:bg-gray-900 rounded shadow  h-full">
                   {/* <GraphMetrics /> */}
-                  <Example3 />
+                  <Example3 graphData={graphData} />
                 </div>
               </div>
               {/* 여기에 수직 크기 조절 막대를 배치합니다. 상단 div의 바깥, 하단 div의 바로 위입니다. */}

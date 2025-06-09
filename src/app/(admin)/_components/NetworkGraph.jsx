@@ -1,7 +1,7 @@
 "use client";
 
 import cytoscape from "@/lib/cytoscape/cytoscapeWithExtensions";
-import { graphDataAtom, metricMapAtom } from "@/store/graphAtoms";
+import { metricMapAtom } from "@/store/graphAtoms";
 import { useAtom } from "jotai";
 import { useEffect, useRef } from "react";
 import { formatAmountWithMajorUnits } from "@/helpers/formatAmountWithMajorUnitsHelper";
@@ -17,14 +17,14 @@ import { networkGraphStyle } from "@/lib/cytoscape/graphStyle";
 import attackCtxMenu from "@/lib/cytoscape/ctxMenu";
 import { applyNetworkGraphLayout } from "@/lib/cytoscape/graphLayout";
 
-export default function NetworkGraph() {
+export default function NetworkGraph({ graphData }) {
   const cyRef = useRef(null);
   const cyInstanceRef = useRef(null);
-  const [graphData] = useAtom(graphDataAtom);
   const [, setMetricData] = useAtom(metricMapAtom);
 
   useEffect(() => {
     if (!cyRef.current) return;
+    if (!graphData) return; // !graphData 추가해주기
 
     if (cyInstanceRef.current) {
       cyInstanceRef.current.destroy();
