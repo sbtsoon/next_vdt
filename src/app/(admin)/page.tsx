@@ -71,7 +71,6 @@ export default function EcommerceTabs() {
   const [graphData, setGraphData] = useState(null);
   const [, setMetricData] = useAtom(metricMapAtom);
   const [rawRecords, setRawRecords] = useState(null);
-  const [isSimple, setIsSimple] = useState(false);
 
   const [selectedIndex, setSelectedIndex] = useState(0);
 
@@ -140,30 +139,8 @@ export default function EcommerceTabs() {
   };
 
   useEffect(() => {
-    if (!rawRecords) return;
-    setIsSimple(isSimpleTable(rawRecords));
-  }, [rawRecords]);
-
-  useEffect(() => {
     setActivePanel(null);
   }, [selectedIndex]);
-
-  function isSimpleTable(records: any) {
-    if (!records?.length) return true;
-    return records.every((record: any) =>
-      record._fields.every((field: any) => {
-        const isNeoInt =
-          typeof field === "object" &&
-          field !== null &&
-          Object.keys(field).length === 2 &&
-          typeof field.low === "number" &&
-          typeof field.high === "number";
-        const isPrimitive =
-          typeof field === "number" || typeof field === "string";
-        return isNeoInt || isPrimitive;
-      })
-    );
-  }
 
   const sidebarWidth = 350; // ✨ 변경: 각 사이드바 패널의 너비를 320px로 설정
   const totalOpenedSidebarWidth = activePanel ? sidebarWidth : 0;
@@ -302,7 +279,7 @@ export default function EcommerceTabs() {
 
             <div className="flex-grow w-full  h-full">
               <div className="bg-white dark:bg-gray-900 rounded shadow py-4 h-full overflow-x-hidden">
-                <GraphDataTable rawRecords={rawRecords} isSimple={isSimple} />
+                <GraphDataTable rawRecords={rawRecords} />
               </div>
             </div>
 
@@ -580,10 +557,7 @@ export default function EcommerceTabs() {
                   className="transition-all h-full"
                 >
                   <div className="bg-white dark:bg-gray-900 rounded shadow py-4  h-full">
-                    <GraphDataTable
-                      rawRecords={rawRecords}
-                      isSimple={isSimple}
-                    />
+                    <GraphDataTable rawRecords={rawRecords} />
                   </div>
                 </div>
               </div>
@@ -660,7 +634,7 @@ export default function EcommerceTabs() {
                 className="transition-all h-full"
               >
                 <div className="bg-white dark:bg-gray-900 rounded shadow py-4 h-full">
-                  <GraphDataTable rawRecords={rawRecords} isSimple={isSimple} />
+                  <GraphDataTable rawRecords={rawRecords} />
                 </div>
               </div>
             </div>
@@ -832,7 +806,7 @@ export default function EcommerceTabs() {
                 className="transition-all h-full "
               >
                 <div className="bg-white dark:bg-gray-900 rounded shadow p-4 h-full w-full">
-                  <GraphDataTable rawRecords={rawRecords} isSimple={isSimple} />
+                  <GraphDataTable rawRecords={rawRecords} />
                 </div>
               </div>
             </div>

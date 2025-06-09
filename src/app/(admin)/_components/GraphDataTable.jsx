@@ -8,8 +8,30 @@ import {
 import Badge from "@/components/ui/badge/Badge";
 import Image from "next/image";
 import { parseNeo4jInt } from "@/helpers/parseNeo4jIntHelper";
+import { useMemo } from "react";
 
-export default function GraphDataTable({ rawRecords, isSimple }) {
+export default function GraphDataTable({ rawRecords }) {
+  function isSimpleTable(records) {
+    if (!records?.length) return true;
+    return records.every((record) =>
+      record._fields.every((field) => {
+        const isNeoInt =
+          typeof field === "object" &&
+          field !== null &&
+          Object.keys(field).length === 2 &&
+          typeof field.low === "number" &&
+          typeof field.high === "number";
+        const isPrimitive =
+          typeof field === "number" || typeof field === "string";
+        return isNeoInt || isPrimitive;
+      })
+    );
+  }
+
+  const isSimple = useMemo(() => {
+    return rawRecords ? isSimpleTable(rawRecords) : true;
+  }, [rawRecords]);
+
   if (!rawRecords || rawRecords.length === 0) {
     return <p>no data</p>;
   }
