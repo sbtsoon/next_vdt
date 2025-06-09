@@ -304,7 +304,7 @@ export default function EcommerceTabs() {
 
       <Tab.Panels className="mt-2 h-[calc(100%-60px)] relative">
         {/* 1. Network Graph Tab Panel (팝업 사이드바) */}
-        <Tab.Panel className="h-full " >
+        <Tab.Panel className="h-full" unmount={false}>
           <div
             ref={containerRef}
             className="flex flex-col h-full relative overflow-hidden  " style={{ width: `calc(100% - ${totalOpenedSidebarWidth}px)` }}
