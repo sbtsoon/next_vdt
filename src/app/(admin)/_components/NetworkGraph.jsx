@@ -4,8 +4,8 @@ import cytoscape from "@/lib/cytoscape/cytoscapeWithExtensions";
 import { graphDataAtom, metricMapAtom } from "@/store/graphAtoms";
 import { useAtom } from "jotai";
 import { useEffect, useRef } from "react";
-import { formatAmountWithMajorUnits } from "@/utils/formatUtils";
-import { parseNeo4jInt } from "@/utils/neo4jUtils";
+import { formatAmountWithMajorUnits } from "@/helpers/formatAmountWithMajorUnitsHelper";
+import { parseNeo4jInt } from "@/helpers/parseNeo4jIntHelper";
 import {
   showNode,
   showEdge,

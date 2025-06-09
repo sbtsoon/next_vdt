@@ -7,7 +7,7 @@ import {
 } from "@/components/ui/table";
 import Badge from "@/components/ui/badge/Badge";
 import Image from "next/image";
-import { parseNeo4jInt } from "@/utils/neo4jUtils";
+import { parseNeo4jInt } from "@/helpers/parseNeo4jIntHelper";
 
 export default function GraphDataTable({ rawRecords, isSimple }) {
   if (!rawRecords || rawRecords.length === 0) {
@@ -97,8 +97,7 @@ export default function GraphDataTable({ rawRecords, isSimple }) {
           </button>
         </div>
       </div>
-      <div
-        className="h-80 custom-scrollbar overflow-y-auto" >
+      <div className="h-80 custom-scrollbar overflow-y-auto">
         <Table className="w-full table-fixed break-words">
           {/* Table Header */}
           <TableHeader className="border-gray-100 dark:border-gray-800 border-y">

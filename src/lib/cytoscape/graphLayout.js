@@ -1,4 +1,4 @@
-import { parseNeo4jInt } from "@/utils/neo4jUtils";
+import { parseNeo4jInt } from "@/helpers/parseNeo4jIntHelper";
 import { showNode, showEdge } from "@/helpers/cytoscapeVisibilityHelper";
 
 export function applyNetworkGraphLayout(cy) {
