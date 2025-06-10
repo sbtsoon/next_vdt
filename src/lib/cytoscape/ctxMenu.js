@@ -5,7 +5,7 @@ import {
   hideEdge,
 } from "@/helpers/showAndHideHelper";
 
-export default function attackCtxMenu(cy) {
+export default function attachCtxMenu(cy) {
   cy.cxtmenu({
     selector: "node",
     commands: [

@@ -14,7 +14,7 @@ import {
 } from "@/helpers/showAndHideHelper";
 import { updateMetricDataHelper } from "@/helpers/metricHelper";
 import { networkGraphStyle } from "@/lib/cytoscape/graphStyle";
-import attackCtxMenu from "@/lib/cytoscape/ctxMenu";
+import attachCtxMenu from "@/lib/cytoscape/ctxMenu";
 import { applyNetworkGraphLayout } from "@/lib/cytoscape/graphLayout";
 
 export default function NetworkGraph({ graphData }) {
@@ -40,7 +40,7 @@ export default function NetworkGraph({ graphData }) {
     });
 
     // cxtmenu
-    attackCtxMenu(cy);
+    attachCtxMenu(cy);
 
     const deepCopyData = structuredClone(graphData);
     cy.add([...deepCopyData.nodes, ...deepCopyData.edges]);
