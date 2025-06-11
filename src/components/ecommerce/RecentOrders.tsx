@@ -7,7 +7,7 @@ import {
 } from "../ui/table";
 import Badge from "../ui/badge/Badge";
 import Image from "next/image";
-import { parseNeo4jInt } from "@/utils/neo4jUtils";
+import { parseNeo4jInt } from "@/helpers/parseNeo4jIntHelper";
 
 // Define the TypeScript interface for the table rows
 interface Product {

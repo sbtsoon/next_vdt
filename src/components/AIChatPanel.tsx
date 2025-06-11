@@ -4,6 +4,7 @@ import React, { useEffect, useState, useRef } from "react";
 import { PaperAirplaneIcon, MicrophoneIcon } from "@heroicons/react/24/outline";
 import { useAtom } from "jotai";
 import { aiQueryAtom } from "@/store/graphAtoms";
+import { useAiAssistantChatMutation } from "@/hooks/useAiAssistant";
 
 interface Message {
   role: "user" | "assistant";
@@ -15,47 +16,35 @@ const AIChatPanel: React.FC = () => {
   const [input, setInput] = useState("");
   const [, setAiQuery] = useAtom(aiQueryAtom);
   const messagesEndRef = useRef<HTMLDivElement | null>(null);
-  const [loading, setLoading] = useState(false);
 
-  const handleSend = async () => {
+  const { mutate: sendAiQuery, isPending } = useAiAssistantChatMutation();
+
+  const handleSend = () => {
     if (!input.trim()) return;
+
     const userMessage: Message = { role: "user", content: input };
     setMessages((prev) => [...prev, userMessage]);
-    setInput("");
 
-    try {
-      setLoading(true);
-      const res = await fetch("/api/chat", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          assistant: "text2cypher",
-          query: input,
-        }),
-      });
+    const currentInput = input;
+    setInput(""); // 입력창 비우기
 
-      const data = await res.json();
+    sendAiQuery(currentInput, {
+      onSuccess: (data) => {
+        const cypher = data?.response?.cypher;
+        const reply = data?.response?.response || "(No response)";
 
-      const aiQuery = data?.response?.cypher;
-      setAiQuery({ query: aiQuery });
+        setAiQuery({ query: cypher });
 
-      const reply = data?.response?.response || "(No response)";
-      const assistantMessage: Message = { role: "assistant", content: reply };
-      setMessages((prev) => [...prev, assistantMessage]);
-    } catch (error) {
-      console.error("API Error:", error);
-      setMessages((prev) => [
-        ...prev,
-        {
-          role: "assistant",
-          content: "⚠️ 서버 응답에 문제가 있습니다.",
-        },
-      ]);
-    } finally {
-      setLoading(false);
-    }
+        const assistantMessage: Message = { role: "assistant", content: reply };
+        setMessages((prev) => [...prev, assistantMessage]);
+      },
+      onError: () => {
+        setMessages((prev) => [
+          ...prev,
+          { role: "assistant", content: "⚠️ 서버 응답에 문제가 있습니다." },
+        ]);
+      },
+    });
   };
 
   const handleVoiceInput = () => {
@@ -125,7 +114,7 @@ const AIChatPanel: React.FC = () => {
                 {msg.content}
               </div>
             ))}
-            {loading && (
+            {isPending && (
               <div className="p-2 rounded-lg bg-gray-100 dark:bg-gray-800 text-sm text-gray-600 dark:text-gray-300 w-fit">
                 <span className="animate-pulse">Assistant is thinking...</span>
               </div>

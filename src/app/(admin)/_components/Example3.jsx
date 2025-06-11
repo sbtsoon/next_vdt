@@ -1,17 +1,17 @@
 "use client";
 
-import cytoscape from "@/lib/cytoscapeWithExtensions";
+import cytoscape from "@/lib/cytoscape/cytoscapeWithExtensions";
 import { graphDataAtom, metricMapAtom } from "@/store/graphAtoms";
 import { useAtom } from "jotai";
 import { useEffect, useRef } from "react";
-import { formatAmountWithMajorUnits } from "@/utils/formatUtils";
-import { parseNeo4jInt } from "@/utils/neo4jUtils";
+import { formatAmountWithMajorUnits } from "@/helpers/formatAmountWithMajorUnitsHelper";
+import { parseNeo4jInt } from "@/helpers/parseNeo4jIntHelper";
 import {
   showNode,
   showEdge,
   hideNode,
   hideEdge,
-} from "@/helpers/cytoscapeVisibility";
+} from "@/helpers/showAndHideHelper";
 import { updateMetricDataHelper } from "@/helpers/metricHelper";
 
 const iconMap = new Map([
@@ -65,14 +65,14 @@ const iconMap = new Map([
   ["비용계획합", "비용.png"],
 ]);
 
-export default function Example3() {
+export default function Example3({ graphData }) {
   const cyRef = useRef(null);
   const cyInstanceRef = useRef(null);
-  const [graphData] = useAtom(graphDataAtom);
   const [, setMetricData] = useAtom(metricMapAtom);
 
   useEffect(() => {
     if (!cyRef.current) return;
+    if (!graphData) return; // !graphData 추가해주기
 
     if (cyInstanceRef.current) {
       cyInstanceRef.current.destroy();

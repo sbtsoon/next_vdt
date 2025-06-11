@@ -1,17 +1,17 @@
 "use client";
 
-import cytoscape from "@/lib/cytoscapeWithExtensions";
+import cytoscape from "@/lib/cytoscape/cytoscapeWithExtensions";
 import { graphDataAtom } from "@/store/graphAtoms";
 import { useAtom } from "jotai";
 import { useEffect, useRef } from "react";
-import { formatAmountWithMajorUnits } from "@/utils/formatUtils";
-import { parseNeo4jInt } from "@/utils/neo4jUtils";
+import { formatAmountWithMajorUnits } from "@/helpers/formatAmountWithMajorUnitsHelper";
+import { parseNeo4jInt } from "@/helpers/parseNeo4jIntHelper";
 import {
   showNode,
   showEdge,
   hideNode,
   hideEdge,
-} from "@/helpers/cytoscapeVisibility";
+} from "@/helpers/showAndHideHelper";
 
 // Layout mode constants
 export const LAYOUT_MODES = Object.freeze({
@@ -20,13 +20,14 @@ export const LAYOUT_MODES = Object.freeze({
   MINDMAP: 2,
 });
 
-export default function MonthlySalesChart() {
+export default function MonthlySalesChart({ graphData }) {
   const cyRef = useRef(null);
   const cyInstanceRef = useRef(null);
-  const [graphData] = useAtom(graphDataAtom);
 
   useEffect(() => {
     if (!cyRef.current) return;
+    if (!graphData) return; // !graphData 추가해주기
+
     const cy = cytoscape({
       container: cyRef.current,
       style: [
