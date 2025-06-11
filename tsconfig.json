@@ -28,7 +28,7 @@
     "**/*.ts",
     "**/*.tsx",
     ".next/types/**/*.ts",
-    "src/app/(admin)/page.tsx",
+    "src/app/page.tsx",
     "**/*.js",
     "**/*.jsx"
   ],
