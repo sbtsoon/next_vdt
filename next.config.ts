@@ -1,14 +1,9 @@
 import type { NextConfig } from "next";
 
-const nextConfig: NextConfig = {
-  /* config options here */
-  webpack(config) {
-    config.module.rules.push({
-      test: /\.svg$/,
-      use: ["@svgr/webpack"],
-    });
-    return config;
-  },
-};
+/** @type {import('next').NextConfig} */
+const nextConfig = {
+  output: 'export', // 🔥 가장 중요!
+  trailingSlash: true, // GitHub Pages 경로 깨짐 방지
+}
 
-export default nextConfig;
+module.exports = nextConfig
