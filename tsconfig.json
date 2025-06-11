@@ -24,9 +24,11 @@
     }
   },
   "include": [
-  "**/*.tsx",
-  "**/*.ts",
-  "**/*.jsx"
+    "next-env.d.ts",
+    "**/*.ts",
+    "**/*.tsx",
+    ".next/types/**/*.ts",
+    "src/app/(admin)/page.tsx",
     "**/*.js",
     "**/*.jsx"
   ],
