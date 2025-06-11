@@ -181,7 +181,7 @@ const DataImportPage: React.FC = () => {
             <option value="">Select type</option>
             <option value="Income Statement1">BOM</option>
             <option value="Income Statement2">Organization</option>
-            <option value="Income Statement3">Flow Detection</option>
+            <option value="Income Statement3"> Fraud detection </option>
             <option value="Income Statement4">Income Statement</option>
           </select>
         </div>
