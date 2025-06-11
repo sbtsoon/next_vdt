@@ -1,0 +1,162 @@
+.cy-node-label-html {
+  pointer-events: auto;
+  background: rgb(49 54 79);
+  border: 3px solid #0f5a98;
+  border-radius: 10px;
+  box-shadow: 6px 5px 6px rgba(31, 72, 255, 0.335);
+  padding: 10px;
+  width: 400px;
+  font-weight: 400;
+  color: #fff;
+  position: relative;
+}
+
+.toggle-symbol {
+  position: absolute;
+  right: -13px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: rgb(222, 237, 245);
+  border: 2px solid #1279ce;
+  border-radius: 50%;
+  padding: 4px 0 0 5px;
+  width: 28px;
+  height: 28px;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.15);
+  pointer-events: auto;
+  cursor: pointer;
+}
+
+.node-header-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.node-header-info {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.node-name {
+  margin-right: 10px;
+}
+
+.node-content-container {
+  display: flex;
+  justify-content: space-between;
+}
+
+.amt-container {
+  display: flex;
+  flex-direction: column;
+}
+
+.old-amt-container {
+  display: flex;
+  justify-content: space-between;
+}
+
+.chg-amt-container {
+  display: flex;
+  justify-content: space-between;
+}
+
+.amt-value {
+  text-align: right;
+  min-width: 100px;
+}
+
+.history-graph {
+  height: 40px;
+  display: flex;
+  flex-direction: column;
+}
+
+.positive-history-data-container {
+  height: 19px;
+  display: flex;
+  align-items: flex-end;
+  gap: 2px;
+}
+
+.negative-history-data-container {
+  height: 19px;
+  display: flex;
+  align-items: flex-start;
+  gap: 2px;
+}
+
+.history-bar {
+  width: 8px;
+  margin-right: 2px;
+}
+
+.bar-positive {
+  background: rgb(33, 102, 199);
+  cursor: pointer;
+}
+
+.bar-negative {
+  background: rgb(162, 22, 22);
+  cursor: pointer;
+}
+
+.bar-empty {
+  background: transparent;
+  pointer-events: none;
+}
+
+.history-graph-divider {
+  height: 2px;
+}
+
+.range-input-container {
+  display: none;
+  background-color: #141e27;
+  width: 100%;
+  padding: 5px 8px;
+  border-radius: 5px;
+}
+
+.range-input-display-box {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.range-input {
+  width: 280px;
+  margin-right: 10px;
+  pointer-events: auto;
+}
+
+.keep-button-container {
+  margin-right: 10px;
+}
+
+.keep-button {
+  padding: 3px 8px;
+  opacity: 1;
+  border-radius: 5px;
+  background-color: color-mix(in oklab, var(--color-blue-500) 20%, transparent);
+  color: var(--color-blue-400);
+}
+
+.keep-button:hover {
+  background-color: color-mix(in oklab, var(--color-blue-500) 30%, transparent);
+  color: var(--color-blue-400);
+}
+.graph-tool-tip {
+  position: fixed;
+  background-color: #fff;
+  border: 1px solid #ccc;
+  padding: 4px 8px;
+  border-radius: 4px;
+  box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.2);
+  pointer-events: none;
+  display: none;
+  z-index: 1000;
+  font-size: 12px;
+}

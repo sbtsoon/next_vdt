@@ -27,27 +27,34 @@ type NavItem = {
 const navItems: NavItem[] = [
   {
     icon: <GridIcon />,
-    name: "Dashboard",
-    subItems: [{ name: "Menu00", path: "/", pro: false }],
+    name: "General",
+    path: "/Dashboard",
   },
   {
-    icon: <CalenderIcon />,
-    name: "Menu01",
-    path: "/calendar",
+    icon: <PieChartIcon />,
+    name: "Income statement",
+    path: "/",
   },
-
   {
-    name: "Menu02",
+    name: "QSA",
     icon: <ListIcon />,
-    subItems: [{ name: "Form Elements", path: "/form-elements", pro: false }],
+    path: "DataImport",
   },
   {
-    name: "Menu03",
+    name: "BOM",
     icon: <TableIcon />,
     subItems: [{ name: "Basic Tables", path: "/basic-tables", pro: false }],
   },
   {
-    name: "Menu04",
+    name: "OrganizationNet",
+    icon: <PageIcon />,
+    subItems: [
+      { name: "Blank Page", path: "/blank", pro: false },
+      { name: "404 Error", path: "/error-404", pro: false },
+    ],
+  },
+  {
+    name: "DistributionNet",
     icon: <PageIcon />,
     subItems: [
       { name: "Blank Page", path: "/blank", pro: false },
@@ -59,7 +66,7 @@ const navItems: NavItem[] = [
 const othersItems: NavItem[] = [
   {
     icon: <PieChartIcon />,
-    name: "Menu05",
+    name: "General",
     subItems: [
       { name: "Line Chart", path: "/line-chart", pro: false },
       { name: "Bar Chart", path: "/bar-chart", pro: false },
@@ -67,14 +74,39 @@ const othersItems: NavItem[] = [
   },
   {
     icon: <BoxCubeIcon />,
-    name: "Menu06",
+    name: "Income statement",
     subItems: [
       { name: "Alerts", path: "/alerts", pro: false },
       { name: "Avatar", path: "/avatars", pro: false },
-      { name: "Badge", path: "/badge", pro: false },
-      { name: "Buttons", path: "/buttons", pro: false },
-      { name: "Images", path: "/images", pro: false },
-      { name: "Videos", path: "/videos", pro: false },
+    ],
+  },
+  {
+    icon: <CalenderIcon />,
+    name: "QSA",
+    subItems: [
+      { name: "Alerts", path: "/alerts", pro: false },
+      { name: "Avatar", path: "/avatars", pro: false },
+    ],
+  },
+  {
+    icon: <BoxCubeIcon />,
+    name: "BOM",
+    subItems: [
+      { name: "Alerts", path: "/alerts", pro: false },
+    ],
+  },
+  {
+    icon: <BoxCubeIcon />,
+    name: "OrganizationNet",
+    subItems: [
+      { name: "Avatar", path: "/avatars", pro: false },
+    ],
+  },
+  {
+    icon: <BoxCubeIcon />,
+    name: "DistributionNet",
+    subItems: [
+      { name: "Avatar", path: "/avatars", pro: false },
     ],
   },
 
@@ -276,17 +308,18 @@ const AppSidebar: React.FC = () => {
 
   return (
     <aside
-      className={`fixed mt-16 flex flex-col lg:mt-0 top-0 px-5 left-0 bg-white dark:bg-gray-900 dark:border-gray-800 text-gray-900 h-screen transition-all duration-300 ease-in-out z-50 border-r border-gray-200
+      className={`fixed mt-16 flex flex-col lg:mt-0 top-0 px-2 left-0 bg-white dark:bg-gray-900    dark:border-gray-800 text-gray-900 h-screen transition-all duration-300 ease-in-out z-50 border-r border-gray-200
         ${
           isExpanded || isMobileOpen
-            ? "w-[290px]"
+            ? "w-[260px]"
             : isHovered
-            ? "w-[290px]"
-            : "w-[90px]"
+            ? "w-[260px]"
+            : "w-[60px]"
         }
         ${isMobileOpen ? "translate-x-0" : "-translate-x-full"}
         lg:translate-x-0`}
-      onMouseEnter={() => !isExpanded && setIsHovered(true)}
+      onMouseEnter={() => !isExpanded && setIsHovered(false)}
+
       onMouseLeave={() => setIsHovered(false)}
     >
       <div
@@ -334,7 +367,7 @@ const AppSidebar: React.FC = () => {
                 }`}
               >
                 {isExpanded || isHovered || isMobileOpen ? (
-                  "Menu"
+                  "NetGraph Analyzer"
                 ) : (
                   <HorizontaLDots />
                 )}
@@ -351,7 +384,7 @@ const AppSidebar: React.FC = () => {
                 }`}
               >
                 {isExpanded || isHovered || isMobileOpen ? (
-                  "Others"
+                  "NetGraph Builder"
                 ) : (
                   <HorizontaLDots />
                 )}

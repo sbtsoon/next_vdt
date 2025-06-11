@@ -1,21 +1,33 @@
-@import 'tailwindcss';
+@import "./panzoom.css";
+@import "tailwindcss";
 
+@font-face {
+  font-family: "Pretendard";
+  src: url("https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/woff2/Pretendard-Regular.woff2")
+    format("woff2");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
 
+body {
+  font-family: "Pretendard", sans-serif;
+}
 @custom-variant dark (&:is(.dark *));
 
 @theme {
   --font-*: initial;
-  --font-outfit: "Roboto", sans-serif;
-
+  --font-outfit: Outfit, sans-serif;
   --breakpoint-*: initial;
   --breakpoint-2xsm: 375px;
   --breakpoint-xsm: 425px;
-  --breakpoint-3xl: 2000px;
+
   --breakpoint-sm: 640px;
   --breakpoint-md: 768px;
   --breakpoint-lg: 1024px;
   --breakpoint-xl: 1280px;
   --breakpoint-2xl: 1536px;
+  --breakpoint-3xl: 1736px;
 
   --text-title-2xl: 72px;
   --text-title-2xl--line-height: 90px;
@@ -45,13 +57,12 @@
   --color-brand-200: #f3c3a6;
   --color-brand-300: #eca076;
   --color-brand-400: #e28352;
-  --color-brand-500: #dd7943; /* 🎯 메인 강조 색 */
+  --color-brand-500: #d3662f; /* 🎯 메인 강조 색 */
   --color-brand-600: #c16538;
   --color-brand-700: #9c512f;
   --color-brand-800: #7e4129;
   --color-brand-900: #683624;
   --color-brand-950: #3f1f14;
-
 
   --color-blue-light-25: #f0faff;
   --color-blue-light-50: #dff4ff;
@@ -65,7 +76,6 @@
   --color-blue-light-800: #05477d;
   --color-blue-light-900: #043b6a;
   --color-blue-light-950: #032641;
-
 
   --color-gray-25: #fdfcfd;
   --color-gray-50: #f9f8fa;
@@ -107,7 +117,6 @@
   --color-success-900: #064e35;
   --color-success-950: #043422;
 
-
   --color-error-25: #fff4f4;
   --color-error-50: #ffe3e3;
   --color-error-100: #ffc3c3;
@@ -134,34 +143,28 @@
   --color-warning-900: #6f310b;
   --color-warning-950: #431c06;
 
-
   --color-theme-pink-500: #ee46bc;
 
   --color-theme-purple-500: #7a5af8;
 
-  --shadow-theme-md:
-    0px 4px 8px -2px rgba(16, 24, 40, 0.1),
+  --shadow-theme-md: 0px 4px 8px -2px rgba(16, 24, 40, 0.1),
     0px 2px 4px -2px rgba(16, 24, 40, 0.06);
-  --shadow-theme-lg:
-    0px 12px 16px -4px rgba(16, 24, 40, 0.08),
+  --shadow-theme-lg: 0px 12px 16px -4px rgba(16, 24, 40, 0.08),
     0px 4px 6px -2px rgba(16, 24, 40, 0.03);
-  --shadow-theme-sm:
-    0px 1px 3px 0px rgba(16, 24, 40, 0.1),
+  --shadow-theme-sm: 0px 1px 3px 0px rgba(16, 24, 40, 0.1),
     0px 1px 2px 0px rgba(16, 24, 40, 0.06);
   --shadow-theme-xs: 0px 1px 2px 0px rgba(16, 24, 40, 0.05);
-  --shadow-theme-xl:
-    0px 20px 24px -4px rgba(16, 24, 40, 0.08),
+  --shadow-theme-xl: 0px 20px 24px -4px rgba(16, 24, 40, 0.08),
     0px 8px 8px -4px rgba(16, 24, 40, 0.03);
   --shadow-datepicker: -5px 0 0 #262d3c, 5px 0 0 #262d3c;
   --shadow-focus-ring: 0px 0px 0px 4px rgba(70, 95, 255, 0.12);
-  --shadow-slider-navigation:
-    0px 1px 2px 0px rgba(16, 24, 40, 0.1), 0px 1px 3px 0px rgba(16, 24, 40, 0.1);
-  --shadow-tooltip:
-    0px 4px 6px -2px rgba(16, 24, 40, 0.05),
+  --shadow-slider-navigation: 0px 1px 2px 0px rgba(16, 24, 40, 0.1),
+    0px 1px 3px 0px rgba(16, 24, 40, 0.1);
+  --shadow-tooltip: 0px 4px 6px -2px rgba(16, 24, 40, 0.05),
     -8px 0px 20px 8px rgba(16, 24, 40, 0.05);
 
-  --drop-shadow-4xl:
-    0 35px 35px rgba(0, 0, 0, 0.25), 0 45px 65px rgba(0, 0, 0, 0.15);
+  --drop-shadow-4xl: 0 35px 35px rgba(0, 0, 0, 0.25),
+    0 45px 65px rgba(0, 0, 0, 0.15);
 
   --z-index-1: 1;
   --z-index-9: 9;
@@ -284,8 +287,6 @@
   background-color: #344054;
 }
 
-
-
 @layer utilities {
   /* For Remove Date Icon */
   input[type="date"]::-webkit-inner-spin-button,
@@ -388,8 +389,8 @@
   font-weight: 500;
 }
 .flatpickr-month
-.flatpickr-current-month
-.flatpickr-monthDropdown-months:focus {
+  .flatpickr-current-month
+  .flatpickr-monthDropdown-months:focus {
   outline: none !important;
   border: 0 !important;
 }

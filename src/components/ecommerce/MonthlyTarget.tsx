@@ -74,7 +74,7 @@ export default function MonthlyTarget() {
   }
 
   return (
-    <div className=" border border-gray-800 ">
+    <div className=" border border-gray-100 dark:border-gray-800  ">
       <div className="px-5 pt-5 shadow-default pb-11sm:px-6 sm:pt-6">
         <div className="flex justify-between">
           <div>

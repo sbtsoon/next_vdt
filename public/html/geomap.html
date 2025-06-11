@@ -1,0 +1,596 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>3D 데이터 시각화 (메뉴 너비 조정)</title>
+    <style>
+        body {
+            margin: 0;
+            overflow: hidden;
+        }
+        h3{ color: #FFFFFF; text-align: center; margin: 0 0 20px;}
+        canvas {
+            display: block;
+        }
+        .label {
+            color: #FFFFFF;
+            background-color: rgba(6, 15, 85, 0.7);
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            white-space: nowrap;
+        }
+        .axis-label-text {
+            font-weight: bold;
+            font-size: 16px;
+            padding: 2px 5px;
+        }
+        .data-label {
+            color: #ffffff;
+            font-size: 13px;
+            font-weight: bold;
+            padding: 3px 6px;
+            border-radius: 3px;
+            background-color: rgba(0, 0, 0, 0.65);
+            text-shadow:
+                -1px -1px 0 #000,
+                 1px -1px 0 #000,
+                -1px  1px 0 #000,
+                 1px  1px 0 #000,
+                 0px  2px 3px rgba(0,0,0,0.7);
+            white-space: nowrap;
+            pointer-events: auto;
+            cursor: pointer;
+        }
+        .z-axis-tick-label {
+            color: #00e1ff;
+            font-size: 11px;
+            font-weight: bold;
+            padding: 2px 4px;
+            border-radius: 2px;
+            background-color: rgba(0, 20, 30, 0.65);
+            text-shadow:
+                -1px -1px 0 #000, 1px -1px 0 #000,
+                -1px  1px 0 #000, 1px  1px 0 #000;
+            white-space: nowrap;
+            pointer-events: none;
+        }
+
+        /* 메뉴 공통 스타일 */
+        .menu-container {
+            position: absolute;
+            left: 20px;
+            background-color: rgb(7 26 43 / 90%);
+            padding: 15px;
+            border-radius: 8px;
+            color: white;
+            z-index: 100;
+            font-family: 'Inter', Arial, sans-serif;
+            box-shadow: 0 4px 14px 2px rgb(39 118 255 / 57%);
+            width: 170px; /* 고정 너비 설정 */
+            box-sizing: border-box; /* 패딩과 테두리를 너비에 포함 */
+        }
+        .menu-container h4 {
+            margin-top: 0;
+            margin-bottom: 10px;
+            font-size: 16px;
+            border-bottom: 1px solid #555;
+            padding-bottom: 5px;
+        }
+        .menu-container button {
+            background-color: #0b4079;
+            color: rgba(255, 255, 255, 0.729);
+            border: none;
+            padding: 8px 12px;
+            margin: 5px 0;
+            border-radius: 4px;
+            cursor: pointer;
+            width: 100%; /* 부모 너비에 맞춤 (고정된 부모 너비 내에서) */
+            text-align: left;
+            font-size: 14px;
+            transition: background-color 0.3s ease;
+            box-sizing: border-box; /* 버튼의 패딩과 테두리도 너비에 포함 */
+        }
+        .menu-container button:hover {
+            background-color: #0056b3;
+        }
+        .menu-container button.active {
+            background-color: #0056b3;
+            font-weight: bold;
+            color:#fff;
+            box-shadow: inset 0 0 5px rgba(0,0,0,0.2);
+        }
+
+        #zMenu {
+            top: 20px;
+        }
+        #viewMenu {
+            /* #zMenu의 높이 + 간격으로 top 위치 동적 계산 또는 고정값 사용 */
+            /* #zMenu 버튼 4개 * (버튼높이 약 30px + 마진 5px) + 제목 + 패딩 고려 */
+            /* 대략적인 값으로 설정, 필요시 JavaScript로 동적 계산 가능 */
+            top: 255px;
+        }
+
+
+        #infoPanel {
+            position: absolute;
+            right: 20px;
+            top: 20px;
+            width: 280px;
+            background-color: rgb(255 236 236 / 12%);
+            border: 1px solid #444;
+            border-radius: 8px;
+            padding: 20px;
+            color: #f0f0f0;
+            font-size: 14px;
+            box-shadow: 0 6px 12px rgba(0,0,0,0.4);
+            display: none;
+            z-index: 101;
+        }
+        #infoPanel img {
+            width: 100%;
+            max-height: 160px;
+            object-fit: cover;
+            border-radius: 6px;
+            margin-bottom: 15px;
+            border: 1px solid #555;
+        }
+        #infoPanel h3 {
+            margin-top: 0;
+            margin-bottom: 10px;
+            color: #00aaff;
+            font-size: 18px;
+        }
+        #infoPanel p {
+            margin-bottom: 8px;
+            line-height: 1.6;
+        }
+        #infoPanel strong {
+            color: #bbbbbb;
+        }
+        #infoPanel ul {
+            list-style-type: none;
+            padding-left: 0;
+            margin-bottom: 10px;
+        }
+        #infoPanel ul li {
+            margin-bottom: 4px;
+        }
+    </style>
+</head>
+<body>
+    <h3> 3D시각화 Grape Map </h3>
+    <div id="zMenu" class="menu-container">
+        <h4>Relative Quantity:</h4>
+        <button data-zkey="z1">Sugar Content</button>
+        <button data-zkey="z2">Acidity</button>
+        <button data-zkey="z3">Unit Price</button>
+        <button data-zkey="z4">Ripeness</button>
+    </div>
+
+    <div id="viewMenu" class="menu-container">
+        <h4>Select View:</h4>
+        <button data-view="yz">Front View (YZ)</button>
+        <button data-view="xz">Side View (XZ)</button>
+        <button data-view="xy">Top View(XY)</button>
+        <!-- <button data-view="iso">등각 투영</button> -->
+        <button data-view="reset" class="active">3D View</button>
+    </div>
+
+    <div id="infoPanel">
+        <img id="infoImage" src="" alt="데이터 이미지">
+        <h3 id="infoName"></h3>
+        <p><strong>Coordinate:</strong> <span id="infoCoords"></span></p>
+        <!-- <p><strong>Relative %:</strong></p> -->
+        <ul id="infoZValues"></ul>
+        <p><strong>Grape Variety:</strong> <span id="infoGrapeType"></span></p>
+        <!-- <p><strong>설명:</strong></p> -->
+        <p id="infoDescription"></p>
+    </div>
+
+    <script type="importmap">
+        {
+            "imports": {
+                "three": "https://cdn.jsdelivr.net/npm/three@0.164.1/build/three.module.js",
+                "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.164.1/examples/jsm/"
+            }
+        }
+    </script>
+    <script type="module">
+        import * as THREE from 'three';
+        import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+        import { CSS2DRenderer, CSS2DObject } from 'three/addons/renderers/CSS2DRenderer.js';
+        import { Line2 } from 'three/addons/lines/Line2.js';
+        import { LineMaterial } from 'three/addons/lines/LineMaterial.js';
+        import { LineGeometry } from 'three/addons/lines/LineGeometry.js';
+
+        let scene, camera, renderer, labelRenderer, controls;
+        let plane;
+        const planeSize = 100;
+        let sampleData = [];
+        let currentDataObjects = [];
+        let raycastableSpheres = [];
+        let newPlaneCenter;
+
+        const zKeyColors = {
+            z1: 0xff0000, z2: 0x32CD32, z3: 0x1E90FF, z4: 0xFFD700
+        };
+
+        const infoPanel = document.getElementById('infoPanel');
+        const infoImage = document.getElementById('infoImage');
+        const infoName = document.getElementById('infoName');
+        const infoCoords = document.getElementById('infoCoords');
+        const infoZValues = document.getElementById('infoZValues');
+        const infoGrapeType = document.getElementById('infoGrapeType');
+        const infoDescription = document.getElementById('infoDescription');
+
+        let infoPanelTimeout = null;
+        let currentlyHoveredId = null;
+        let grapeURL=[
+                        "https://img.imageboss.me/fourwinds/width/425/dpr:2/shop/products/rubyseedlessgrapes.jpg?v=1729716408",
+                        "https://www.gurneys.com/cdn/shop/files/61626A.webp?v=1729087445",
+                        "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRaa6QxPks98r8c-RVmHT6O1pfK4fubR8MZYQ&s",
+                        "https://plantsexpress.com/cdn/shop/products/Green-Seedless-Table-Grape-2.jpg?v=1684510111",
+                        "https://img.livestrong.com/-/clsd/getty/82965f93904649bba70ac8577b9335b5.jpg",
+                        "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRPT40q3eR7H6F08QlJ0mRKtKK8Bm01cZqulg&s",
+                        "https://www.jordanwinery.com/wp-content/uploads/2016/07/Jordan-Winery-Veraison-Dilworth-Cabernet-Sauvignon-Blog-1104.jpg",
+                        "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRI0ZgQRd8G4-z2Ji1qAljM0jI2DRpAYuP9Ag&s",
+                        "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRjT-J4hVoo8EfO_s5QauWDFW5QqXAza7NKrA&s",
+                        "https://txmg.org/hendersonmg/files/2022/05/Grapes-Bunch.jpg"
+                    ];
+
+        function generateSampleData() {
+            sampleData = [];
+            const grapeTypes = ["까베르네 소비뇽", "메를로", "피노 누아", "샤르도네", "소비뇽 블랑", "쉬라즈", "진판델", "리슬링", "말벡", "그르나슈"];
+            for (let i = 0; i < 10; i++) {
+                const grapeType = grapeTypes[i % grapeTypes.length];
+                sampleData.push({
+                    id: `data_${i}`, name: `ROH${String(i + 1).padStart(4, '0')}`,
+                    x: Math.random() * planeSize, y: Math.random() * planeSize,
+                    z: {
+                        z1: Math.random() * planeSize, z2: Math.random() * planeSize,
+                        z3: Math.random() * planeSize, z4: Math.random() * planeSize,
+                    },
+                    grapeType: grapeType,
+                    description: `이 ${grapeType} 포도는 특별한 테루아에서 재배되어 독특한 풍미를 지닙니다. 와인으로 만들어졌을 때 복합적인 아로마와 긴 여운을 선사할 것으로 기대됩니다. (이곳에 상세 설명을 추가하세요.)`,
+                    imageUrl: grapeURL[i],
+
+                });
+            }
+        }
+
+        function showDataInfo(dataPoint) {
+            if (!dataPoint) return;
+            clearTimeout(infoPanelTimeout);
+
+            infoImage.src = dataPoint.imageUrl;
+            infoImage.alt = `${dataPoint.grapeType} 이미지`;
+            infoName.textContent = dataPoint.name;
+            infoCoords.textContent = `${dataPoint.x.toFixed(2)}, ${dataPoint.y.toFixed(2)}`;
+
+            infoZValues.innerHTML = '';
+            // for (const key in dataPoint.z) {
+            //     const li = document.createElement('li');
+            //     li.innerHTML = `<strong>${key.toUpperCase()}:</strong> ${dataPoint.z[key].toFixed(2)}`;
+            //     infoZValues.appendChild(li);
+            // }
+            infoGrapeType.textContent = dataPoint.grapeType;
+            infoDescription.textContent = dataPoint.description;
+
+            infoPanel.style.display = 'block';
+            currentlyHoveredId = dataPoint.id;
+        }
+
+        function requestHideInfo() {
+            clearTimeout(infoPanelTimeout);
+            infoPanelTimeout = setTimeout(() => {
+                infoPanel.style.display = 'none';
+                currentlyHoveredId = null;
+            }, 100);
+        }
+
+        function updateDataVisualization(selectedZKey) {
+            currentDataObjects.forEach(obj => {
+                scene.remove(obj);
+                if (obj.element && obj.element.parentNode) {
+                    obj.element.parentNode.removeChild(obj.element);
+                }
+                if (obj.geometry) obj.geometry.dispose();
+                if (obj.material && typeof obj.material.dispose === 'function') {
+                    obj.material.dispose();
+                }
+            });
+            currentDataObjects = [];
+            raycastableSpheres = [];
+
+            const sphereRadius = 2.5;
+            const sphereColor = zKeyColors[selectedZKey] || 0xffffff;
+            const sphereMaterial = new THREE.MeshStandardMaterial({
+                color: sphereColor, metalness: 0.5, roughness: 0.4
+            });
+
+            sampleData.forEach(dataPoint => {
+                const currentZ = dataPoint.z[selectedZKey];
+                if (currentZ === undefined) return;
+
+                const sphereGeometry = new THREE.SphereGeometry(sphereRadius, 32, 16);
+                const sphere = new THREE.Mesh(sphereGeometry, sphereMaterial);
+                sphere.position.set(dataPoint.x, dataPoint.y, currentZ);
+                sphere.userData = { dataId: dataPoint.id, type: 'sphere' };
+                scene.add(sphere);
+                currentDataObjects.push(sphere);
+                raycastableSpheres.push(sphere);
+
+                const nameDiv = document.createElement('div');
+                nameDiv.className = 'data-label';
+                nameDiv.textContent = dataPoint.name;
+                nameDiv.addEventListener('mouseenter', () => showDataInfo(dataPoint));
+                nameDiv.addEventListener('mouseleave', requestHideInfo);
+
+                const nameLabel = new CSS2DObject(nameDiv);
+                nameLabel.position.set(dataPoint.x, dataPoint.y, currentZ + sphereRadius + 1.5);
+                scene.add(nameLabel);
+                currentDataObjects.push(nameLabel);
+
+                const points = [new THREE.Vector3(dataPoint.x, dataPoint.y, currentZ), new THREE.Vector3(dataPoint.x, dataPoint.y, 0)];
+                const linePositions = [];
+                points.forEach(p => linePositions.push(p.x, p.y, p.z));
+
+                const lineGeom = new LineGeometry();
+                lineGeom.setPositions(linePositions);
+
+                const shadowLineMaterial = new LineMaterial({ color: 0x181818, linewidth: 2.5, dashed: false });
+                shadowLineMaterial.resolution.set(window.innerWidth, window.innerHeight);
+                const shadowLine = new Line2(lineGeom, shadowLineMaterial);
+                scene.add(shadowLine);
+                currentDataObjects.push(shadowLine);
+
+                const mainLineMaterial = new LineMaterial({ color: 0xffffff, linewidth: 1.0, dashed: false });
+                mainLineMaterial.resolution.set(window.innerWidth, window.innerHeight);
+                const mainLine = new Line2(lineGeom, mainLineMaterial);
+                scene.add(mainLine);
+                currentDataObjects.push(mainLine);
+            });
+        }
+
+        const raycaster = new THREE.Raycaster();
+        const mouse = new THREE.Vector2();
+        let intersectedObject = null;
+
+        function onMouseMove(event) {
+            mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
+            mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
+
+            raycaster.setFromCamera(mouse, camera);
+            const intersects = raycaster.intersectObjects(raycastableSpheres);
+
+            if (intersects.length > 0) {
+                if (intersectedObject !== intersects[0].object) {
+                    intersectedObject = intersects[0].object;
+                    const dataId = intersectedObject.userData.dataId;
+                    const dataPoint = sampleData.find(p => p.id === dataId);
+                    if (dataPoint) {
+                        showDataInfo(dataPoint);
+                    }
+                }
+            } else {
+                intersectedObject = null;
+            }
+        }
+
+        function setView(viewType) {
+            const center = newPlaneCenter;
+            const dist = 150;
+
+            switch(viewType) {
+                case 'yz':
+                    camera.position.set(center.x + dist, center.y, center.z);
+                    camera.up.set(0, 0, 1);
+                    break;
+                case 'xz':
+                    camera.position.set(center.x, center.y + dist, center.z);
+                    camera.up.set(0, 0, 1);
+                    break;
+                case 'xy':
+                    camera.position.set(center.x, center.y, center.z + dist);
+                    camera.up.set(0, 1, 0);
+                    break;
+                case 'iso':
+                    camera.position.set(center.x + dist * 0.7, center.y + dist * 0.7, center.z + dist * 0.7);
+                    camera.up.set(0, 1, 0);
+                    break;
+                case 'reset':
+                default:
+                    // camera.position.set(center.x + 20, center.y + 60, center.z + 180);
+                    camera.position.set(center.x+20, center.y - 120, center.z + 70);
+                    camera.up.set(0, 0, 1);
+                    break;
+            }
+            camera.lookAt(center);
+            controls.target.copy(center);
+            controls.update();
+
+            document.querySelectorAll('#viewMenu button').forEach(btn => btn.classList.remove('active'));
+            document.querySelector(`#viewMenu button[data-view="${viewType}"]`).classList.add('active');
+        }
+
+
+        function init() {
+            generateSampleData();
+            newPlaneCenter = new THREE.Vector3(planeSize / 2, planeSize / 2, planeSize / 2);
+
+            scene = new THREE.Scene();
+            scene.background = new THREE.Color(0x080e23); // 어두운 블루 톤
+            scene.fog = new THREE.Fog(0x0b1d2b, 10, 1000); // 깊이감 추가
+
+            const ambientLight = new THREE.AmbientLight(0xffffff, 0.8);
+            scene.add(ambientLight);
+            const directionalLight = new THREE.DirectionalLight(0xffffff, 1.0);
+            directionalLight.position.set(50, 100, 75);
+            scene.add(directionalLight);
+
+            camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 2000);
+
+            renderer = new THREE.WebGLRenderer({ antialias: true });
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            renderer.setPixelRatio(window.devicePixelRatio);
+            document.body.appendChild(renderer.domElement);
+
+            labelRenderer = new CSS2DRenderer();
+            labelRenderer.setSize(window.innerWidth, window.innerHeight);
+            labelRenderer.domElement.style.position = 'absolute';
+            labelRenderer.domElement.style.top = '0px';
+            labelRenderer.domElement.style.pointerEvents = 'none';
+            document.body.appendChild(labelRenderer.domElement);
+
+            const planeGeometry = new THREE.PlaneGeometry(planeSize, planeSize, 10, 10);
+            const textureLoader = new THREE.TextureLoader();
+            const imageUrl = '/images/paris.png';
+
+            const imageTexture = textureLoader.load(imageUrl, undefined, undefined,
+                (error) => {
+                    console.error('텍스처 로딩 오류:', error);
+                    if(plane && plane.material) plane.material.color.set(0x555555);
+                }
+            );
+
+            const planeMaterial = new THREE.MeshStandardMaterial({
+                map: imageTexture, color: 0xffffff, side: THREE.DoubleSide,
+                metalness: 0.1, roughness: 0.9
+            });
+            plane = new THREE.Mesh(planeGeometry, planeMaterial);
+            plane.position.set(planeSize / 2, planeSize / 2, 0);
+            scene.add(plane);
+
+            const gridColorCenter = 0xaaaaaa;
+            const gridColorGrid = 0x666666;
+            const gridDivisions = 4;
+
+            const gridZValues = [25, 50, 75, 100];
+            gridZValues.forEach(zVal => {
+                const grid = new THREE.GridHelper(planeSize, gridDivisions, gridColorCenter, gridColorGrid);
+                grid.rotation.x = Math.PI / 2;
+                grid.position.set(planeSize / 2, planeSize / 2, zVal);
+                scene.add(grid);
+            });
+
+            const tickMarkLength = 2.5;
+            const tickLabelXOffset = 2;
+            const tickMaterial = new THREE.LineBasicMaterial({ color: 0xcccccc });
+            const zTickValues = [25, 50, 75, 100];
+
+            zTickValues.forEach(zValue => {
+                const tickPoints = [];
+                tickPoints.push(new THREE.Vector3(0, 0, zValue));
+                tickPoints.push(new THREE.Vector3(tickMarkLength, 0, zValue));
+                const tickGeometry = new THREE.BufferGeometry().setFromPoints(tickPoints);
+                const tickLine = new THREE.Line(tickGeometry, tickMaterial);
+                scene.add(tickLine);
+
+                const tickLabelDiv = document.createElement('div');
+                tickLabelDiv.className = 'z-axis-tick-label';
+                tickLabelDiv.textContent = `${zValue}%`;
+
+                const tickLabel = new CSS2DObject(tickLabelDiv);
+                tickLabel.position.set(tickMarkLength + tickLabelXOffset, 0, zValue);
+                scene.add(tickLabel);
+            });
+
+            const axisLength = planeSize + 20;
+            const axesHelper = new THREE.AxesHelper(axisLength);
+            scene.add(axesHelper);
+
+            // const worldCorners = [
+            //     { name: '오른쪽 위', position: new THREE.Vector3(planeSize, planeSize, 0) },
+            //     { name: '왼쪽 위', position: new THREE.Vector3(0, planeSize, 0) },
+            //     { name: '왼쪽 아래', position: new THREE.Vector3(0, 0, 0) },
+            //     { name: '오른쪽 아래', position: new THREE.Vector3(planeSize, 0, 0) }
+            // ];
+
+            // worldCorners.forEach(corner => {
+            //     const div = document.createElement('div');
+            //     div.className = 'label';
+            //     div.textContent = `${corner.name}: (${corner.position.x.toFixed(0)}, ${corner.position.y.toFixed(0)}, ${corner.position.z.toFixed(0)})`;
+            //     const labelObj = new CSS2DObject(div);
+            //     labelObj.position.copy(corner.position);
+            //     scene.add(labelObj);
+            // });
+
+            const axisLabelOffset = 8;
+            const axisTextLabels = [
+                { text: 'X', position: new THREE.Vector3(axisLength + axisLabelOffset, 0, 0), color: '#FF7777' },
+                { text: 'Y', position: new THREE.Vector3(0, axisLength + axisLabelOffset, 0), color: '#77FF77' },
+                { text: 'Z', position: new THREE.Vector3(0, 0, axisLength + axisLabelOffset), color: '#7777FF' }
+            ];
+
+            axisTextLabels.forEach(axisInfo => {
+                const div = document.createElement('div');
+                div.className = 'label axis-label-text';
+                div.textContent = axisInfo.text;
+                div.style.color = axisInfo.color;
+                const labelObj = new CSS2DObject(div);
+                labelObj.position.copy(axisInfo.position);
+                scene.add(labelObj);
+            });
+
+            controls = new OrbitControls(camera, renderer.domElement);
+            controls.enableDamping = true;
+            controls.dampingFactor = 0.05;
+            controls.minDistance = 30;
+            controls.maxDistance = 600;
+
+            setView('reset');
+
+            const zMenuButtons = document.querySelectorAll('#zMenu button');
+            zMenuButtons.forEach(button => {
+                button.addEventListener('click', (event) => {
+                    const selectedZKey = event.target.dataset.zkey;
+                    document.querySelectorAll('#zMenu button').forEach(btn => btn.classList.remove('active'));
+                    event.target.classList.add('active');
+                    updateDataVisualization(selectedZKey);
+                });
+            });
+            document.querySelector(`#zMenu button[data-zkey="z1"]`).classList.add('active');
+
+            const viewMenuButtons = document.querySelectorAll('#viewMenu button');
+            viewMenuButtons.forEach(button => {
+                button.addEventListener('click', (event) => {
+                    const selectedView = event.target.dataset.view;
+                    setView(selectedView);
+                });
+            });
+
+            const initialZKey = 'z1';
+            updateDataVisualization(initialZKey);
+
+            window.addEventListener('mousemove', onMouseMove, false);
+            window.addEventListener('resize', onWindowResize);
+            animate();
+        }
+
+        function onWindowResize() {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            renderer.setPixelRatio(window.devicePixelRatio);
+            labelRenderer.setSize(window.innerWidth, window.innerHeight);
+
+            currentDataObjects.forEach(obj => {
+                if (obj.material && obj.material.isLineMaterial) {
+                    obj.material.resolution.set(window.innerWidth, window.innerHeight);
+                }
+            });
+        }
+
+        function animate() {
+            requestAnimationFrame(animate);
+            controls.update();
+            renderer.render(scene, camera);
+            labelRenderer.render(scene, camera);
+        }
+
+        init();
+    </script>
+</body>
+</html>

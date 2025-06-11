@@ -1,0 +1,828 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>SBT Winery</title>
+    <style>
+      body {
+        margin: 0;
+        background-color: #1e1d2b;
+        color: #c5c8c6;
+        display: flex;
+        flex-direction: column;
+        height: 100vh;
+        overflow: hidden;
+      }
+
+      #appBody {
+        display: flex;
+        flex: 1;
+        overflow: hidden;
+      }
+
+      .sidebar {
+        background-color: #1e1d2b;
+        box-shadow: 7px 5px 9px 5px rgb(20 79 212 / 76%);
+        display: flex;
+        flex-direction: column;
+        transition: width 0.3s ease, padding 0.3s ease;
+        overflow: hidden;
+      }
+
+      #leftSidebar {
+        width: 300px;
+        padding: 15px;
+      }
+
+      #leftSidebar.collapsed {
+        width: 40px;
+        padding: 10px 5px;
+      }
+
+      #leftSidebar.collapsed #filterMenu {
+        display: none !important;
+      }
+
+      #sidebarToggleBtn {
+        width: 30px;
+        height: 30px;
+        padding: 0;
+        margin: 0 auto 10px auto;
+        background-color: #086cbe;
+        color: #1a1d24;
+        border: none;
+        border-radius: 50%;
+        cursor: pointer;
+        text-align: center;
+        font-size: 18px;
+        line-height: 30px;
+        flex-shrink: 0;
+        transition: background-color 0.2s ease;
+      }
+      #sidebarToggleBtn:hover {
+        background-color: #7ac6ff;
+      }
+
+      #leftSidebar.collapsed #sidebarToggleBtn {
+        margin: 0 auto;
+      }
+
+      #rightSidebar {
+        width: 300px;
+        padding: 15px;
+      }
+
+      #centerContent {
+        flex: 1;
+        position: relative;
+        display: flex;
+      }
+
+      #canvasContainer {
+        flex: 1;
+        width: 100%;
+        height: 100%;
+        background-color: #121212;
+      }
+
+      #filterMenu,
+      #infoPanel {
+        width: 100% !important;
+        height: 100%;
+        box-shadow: none !important;
+        padding: 0 !important;
+        background-color: transparent !important;
+        overflow-y: auto;
+        flex-grow: 1;
+      }
+      #leftSidebar #filterMenu {
+        height: calc(100% - 40px);
+      }
+
+      #infoPanel h3,
+      #filterMenu h3 {
+        margin-top: 0;
+        color: #61afef;
+        border-bottom: 1px solid #3b4048;
+        padding-bottom: 8px;
+        margin-bottom: 12px;
+      }
+      #infoPanel p,
+      #filterMenu p {
+        margin-bottom: 8px;
+        line-height: 1.5;
+      }
+      #infoPanel strong,
+      #filterMenu strong {
+        color: #98c379;
+      }
+      #infoPanel ul {
+        padding-left: 20px;
+        margin-top: 5px;
+        margin-bottom: 10px;
+      }
+      #infoPanel li {
+        font-size: 13px;
+        margin-bottom: 4px;
+        color: #abb2bf;
+      }
+      #filterMenu .dimension-filter {
+        margin-bottom: 20px;
+      }
+      #filterMenu .dimension-filter h4 {
+        margin-top: 0;
+        margin-bottom: 10px;
+        font-size: 1.05em;
+        border-bottom: 1px solid #3b4048;
+        padding-bottom: 6px;
+        color: #f2f2f2;
+      }
+      #filterMenu label {
+        display: block;
+        margin-bottom: 6px;
+        font-size: 0.95em;
+        cursor: pointer;
+        color: #abb2bf;
+      }
+      #filterMenu label:hover {
+        color: #c5c8c6;
+      }
+      #filterMenu input[type="checkbox"] {
+        margin-right: 10px;
+        vertical-align: middle;
+        accent-color: #61afef;
+        filter: invert(85%) hue-rotate(180deg) brightness(1.2);
+      }
+      #filterMenu input[type="checkbox"]:checked {
+        filter: invert(0%) hue-rotate(0deg) brightness(1);
+      }
+
+      @media (max-width: 768px) {
+        #appBody {
+          flex-direction: column;
+        }
+        #leftSidebar,
+        #rightSidebar {
+          width: 100%;
+          max-height: 35vh;
+          overflow-y: auto;
+        }
+        #leftSidebar.collapsed {
+          width: 100%;
+          max-height: 50px;
+          padding: 10px 5px;
+        }
+        #centerContent {
+          min-height: 30vh;
+        }
+        #infoPanel li {
+          font-size: 12px;
+        }
+      }
+      .scroller {
+  --scrollbar-color-thumb: rgb(78, 121, 213);
+  --scrollbar-color-track: rgb(53, 60, 82);
+  --scrollbar-width: thin;
+  --scrollbar-width-legacy: 0.5rem;
+}
+
+@supports (scrollbar-width: auto) {
+  .scroller {
+    scrollbar-color: var(--scrollbar-color-thumb) var(--scrollbar-color-track);
+    scrollbar-width: var(--scrollbar-width);
+  }
+}
+
+@supports selector(::-webkit-scrollbar) {
+  .scroller {
+    text-align: justify;
+  }
+  .scroller::-webkit-scrollbar-thumb {
+    background: var(--scrollbar-color-thumb);
+  }
+  .scroller::-webkit-scrollbar-track {
+    background: var(--scrollbar-color-track);
+  }
+  .scroller::-webkit-scrollbar {
+    max-width: var(--scrollbar-width-legacy);
+    max-height: var(--scrollbar-width-legacy);
+  }
+}
+
+.scroller {
+  width: 100%;
+  height: 50vh;
+  position: relative;
+  container-type: inline-size;
+  &:has(.content) {
+    background: white;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+  }
+}
+    </style>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+  </head>
+  <body>
+    <div id="appBody">
+      <div id="leftSidebar" class="sidebar collapsed  custom-scrollbar">
+        <button id="sidebarToggleBtn">❯</button>
+      </div>
+
+      <div id="centerContent">
+        <div id="canvasContainer"></div>
+      </div>
+
+      <div id="rightSidebar" class="sidebar"></div>
+    </div>
+
+    <div id="filterMenu" style="display: none">
+      <h3>필터 메뉴</h3>
+    </div>
+
+    <div id="infoPanel" style="display: none" class="scroller">
+      <h3>제품 수량 정보</h3>
+      <p>큐브 셀을 클릭하거나 필터 메뉴를 사용해 선택하세요.</p>
+      <div id="cellInfo">
+        <p><strong>선택된 셀:</strong> 없음</p>
+      </div>
+    </div>
+
+    <script>
+      let scene, camera, renderer, controls;
+      let olapGroup, labelsGroup;
+      let selectedObjects = [];
+
+      const defaultMaterial = new THREE.MeshStandardMaterial({
+        color: 0x528bff,
+        transparent: true,
+        opacity: 0.85,
+        roughness: 0.4,
+        metalness: 0.2,
+      });
+      const selectedMaterial = new THREE.MeshStandardMaterial({
+        color: 0xffd700,
+        emissive: 0x4d3800,
+        transparent: true,
+        opacity: 0.9,
+        roughness: 0.3,
+        metalness: 0.1,
+      });
+
+      const dimensions = {
+        product_type: {
+          name: "제품 타입",
+          members: ["Red wine", "White wine", "Champagne", "Conac"],
+        },
+        sales_region: {
+          name: "판매 권역",
+          members: ["국내", "북미", "유럽", "아시아"],
+        },
+        year_quarter: {
+          name: "판매 분기",
+          members: [
+            "2024년 1분기",
+            "2024년 2분기",
+            "2024년 3분기",
+            "2024년 4분기",
+          ],
+        },
+      };
+      const dimensionKeys = Object.keys(dimensions);
+
+      const correctMeasures = [
+        [
+          [111, 112, 113, 114],
+          [121, 122, 123, 124],
+          [131, 132, 133, 134],
+          [141, 142, 143, 144],
+        ],
+        [
+          [211, 212, 213, 214],
+          [221, 222, 223, 224],
+          [231, 232, 233, 234],
+          [241, 242, 243, 244],
+        ],
+        [
+          [311, 312, 313, 314],
+          [321, 322, 323, 324],
+          [331, 332, 333, 334],
+          [341, 342, 343, 344],
+        ],
+        [
+          [411, 412, 413, 414],
+          [421, 422, 423, 424],
+          [431, 432, 433, 434],
+          [441, 442, 443, 444],
+        ],
+      ];
+
+      const smallCubeSize = 1;
+      const spacing = 0.2;
+
+      function init() {
+        const filterMenuEl = document.getElementById("filterMenu");
+        const infoPanelEl = document.getElementById("infoPanel");
+        const leftSidebarEl = document.getElementById("leftSidebar");
+        const rightSidebarEl = document.getElementById("rightSidebar");
+
+        leftSidebarEl.appendChild(filterMenuEl);
+        rightSidebarEl.appendChild(infoPanelEl);
+
+        filterMenuEl.style.display = "flex";
+        filterMenuEl.style.flexDirection = "column";
+        infoPanelEl.style.display = "flex";
+        infoPanelEl.style.flexDirection = "column";
+
+        const sidebarToggleBtn = document.getElementById("sidebarToggleBtn");
+        let isSidebarCollapsed = true;
+
+        sidebarToggleBtn.addEventListener("click", () => {
+          isSidebarCollapsed = !isSidebarCollapsed;
+          leftSidebarEl.classList.toggle("collapsed", isSidebarCollapsed);
+          sidebarToggleBtn.textContent = isSidebarCollapsed ? "❯" : "❮";
+
+          setTimeout(() => {
+            onWindowResize();
+          }, 300);
+        });
+
+        if (dimensionKeys.length !== 3) {
+          alert(
+            "이 시각화는 정확히 3개의 차원을 지원합니다. 'dimensions' 객체를 확인해주세요."
+          );
+          return;
+        }
+
+        scene = new THREE.Scene();
+        // *** Scene 배경색 변경 ***
+        scene.background = new THREE.Color(0x222222); // 중립적인 어두운 회색으로 변경
+
+        const container = document.getElementById("canvasContainer");
+        if (container.clientWidth === 0 || container.clientHeight === 0) {
+          console.warn("Canvas container has zero dimensions on init.");
+        }
+
+        camera = new THREE.PerspectiveCamera(
+          75,
+          container.clientWidth > 0
+            ? container.clientWidth / container.clientHeight
+            : 1,
+          0.1,
+          1000
+        );
+        camera.position.set(8, 8, 8);
+
+        renderer = new THREE.WebGLRenderer({ antialias: true });
+        if (container.clientWidth > 0 && container.clientHeight > 0) {
+          renderer.setSize(container.clientWidth, container.clientHeight);
+        }
+        renderer.setPixelRatio(window.devicePixelRatio);
+        container.appendChild(renderer.domElement);
+
+        const ambientLight = new THREE.AmbientLight(0xcccccc, 0.6);
+        scene.add(ambientLight);
+        const directionalLight = new THREE.DirectionalLight(0xffffff, 0.7);
+        directionalLight.position.set(8, 12, 10);
+        scene.add(directionalLight);
+
+        controls = new THREE.OrbitControls(camera, renderer.domElement);
+        controls.enableDamping = true;
+        controls.dampingFactor = 0.05;
+        controls.minDistance = 2;
+        controls.maxDistance = 50;
+        controls.maxPolarAngle = Math.PI;
+
+        olapGroup = new THREE.Group();
+        labelsGroup = new THREE.Group();
+        createOlapCubesAndLabels();
+        scene.add(olapGroup);
+        scene.add(labelsGroup);
+
+        const maxDimLength = Math.max(
+          ...dimensionKeys.map((key) => dimensions[key].members.length)
+        );
+
+        // *** AxesHelper 추가 (주석 제거 및 길이 약간 조정) ***
+        const axesHelper = new THREE.AxesHelper(
+          maxDimLength * (smallCubeSize + spacing) + 2
+        ); // 길이 약간 늘림
+        scene.add(axesHelper);
+
+        addAxesLabels();
+
+        populateFilterMenu();
+        applyMenuFilters();
+
+        window.addEventListener("resize", onWindowResize, false);
+        onWindowResize();
+
+        container.addEventListener("click", onCanvasClick, false);
+
+        animate();
+      }
+
+      function makeTextSprite(message, parameters) {
+        const fontface = parameters.fontface || "Arial";
+        const fontsize = parameters.fontsize || 18;
+        const borderThickness = parameters.borderThickness || 0;
+        const borderColor = parameters.borderColor || {
+          r: 0,
+          g: 0,
+          b: 0,
+          a: 0.0,
+        };
+        const backgroundColor = parameters.backgroundColor || {
+          r: 255,
+          g: 255,
+          b: 255,
+          a: 0,
+        };
+        const textColor = parameters.textColor || {
+          r: 210,
+          g: 210,
+          b: 210,
+          a: 1.0,
+        };
+
+        const canvas = document.createElement("canvas");
+        const context = canvas.getContext("2d");
+        let fontWeight = parameters.fontWeight || "Normal";
+        context.font = `${fontWeight} ${fontsize}px ${fontface}`;
+
+        const metrics = context.measureText(message);
+        const textWidth = metrics.width;
+
+        canvas.width = textWidth + borderThickness * 2;
+        canvas.height = fontsize * 1.4 + borderThickness * 2;
+
+        context.font = `${fontWeight} ${fontsize}px ${fontface}`;
+        context.fillStyle = `rgba(${backgroundColor.r}, ${backgroundColor.g}, ${backgroundColor.b}, ${backgroundColor.a})`;
+        context.strokeStyle = `rgba(${borderColor.r}, ${borderColor.g}, ${borderColor.b}, ${borderColor.a})`;
+        context.lineWidth = borderThickness;
+
+        if (backgroundColor.a > 0) {
+          context.fillRect(0, 0, canvas.width, canvas.height);
+        }
+        if (borderThickness > 0 && borderColor.a > 0) {
+          context.strokeRect(0, 0, canvas.width, canvas.height);
+        }
+
+        context.fillStyle = `rgba(${textColor.r}, ${textColor.g}, ${textColor.b}, ${textColor.a})`;
+        context.fillText(
+          message,
+          borderThickness,
+          fontsize + borderThickness - fontsize * 0.1
+        );
+
+        const texture = new THREE.Texture(canvas);
+        texture.needsUpdate = true;
+
+        const spriteMaterial = new THREE.SpriteMaterial({
+          map: texture,
+          transparent: true,
+        });
+        const sprite = new THREE.Sprite(spriteMaterial);
+        sprite.scale.set(canvas.width / 100, canvas.height / 100, 1.0);
+        return sprite;
+      }
+
+      function addAxesLabels() {
+        const numMembers = dimensionKeys.map(
+          (key) => dimensions[key].members.length
+        );
+        const maxLength = Math.max(...numMembers);
+        const axisTrueLength = maxLength * (smallCubeSize + spacing) - spacing;
+        const axisLabelOffset = axisTrueLength / 2 + 2.0;
+
+        const xLabel = makeTextSprite(
+          `${dimensions[dimensionKeys[0]].name} (X)`,
+          {
+            fontsize: 24,
+            fontWeight: "Bold",
+            textColor: { r: 255, g: 80, b: 80, a: 1.0 }, // 이전 답변에서 수정된 밝은 색상 유지
+          }
+        );
+        xLabel.position.set(axisLabelOffset, 0, 0);
+        labelsGroup.add(xLabel);
+
+        const yLabel = makeTextSprite(
+          `${dimensions[dimensionKeys[1]].name} (Y)`,
+          {
+            fontsize: 24,
+            fontWeight: "Bold",
+            textColor: { r: 80, g: 255, b: 80, a: 1.0 }, // 이전 답변에서 수정된 밝은 색상 유지
+          }
+        );
+        yLabel.position.set(0, axisLabelOffset, 0);
+        labelsGroup.add(yLabel);
+
+        const zLabel = makeTextSprite(
+          `${dimensions[dimensionKeys[2]].name} (Z)`,
+          {
+            fontsize: 24,
+            fontWeight: "Bold",
+            textColor: { r: 80, g: 160, b: 255, a: 1.0 }, // 이전 답변에서 수정된 밝은 색상 유지
+          }
+        );
+        zLabel.position.set(0, 0, axisLabelOffset);
+        labelsGroup.add(zLabel);
+      }
+
+      function createOlapCubesAndLabels() {
+        const numX = dimensions[dimensionKeys[0]].members.length;
+        const numY = dimensions[dimensionKeys[1]].members.length;
+        const numZ = dimensions[dimensionKeys[2]].members.length;
+
+        const totalWidth = numX * smallCubeSize + (numX - 1) * spacing;
+        const totalHeight = numY * smallCubeSize + (numY - 1) * spacing;
+        const totalDepth = numZ * smallCubeSize + (numZ - 1) * spacing;
+
+        const memberLabelOffset = 0.2;
+        const memberLabelParams = {
+          fontsize: 24,
+          textColor: { r: 180, g: 180, b: 180, a: 1.0 },
+          fontWeight: "Normal",
+        };
+        const axisSpecificOffset = -0.1;
+
+        for (let i = 0; i < numX; i++) {
+          const xPos =
+            i * (smallCubeSize + spacing) - totalWidth / 2 + smallCubeSize / 2;
+          const label = makeTextSprite(
+            dimensions[dimensionKeys[0]].members[i],
+            memberLabelParams
+          );
+          label.position.set(
+            xPos,
+            -totalHeight / 2 - memberLabelOffset,
+            -totalDepth / 2 - memberLabelOffset + axisSpecificOffset
+          );
+          labelsGroup.add(label);
+        }
+
+        for (let j = 0; j < numY; j++) {
+          const yPos =
+            j * (smallCubeSize + spacing) - totalHeight / 2 + smallCubeSize / 2;
+          const label = makeTextSprite(
+            dimensions[dimensionKeys[1]].members[j],
+            memberLabelParams
+          );
+          label.position.set(
+            -totalWidth / 2 - memberLabelOffset + axisSpecificOffset,
+            yPos,
+            -totalDepth / 2 - memberLabelOffset
+          );
+          labelsGroup.add(label);
+        }
+
+        for (let k = 0; k < numZ; k++) {
+          const zPos =
+            k * (smallCubeSize + spacing) - totalDepth / 2 + smallCubeSize / 2;
+          const label = makeTextSprite(
+            dimensions[dimensionKeys[2]].members[k],
+            memberLabelParams
+          );
+          label.position.set(
+            -totalWidth / 2 - memberLabelOffset,
+            -totalHeight / 2 - memberLabelOffset + axisSpecificOffset,
+            zPos
+          );
+          labelsGroup.add(label);
+        }
+
+        for (let i = 0; i < numX; i++) {
+          for (let j = 0; j < numY; j++) {
+            for (let k = 0; k < numZ; k++) {
+              const geometry = new THREE.BoxGeometry(
+                smallCubeSize,
+                smallCubeSize,
+                smallCubeSize
+              );
+              const cube = new THREE.Mesh(geometry, defaultMaterial.clone());
+              cube.position.x =
+                i * (smallCubeSize + spacing) -
+                totalWidth / 2 +
+                smallCubeSize / 2;
+              cube.position.y =
+                j * (smallCubeSize + spacing) -
+                totalHeight / 2 +
+                smallCubeSize / 2;
+              cube.position.z =
+                k * (smallCubeSize + spacing) -
+                totalDepth / 2 +
+                smallCubeSize / 2;
+              cube.userData = {
+                id: `cube-${i}-${j}-${k}`,
+                value: correctMeasures[i][j][k],
+                originalMaterial: defaultMaterial.clone(),
+              };
+              cube.userData[dimensionKeys[0]] =
+                dimensions[dimensionKeys[0]].members[i];
+              cube.userData[dimensionKeys[1]] =
+                dimensions[dimensionKeys[1]].members[j];
+              cube.userData[dimensionKeys[2]] =
+                dimensions[dimensionKeys[2]].members[k];
+              olapGroup.add(cube);
+            }
+          }
+        }
+      }
+
+      function populateFilterMenu() {
+        const filterMenuDiv = document.getElementById("filterMenu");
+        filterMenuDiv.innerHTML = "<h3>필터 메뉴</h3>";
+        dimensionKeys.forEach((dimKey) => {
+          const dimension = dimensions[dimKey];
+          const filterGroup = document.createElement("div");
+          filterGroup.className = "dimension-filter";
+          const title = document.createElement("h4");
+          title.textContent = dimension.name;
+          filterGroup.appendChild(title);
+          const allLabel = document.createElement("label");
+          const allCheckbox = document.createElement("input");
+          allCheckbox.type = "checkbox";
+          allCheckbox.checked = false;
+          allCheckbox.dataset.dimensionKey = dimKey;
+          allCheckbox.classList.add("filter-all");
+          allLabel.appendChild(allCheckbox);
+          allLabel.appendChild(document.createTextNode(" 전체"));
+          filterGroup.appendChild(allLabel);
+          dimension.members.forEach((member) => {
+            const memberLabel = document.createElement("label");
+            const memberCheckbox = document.createElement("input");
+            memberCheckbox.type = "checkbox";
+            memberCheckbox.checked = false;
+            memberCheckbox.dataset.dimensionKey = dimKey;
+            memberCheckbox.dataset.memberValue = member;
+            memberCheckbox.classList.add("filter-member");
+            memberLabel.appendChild(memberCheckbox);
+            memberLabel.appendChild(document.createTextNode(` ${member}`));
+            filterGroup.appendChild(memberLabel);
+          });
+          filterMenuDiv.appendChild(filterGroup);
+        });
+        filterMenuDiv
+          .querySelectorAll('input[type="checkbox"]')
+          .forEach((checkbox) => {
+            checkbox.addEventListener("change", handleFilterChange);
+          });
+      }
+
+      function handleFilterChange(event) {
+        const changedCheckbox = event.target;
+        const dimKey = changedCheckbox.dataset.dimensionKey;
+        const memberCheckboxes = document.querySelectorAll(
+          `#filterMenu input.filter-member[data-dimension-key="${dimKey}"]`
+        );
+        const allCheckbox = document.querySelector(
+          `#filterMenu input.filter-all[data-dimension-key="${dimKey}"]`
+        );
+        if (changedCheckbox.classList.contains("filter-all")) {
+          memberCheckboxes.forEach(
+            (cb) => (cb.checked = changedCheckbox.checked)
+          );
+        } else {
+          const allMembersChecked = Array.from(memberCheckboxes).every(
+            (cb) => cb.checked
+          );
+          const someMembersChecked = Array.from(memberCheckboxes).some(
+            (cb) => cb.checked
+          );
+          if (allMembersChecked) {
+            allCheckbox.checked = true;
+            allCheckbox.indeterminate = false;
+          } else if (someMembersChecked) {
+            allCheckbox.checked = false;
+            allCheckbox.indeterminate = true;
+          } else {
+            allCheckbox.checked = false;
+            allCheckbox.indeterminate = false;
+          }
+        }
+        applyMenuFilters();
+      }
+
+      function applyMenuFilters() {
+        const selectedFilters = {};
+        dimensionKeys.forEach((dimKey) => {
+          selectedFilters[dimKey] = [];
+          const memberCheckboxes = document.querySelectorAll(
+            `#filterMenu input.filter-member[data-dimension-key="${dimKey}"]:checked`
+          );
+          memberCheckboxes.forEach((cb) =>
+            selectedFilters[dimKey].push(cb.dataset.memberValue)
+          );
+        });
+        selectedObjects = [];
+        olapGroup.children.forEach((cube) => {
+          const data = cube.userData;
+          let matchesActiveFilters = true;
+          for (const dimKey of dimensionKeys) {
+            if (
+              selectedFilters[dimKey].length > 0 &&
+              !selectedFilters[dimKey].includes(data[dimKey])
+            ) {
+              matchesActiveFilters = false;
+              break;
+            }
+          }
+          const allFiltersEmpty = Object.values(selectedFilters).every(
+            (arr) => arr.length === 0
+          );
+          if (!allFiltersEmpty && matchesActiveFilters) {
+            cube.material = selectedMaterial.clone();
+            selectedObjects.push(cube);
+          } else {
+            cube.material = data.originalMaterial;
+          }
+        });
+        updateInfoPanel();
+      }
+
+      function onWindowResize() {
+        const container = document.getElementById("canvasContainer");
+        if (container && renderer && camera) {
+          const width = container.clientWidth;
+          const height = container.clientHeight;
+
+          if (width > 0 && height > 0) {
+            camera.aspect = width / height;
+            camera.updateProjectionMatrix();
+            renderer.setSize(width, height);
+          }
+        }
+      }
+
+      function onCanvasClick(event) {
+        const container = document.getElementById("canvasContainer");
+        const rect = container.getBoundingClientRect();
+        const mouse = new THREE.Vector2();
+        mouse.x = ((event.clientX - rect.left) / rect.width) * 2 - 1;
+        mouse.y = -((event.clientY - rect.top) / rect.height) * 2 + 1;
+        const raycaster = new THREE.Raycaster();
+        raycaster.setFromCamera(mouse, camera);
+        const intersects = raycaster.intersectObjects(olapGroup.children, true);
+        if (intersects.length > 0) {
+          const clickedObject = intersects[0].object;
+          const index = selectedObjects.findIndex(
+            (obj) => obj.userData.id === clickedObject.userData.id
+          );
+          if (index > -1) {
+            clickedObject.material = clickedObject.userData.originalMaterial;
+            selectedObjects.splice(index, 1);
+          } else {
+            clickedObject.material = selectedMaterial.clone();
+            selectedObjects.push(clickedObject);
+          }
+          updateInfoPanel();
+        }
+      }
+
+      function updateInfoPanel() {
+        const infoDiv = document.getElementById("cellInfo");
+        if (selectedObjects.length > 0) {
+          let totalValue = 0;
+          let detailsHtml = `<ul>`;
+          const maxDisplayCount = 10;
+          selectedObjects.slice(0, maxDisplayCount).forEach((obj) => {
+            let cellDesc = dimensionKeys
+              .map((key) => obj.userData[key])
+              .join(" / ");
+            detailsHtml += `<li>${cellDesc} (판매량: ${obj.userData.value})</li>`;
+          });
+          if (selectedObjects.length > maxDisplayCount) {
+            detailsHtml += `<li>... 외 ${
+              selectedObjects.length - maxDisplayCount
+            }개</li>`;
+          }
+          totalValue = selectedObjects.reduce(
+            (sum, obj) => sum + obj.userData.value,
+            0
+          );
+          infoDiv.innerHTML = `
+              <p><strong>${selectedObjects.length}개 셀 선택됨</strong></p>
+              <p><strong>총 판매량 합계:</strong> ${totalValue.toLocaleString()}</p>
+              <p><strong>선택된 셀 상세 (최대 ${maxDisplayCount}개 표시):</strong></p>
+              ${detailsHtml}</ul>`;
+        } else {
+          infoDiv.innerHTML = "<p><strong>선택된 셀:</strong> 없음</p>";
+        }
+      }
+
+      function animate() {
+        requestAnimationFrame(animate);
+        if (controls) controls.update();
+        if (renderer && scene && camera) renderer.render(scene, camera);
+      }
+
+      if (document.readyState === "loading") {
+        document.addEventListener("DOMContentLoaded", init);
+      } else {
+        init();
+      }
+    </script>
+  </body>
+</html>
