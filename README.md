@@ -2,4 +2,4 @@
 
 ### Quick Links
 
-- [✨ Visit Website](/page.tsx)
+- [✨ Visit Website
