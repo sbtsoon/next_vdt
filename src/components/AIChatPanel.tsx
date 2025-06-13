@@ -69,7 +69,7 @@ const AIChatPanel: React.FC = () => {
           <input
             type="text"
             className="flex-1 px-2 py-1 rounded-md border border-gray-300 dark:border-gray-600 dark:bg-gray-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-brand-500"
-            placeholder="Ask me anything..."
+            placeholder="ROH0001~ROH2003 각각이 기여하는 재료비는 얼마인가?"
             value={input}
             onChange={(e) => setInput(e.target.value)}
             onKeyDown={(e) => e.key === "Enter" && handleSend()}

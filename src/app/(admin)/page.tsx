@@ -6,7 +6,7 @@ import MonthlyTarget from "@/components/ecommerce/MonthlyTarget";
 import MonthlySalesChart from "@/components/ecommerce/MonthlySalesChart";
 import DefaultInputs from "@/components/form/Form-elements/DefaultInputs";
 import AIChatPanel from "@/components/AIChatPanel";
-
+import MemoPanel from '@/components/MemoPanel'
 import {
   BellIcon,
   ChartBarIcon,
@@ -21,6 +21,7 @@ import {
   MagnifyingGlassCircleIcon,
   ChartPieIcon,
   CubeTransparentIcon,
+  PaperClipIcon,
 } from "@heroicons/react/24/outline";
 
 import { useAtom } from "jotai";
@@ -251,7 +252,32 @@ export default function EcommerceTabs() {
           )}
         </button>
       )}
-
+      {/* Memo Panel 토글 버튼 */}
+            {selectedIndex >= 0 && selectedIndex <= 8 && (
+              <button
+                onClick={() =>
+                  setActivePanel(activePanel === "memo" ? null : "memo")
+                }
+                className={`fixed top-1/2 -translate-y-1/2 bg-gray-780 shadow-soon dark:text-white py-2 px-3 rounded-l-full shadow-lg hover:bg-gray-600 z-50 transition-all duration-300 ease-in-out flex items-center gap-2`}
+                style={{
+                  right: activePanel ? `${sidebarWidth}px` : "0px",
+                  top: `calc(20% + 130px)`, // 기존 버튼보다 아래로
+                  borderRadius: "9999px 0 0 9999px",
+                }}
+                aria-label="Toggle Memo Panel"
+              >
+                {activePanel === "memo" ? (
+                  <>
+                    <ChevronRightIcon className="h-5 w-5" />
+                    <span>메모 닫기</span>
+                  </>
+                ) : (
+                  <>
+                  <PaperClipIcon className="h-5 w-5" />
+                </>
+                )}
+              </button>
+            )}
       <Tab.Panels className="mt-2 h-[calc(100%-60px)] relative">
         {/* 1. Network Graph Tab Panel (팝업 사이드바) */}
         <Tab.Panel className="h-full" unmount={false}>
@@ -327,6 +353,15 @@ export default function EcommerceTabs() {
                   style={{ width: `${sidebarWidth}px` }}
                 >
                   <MonthlyTarget />
+                </div>
+              )}
+              {activePanel === "memo" && selectedIndex < 9 && (
+                <div
+                  className={`fixed right-0 top-[var(--header-height)] h-[calc(100vh - var(--header-height))] bg-white dark:bg-gray-900 shadow-xl p-2 z-40 transform transition-transform duration-300 ease-in-out
+                    ${activePanel === "memo" ? "translate-x-0" : "translate-x-full"}`}
+                  style={{ width: `${sidebarWidth}px` }}
+                >
+                  <MemoPanel />
                 </div>
               )}
           </div>
@@ -466,6 +501,15 @@ export default function EcommerceTabs() {
                   style={{ width: `${sidebarWidth}px` }}
                 >
                   <MonthlyTarget />
+                </div>
+              )}
+              {activePanel === "memo" && selectedIndex < 9 && (
+                <div
+                  className={`fixed right-0 top-[var(--header-height)] h-[calc(100vh - var(--header-height))] bg-white dark:bg-gray-900 shadow-xl p-2 z-40 transform transition-transform duration-300 ease-in-out
+                    ${activePanel === "memo" ? "translate-x-0" : "translate-x-full"}`}
+                  style={{ width: `${sidebarWidth}px` }}
+                >
+                  <MemoPanel />
                 </div>
               )}
           </div>
