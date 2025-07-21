@@ -4,35 +4,62 @@ import { showNode, showEdge } from "@/helpers/showAndHideHelper";
 export function applyDemo2GraphLayout(cy) {
   cy.nodes().forEach((node) => showNode(node, 0));
   cy.edges().forEach((edge) => showEdge(edge, 0));
-  const layout = cy
-    .layout({
-      name: "dagre",
-      rankDir: "TB",
-      nodeSep: 50,
-      edgeSep: 10,
-      rankSep: 80,
-      animate: true,
-      animationDuration: 300,
-    })
-    .run();
+  // const layout = cy
+  //   .layout({
+  //     // name: "dagre",
+  //     // rankDir: "TB",
+  //     // nodeSep: 50,
+  //     // edgeSep: 10,
+  //     // rankSep: 80,
+  //     // animate: true,
+  //     // animationDuration: 300,
+  //     name: "tidytree",
+  //     verticalSpacing: 80,
+  //     horizontalSpacing: 15,
+  //     direction: "TB",
+  //     extraVerticalSpacings: {},
+  //     edgeComparator: undefined,
+  //     animate: true,
+  //     animationDuration: 300,
+  //     fit: false,
+  //   })
+  //   .run();
 
-  cy.style().selector("node").style({ width: "20px", height: "20px" });
-  cy.style()
-    .selector("edge")
-    .style({
-      "curve-style": "taxi",
-      "taxi-direction": "downward",
-      "taxi-turn": 20,
-      "line-color": "#ccc",
-      "target-arrow-shape": "triangle",
-      "target-arrow-color": "#ccc",
-      width: 1,
-    })
-    .update();
+  // cy.style().selector("node").style({ width: "20px", height: "20px" });
+  // cy.style()
+  //   .selector("edge")
+  //   .style({
+  //     "curve-style": "taxi",
+  //     "taxi-direction": "downward",
+  //     "taxi-turn": 20,
+  //     "line-color": "#ccc",
+  //     "target-arrow-shape": "triangle",
+  //     "target-arrow-color": "#ccc",
+  //     width: 1,
+  //   })
+  //   .update();
+
+  // layout.on("layoutstop", () => {
+  //   cy.center();
+  // });
+
+  const layout = cy.layout({
+    name: "tidytree",
+    verticalSpacing: 80,
+    horizontalSpacing: 15,
+    direction: "TB",
+    extraVerticalSpacings: {},
+    edgeComparator: undefined,
+    animate: true,
+    animationDuration: 300,
+    fit: false,
+  });
 
   layout.on("layoutstop", () => {
     cy.center();
   });
+
+  layout.run();
 }
 
 export function applyNetworkGraphLayout(cy) {

@@ -37,6 +37,12 @@ export const demo2GraphStyle = [
       "text-background-opacity": 0.3,
       "text-background-color": "#222",
       "text-background-radius": "5px",
+      "curve-style": "taxi",
+      "taxi-direction": "downward",
+      "taxi-turn": 20,
+      "line-color": "#ccc",
+      "target-arrow-shape": "triangle",
+      "target-arrow-color": "#ccc",
     },
   },
   {
