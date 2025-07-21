@@ -80,7 +80,7 @@ export default function Demo2({ graphData, pathData }) {
     cyInstanceRef.current.nodes().removeClass("highlighted");
     cyInstanceRef.current.edges().removeClass("highlighted");
 
-    // // 새로운 하이라이트 적용
+    // 새로운 하이라이트 적용
     pathData.nodeIds.forEach((id) => {
       const node = cyInstanceRef.current.getElementById(id);
       if (node) node.addClass("highlighted");
@@ -107,35 +107,28 @@ export default function Demo2({ graphData, pathData }) {
     return () => clearInterval(interval); // 컴포넌트 언마운트 시 정리
   }, []);
 
+  const queryArr = [
+    "MATCH (n)-[r]->(m) RETURN n, r, m",
+    "MATCH path = (n)-[*]->(m) RETURN path",
+    "MATCH path = (n)-[*]->(m) WHERE id(n) = 16 AND id(m) = 26 RETURN path",
+  ];
+
   return (
     <div className="overflow-hidden  border border-gray-200 bg-white px-5 pt-5 dark:border-gray-800 dark:bg-white/[0.03] sm:px-6 sm:pt-6">
-      <button
-        style={{ backgroundColor: "white" }}
-        onClick={() =>
-          setAiQuery({ query: "MATCH (n)-[r]->(m) RETURN n, r, m" })
-        }
-      >
-        Change to cypher query
-      </button>
-      <button
-        style={{ backgroundColor: "white" }}
-        onClick={() =>
-          setAiQuery({ query: "MATCH path = (n)-[*]->(m) RETURN path" })
-        }
-      >
-        Change to path cypher query1
-      </button>
-      <button
-        style={{ backgroundColor: "white" }}
-        onClick={() =>
-          setAiQuery({
-            query:
-              "MATCH path = (n)-[*]->(m) WHERE id(n) = 16 AND id(m) = 26 RETURN path",
-          })
-        }
-      >
-        Change to path cypher query2
-      </button>
+      {queryArr.map((query, idx) => (
+        <button
+          key={idx}
+          style={{
+            backgroundColor: "white",
+            marginRight: "8px",
+            marginBottom: "8px",
+          }}
+          onClick={() => setAiQuery({ query })}
+        >
+          {query}
+        </button>
+      ))}
+
       <div id="cy" ref={cyRef} style={{ width: "100%", minHeight: "600px" }} />
     </div>
   );
