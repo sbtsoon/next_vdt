@@ -89,10 +89,31 @@ export default function Demo2() {
     const cy = cyInstanceRef.current;
     cy.nodes().forEach((node) => showNode(node, 0));
     cy.edges().forEach((edge) => showEdge(edge, 0));
-    const layout = cy.layout({ name: "cose", padding: 30 }).run();
+    const layout = cy
+      .layout({
+        name: "dagre",
+        rankDir: "TB", // Top-Bottom, BOM 구조에 적합
+        nodeSep: 50,
+        edgeSep: 10,
+        rankSep: 80,
+        animate: true,
+        animationDuration: 300,
+      })
+      .run();
 
     cy.style().selector("node").style({ width: "20px", height: "20px" });
-    cy.style().selector("edge").style({ "curve-style": "straight" }).update();
+    cy.style()
+      .selector("edge")
+      .style({
+        "curve-style": "taxi",
+        "taxi-direction": "downward",
+        "taxi-turn": 20, // 수평 이동 거리
+        "line-color": "#ccc",
+        "target-arrow-shape": "triangle",
+        "target-arrow-color": "#ccc",
+        width: 1,
+      })
+      .update();
 
     layout.on("layoutstop", () => {
       cy.center();

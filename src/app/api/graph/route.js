@@ -5,7 +5,11 @@ export async function GET() {
   const session = driver.session({ database: process.env.NEO4J_DATABASE });
 
   try {
-    const result = await session.run("MATCH (n)-[r]->(m) RETURN n, r, m LIMIT 100");
+    const result = await session.run(
+      "MATCH p = (n)-[*]->(m) RETURN p LIMIT 10"
+    );
+    // MATCH (n)-[r]->(m) RETURN n, r, m
+    // MATCH p = (n)-[*]->(m) RETURN p LIMIT 10
     // const result = await session.run("MATCH (n:Metric) RETURN MIN(n.amount) AS minAmount, MAX(n.amount) AS maxAmount, AVG(n.amount) AS avgAmount");
     const data = formatDataForCytoscape(result.records);
     return NextResponse.json({
