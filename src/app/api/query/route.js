@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { driver, formatDataForCytoscape } from "@/lib/neo4j/neo4j";
+import { extractElementIdsFromPaths } from "@/helpers/extractElementIdsFromPathHelper";
 
 export async function POST(req) {
   const session = driver.session({ database: process.env.NEO4J_DATABASE });
@@ -15,12 +16,16 @@ export async function POST(req) {
 
     const result = await session.run(query);
 
-    console.log("===========================>", result);
     const data = formatDataForCytoscape(result.records);
+    const path = extractElementIdsFromPaths(result.records);
 
     return NextResponse.json({
       data,
       rawRecords: result.records,
+      path: {
+        nodeIds: Array.from(path.nodeIds),
+        edgeIds: Array.from(path.edgeIds),
+      },
     });
   } catch (err) {
     console.error("Query API error:", err);

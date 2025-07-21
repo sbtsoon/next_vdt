@@ -24,7 +24,7 @@ export const demo2GraphStyle = [
         const type = ele.data("type") || "";
         return type;
       },
-      color: "white",
+      // color: "white",
       width: 0.1,
       "text-wrap": "wrap",
       "line-color": "#ccc",
@@ -37,6 +37,17 @@ export const demo2GraphStyle = [
       "text-background-opacity": 0.3,
       "text-background-color": "#222",
       "text-background-radius": "5px",
+    },
+  },
+  {
+    selector: ".highlighted",
+    style: {
+      "background-color": "#f00", // 빨간색 노드
+      "line-color": "#f00", // 빨간색 엣지
+      "target-arrow-color": "#f00", // 화살표도 빨간색
+      "transition-property": "background-color, line-color, target-arrow-color",
+      "line-style": "dashed",
+      "z-index": 999, // 하이라이트된 요소가 다른 요소 위에 오도록
     },
   },
 ];

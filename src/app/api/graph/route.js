@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { driver, formatDataForCytoscape } from "@/lib/neo4j/neo4j";
+import { extractElementIdsFromPaths } from "@/helpers/extractElementIdsFromPathHelper";
 
 export async function GET() {
   const session = driver.session({ database: process.env.NEO4J_DATABASE });

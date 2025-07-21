@@ -54,6 +54,7 @@ export default function EcommerceTabs() {
 
       if (!isPathQuery) {
         if (data?.data?.nodes.length !== 0) {
+          setPathData(null);
           setGraphData(data.data);
           // metric card 정보 업데이트
           data.data.nodes.forEach((node) => {
@@ -74,10 +75,7 @@ export default function EcommerceTabs() {
         setRawRecords(data?.rawRecords);
       } else {
         // ===================================================== path highlight
-        const extractedElementIds = extractElementIdsFromPaths(
-          data?.rawRecords
-        );
-        console.log("=============================", extractedElementIds)
+        setPathData(data?.path);
       }
     },
   });
@@ -303,7 +301,7 @@ export default function EcommerceTabs() {
             >
               <div className="bg-white dark:bg-gray-900 rounded shadow h-full">
                 {/* <GraphMetrics /> */}
-                <Demo2 graphData={graphData} />
+                <Demo2 graphData={graphData} pathData={pathData} />
               </div>
             </div>
 

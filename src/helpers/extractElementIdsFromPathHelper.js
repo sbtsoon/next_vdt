@@ -8,9 +8,9 @@ export function extractElementIdsFromPaths(rawRecords) {
     const path = record._fields[0]; // path 객체
     const segments = path?.segments || [];
     segments.forEach((segment) => {
-      nodeIds.add(parseNeo4jInt(segment.start.identity));
-      nodeIds.add(parseNeo4jInt(segment.end.identity));
-      edgeIds.add(parseNeo4jInt(segment.relationship.identity));
+      nodeIds.add(segment.start.identity.toString());
+      nodeIds.add(segment.end.identity.toString());
+      edgeIds.add("edge_" + segment.relationship.identity.toString());
     });
   });
 
