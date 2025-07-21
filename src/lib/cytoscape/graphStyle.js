@@ -51,25 +51,33 @@ export const demo2GraphStyle = [
     },
   },
   {
-    selector: ".highlighted",
+    selector: "node.highlighted",
     style: {
-      color: "black",
       "background-color": "#22d3ee", // 시안색
       "border-color": "#67e8f9",
-      "line-color": "#67e8f9",
-      "target-arrow-color": "#67e8f9",
-      "line-style": "dashed",
-      "transition-property":
-        "background-color, border-color, line-color, target-arrow-color",
+      color: "black", // 🔥 노드 라벨 텍스트만 검정색
+      "transition-property": "background-color, border-color, color",
       "transition-duration": "0.3s",
       "z-index": 999,
 
-      // 💡 Glow 효과
+      // Glow 효과
       "shadow-blur": 6,
       "shadow-color": "#67e8f9",
       "shadow-opacity": 0.6,
       "shadow-offset-x": 0,
       "shadow-offset-y": 0,
+    },
+  },
+  {
+    selector: "edge.highlighted",
+    style: {
+      "line-color": "#67e8f9",
+      "target-arrow-color": "#67e8f9",
+      "line-style": "dashed",
+      color: "#67e8f9", // 엣지 라벨 색상 (노드와 분리됨)
+      "transition-property": "line-color, target-arrow-color, color",
+      "transition-duration": "0.3s",
+      "z-index": 998,
     },
   },
 ];
