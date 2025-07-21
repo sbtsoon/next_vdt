@@ -5,55 +5,71 @@ export const demo2GraphStyle = [
   {
     selector: "node",
     style: {
-      width: "20px",
-      height: "20px",
+      width: "24px",
+      height: "24px",
+      shape: "ellipse",
       label: (ele) => ele.data("id"),
+      "background-color": "#1f2937", // 다크 그레이
+      "border-color": "#60a5fa", // 밝은 블루
+      "border-width": 1,
       "text-valign": "center",
       "text-halign": "center",
-      "font-size": "4px",
-      "border-width": 1,
-      "border-style": "solid",
+      color: "#d1d5db", // 밝은 텍스트
+      "font-size": "5px",
       "text-wrap": "wrap",
-      "text-max-width": "20px",
+      "text-max-width": "26px",
+      "overlay-padding": "3px",
+      "z-index": 10,
     },
   },
   {
     selector: "edge",
     style: {
+      width: 0.4,
       label: (ele) => {
         const type = ele.data("type") || "";
         return type;
       },
-      width: 0.1,
-      "text-wrap": "wrap",
-      color: "#f00",
-      "line-color": "#f00",
-      "target-arrow-color": "#f00",
-      "target-arrow-shape": "triangle",
-      "arrow-scale": "0.2",
       "font-size": "4px",
-      "edge-text-rotation": "autorotate",
-      "text-background-shape": "rectangle",
-      "text-background-opacity": 0.3,
-      "text-background-color": "#222",
-      "text-background-radius": "5px",
+      color: "#93c5fd", // 연한 블루
+      "text-rotation": "autorotate",
+      "text-wrap": "wrap",
+      "text-background-shape": "roundrectangle",
+      "text-background-opacity": 0.4,
+      "text-background-color": "#1e40af", // 네이비 계열
+      "text-background-padding": "1px",
+      "text-background-radius": "3px",
+
+      "line-color": "#374151", // 어두운 중간선
+      "target-arrow-color": "#60a5fa", // 밝은 화살표
+      "target-arrow-shape": "triangle",
+      "arrow-scale": "0.25",
+
       "curve-style": "taxi",
       "taxi-direction": "downward",
       "taxi-turn": 20,
-      "line-color": "#ccc",
-      "target-arrow-shape": "triangle",
-      "target-arrow-color": "#ccc",
     },
   },
   {
     selector: ".highlighted",
     style: {
-      "background-color": "#f00", // 빨간색 노드
-      "line-color": "#f00", // 빨간색 엣지
-      "target-arrow-color": "#f00", // 화살표도 빨간색
-      "transition-property": "background-color, line-color, target-arrow-color",
+      color: "black",
+      "background-color": "#22d3ee", // 시안색
+      "border-color": "#67e8f9",
+      "line-color": "#67e8f9",
+      "target-arrow-color": "#67e8f9",
       "line-style": "dashed",
-      "z-index": 999, // 하이라이트된 요소가 다른 요소 위에 오도록
+      "transition-property":
+        "background-color, border-color, line-color, target-arrow-color",
+      "transition-duration": "0.3s",
+      "z-index": 999,
+
+      // 💡 Glow 효과
+      "shadow-blur": 6,
+      "shadow-color": "#67e8f9",
+      "shadow-opacity": 0.6,
+      "shadow-offset-x": 0,
+      "shadow-offset-y": 0,
     },
   },
 ];
