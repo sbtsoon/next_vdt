@@ -1,6 +1,46 @@
 import { parseNeo4jInt } from "@/helpers/parseNeo4jIntHelper";
 import { GRAPH_ICON_MAP } from "@/constants/graphConstant";
 
+export const demo2GraphStyle = [
+  {
+    selector: "node",
+    style: {
+      width: "20px",
+      height: "20px",
+      label: (ele) => ele.data("id"),
+      "text-valign": "center",
+      "text-halign": "center",
+      "font-size": "4px",
+      "border-width": 1,
+      "border-style": "solid",
+      "text-wrap": "wrap",
+      "text-max-width": "20px",
+    },
+  },
+  {
+    selector: "edge",
+    style: {
+      label: (ele) => {
+        const type = ele.data("type") || "";
+        return type;
+      },
+      color: "white",
+      width: 0.1,
+      "text-wrap": "wrap",
+      "line-color": "#ccc",
+      "target-arrow-color": "#ccc",
+      "target-arrow-shape": "triangle",
+      "arrow-scale": "0.2",
+      "font-size": "4px",
+      "edge-text-rotation": "autorotate",
+      "text-background-shape": "rectangle",
+      "text-background-opacity": 0.3,
+      "text-background-color": "#222",
+      "text-background-radius": "5px",
+    },
+  },
+];
+
 export const networkGraphStyle = [
   {
     selector: "node",

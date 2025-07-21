@@ -6,7 +6,7 @@ import MonthlyTarget from "@/components/ecommerce/MonthlyTarget";
 import MonthlySalesChart from "@/components/ecommerce/MonthlySalesChart";
 import DefaultInputs from "@/components/form/Form-elements/DefaultInputs";
 import AIChatPanel from "@/components/AIChatPanel";
-import MemoPanel from '@/components/MemoPanel'
+import MemoPanel from "@/components/MemoPanel";
 import {
   BellIcon,
   ChartBarIcon,
@@ -39,6 +39,7 @@ import Example4 from "./_components/Example4";
 import MultiD from "./_components/MultiD";
 import MultiDHeat from "./_components/MultiDHeat";
 import { useGraphByQuery } from "@/hooks/useGraph";
+import Demo2 from "./_components/Demo2";
 
 function classNames(...classes: string[]) {
   return classes.filter(Boolean).join(" ");
@@ -78,6 +79,7 @@ export default function EcommerceTabs() {
   const [activePanel, setActivePanel] = useState<string | null>(null);
 
   const tabs = [
+    { name: "demo", icon: Squares2X2Icon },
     { name: "Network Graph", icon: Squares2X2Icon },
     { name: "Simulation", icon: BellIcon },
     { name: "Timeline", icon: WalletIcon },
@@ -253,33 +255,122 @@ export default function EcommerceTabs() {
         </button>
       )}
       {/* Memo Panel 토글 버튼 */}
-            {selectedIndex >= 0 && selectedIndex <= 8 && (
-              <button
-                onClick={() =>
-                  setActivePanel(activePanel === "memo" ? null : "memo")
-                }
-                className={`fixed top-1/2 -translate-y-1/2 bg-gray-780 shadow-soon dark:text-white py-2 px-3 rounded-l-full shadow-lg hover:bg-gray-600 z-50 transition-all duration-300 ease-in-out flex items-center gap-2`}
-                style={{
-                  right: activePanel ? `${sidebarWidth}px` : "0px",
-                  top: `calc(20% + 130px)`, // 기존 버튼보다 아래로
-                  borderRadius: "9999px 0 0 9999px",
-                }}
-                aria-label="Toggle Memo Panel"
-              >
-                {activePanel === "memo" ? (
-                  <>
-                    <ChevronRightIcon className="h-5 w-5" />
-                    <span>메모 닫기</span>
-                  </>
-                ) : (
-                  <>
-                  <PaperClipIcon className="h-5 w-5" />
-                </>
-                )}
-              </button>
-            )}
+      {selectedIndex >= 0 && selectedIndex <= 8 && (
+        <button
+          onClick={() => setActivePanel(activePanel === "memo" ? null : "memo")}
+          className={`fixed top-1/2 -translate-y-1/2 bg-gray-780 shadow-soon dark:text-white py-2 px-3 rounded-l-full shadow-lg hover:bg-gray-600 z-50 transition-all duration-300 ease-in-out flex items-center gap-2`}
+          style={{
+            right: activePanel ? `${sidebarWidth}px` : "0px",
+            top: `calc(20% + 130px)`, // 기존 버튼보다 아래로
+            borderRadius: "9999px 0 0 9999px",
+          }}
+          aria-label="Toggle Memo Panel"
+        >
+          {activePanel === "memo" ? (
+            <>
+              <ChevronRightIcon className="h-5 w-5" />
+              <span>메모 닫기</span>
+            </>
+          ) : (
+            <>
+              <PaperClipIcon className="h-5 w-5" />
+            </>
+          )}
+        </button>
+      )}
       <Tab.Panels className="mt-2 h-[calc(100%-60px)] relative">
-        {/* 1. Network Graph Tab Panel (팝업 사이드바) */}
+        {/* 0. Network Graph Tab Panel (팝업 사이드바) */}
+        <Tab.Panel className="h-full" unmount={false}>
+          <div
+            ref={containerRef}
+            className="flex flex-col h-full relative overflow-hidden  "
+            style={{ width: `calc(100% - ${totalOpenedSidebarWidth}px)` }}
+          >
+            <div
+              style={{ height: `${topHeight}%` }}
+              className="transition-all duration-100  "
+            >
+              <div className="bg-white dark:bg-gray-900 rounded shadow h-full">
+                {/* <GraphMetrics /> */}
+                <Demo2 graphData={graphData} />
+              </div>
+            </div>
+
+            {/* 수직 크기 조절 막대 */}
+            <div
+              onMouseDown={startVerticalDrag}
+              className="h-1 cursor-row-resize bg-gray-100 dark:bg-gray-800 hover:bg-blue-500 "
+              style={{ zIndex: 9990 }}
+            />
+
+            <div className="flex-grow w-full  h-full">
+              <div className="bg-white dark:bg-gray-900 rounded shadow py-4 h-full overflow-x-hidden">
+                <GraphDataTable rawRecords={rawRecords} />
+              </div>
+            </div>
+
+            {/* 오른쪽 사이드바 - fixed 팝업 방식 (위치 동일) */}
+            {activePanel === "aiAssistant" &&
+              selectedIndex >= 0 &&
+              selectedIndex <= 6 && (
+                <div
+                  className={`fixed right-0 top-[var(--header-height)] h-[calc(100vh - var(--header-height))] bg-white dark:bg-gray-900 shadow-xl p-2 z-40 transform transition-transform duration-300 ease-in-out
+                  ${
+                    activePanel === "aiAssistant"
+                      ? "translate-x-0"
+                      : "translate-x-full"
+                  }`}
+                  style={{ width: `${sidebarWidth}px` }}
+                >
+                  <AIChatPanel />
+                </div>
+              )}
+            {activePanel === "defaultInputs" &&
+              selectedIndex >= 0 &&
+              selectedIndex <= 6 && (
+                <div
+                  className={`fixed right-0 top-[var(--header-height)] h-[calc(100vh - var(--header-height))] bg-white dark:bg-gray-900 shadow-xl p-2 z-40 transform transition-transform duration-300 ease-in-out
+                  ${
+                    activePanel === "defaultInputs"
+                      ? "translate-x-0"
+                      : "translate-x-full"
+                  }`}
+                  style={{ width: `${sidebarWidth}px` }}
+                >
+                  <DefaultInputs />
+                </div>
+              )}
+            {activePanel === "monthlyTarget" &&
+              selectedIndex >= 0 &&
+              selectedIndex <= 6 && (
+                <div
+                  className={`fixed right-0 top-[var(--header-height)] h-[calc(100vh - var(--header-height))] bg-white dark:bg-gray-900 shadow-xl p-2 z-40 transform transition-transform duration-300 ease-in-out
+                  ${
+                    activePanel === "monthlyTarget"
+                      ? "translate-x-0"
+                      : "translate-x-full"
+                  }`}
+                  style={{ width: `${sidebarWidth}px` }}
+                >
+                  <MonthlyTarget />
+                </div>
+              )}
+            {activePanel === "memo" && selectedIndex < 9 && (
+              <div
+                className={`fixed right-0 top-[var(--header-height)] h-[calc(100vh - var(--header-height))] bg-white dark:bg-gray-900 shadow-xl p-2 z-40 transform transition-transform duration-300 ease-in-out
+                    ${
+                      activePanel === "memo"
+                        ? "translate-x-0"
+                        : "translate-x-full"
+                    }`}
+                style={{ width: `${sidebarWidth}px` }}
+              >
+                <MemoPanel />
+              </div>
+            )}
+          </div>
+        </Tab.Panel>
+        1. Network Graph Tab Panel (팝업 사이드바)
         <Tab.Panel className="h-full" unmount={false}>
           <div
             ref={containerRef}
@@ -355,18 +446,21 @@ export default function EcommerceTabs() {
                   <MonthlyTarget />
                 </div>
               )}
-              {activePanel === "memo" && selectedIndex < 9 && (
-                <div
-                  className={`fixed right-0 top-[var(--header-height)] h-[calc(100vh - var(--header-height))] bg-white dark:bg-gray-900 shadow-xl p-2 z-40 transform transition-transform duration-300 ease-in-out
-                    ${activePanel === "memo" ? "translate-x-0" : "translate-x-full"}`}
-                  style={{ width: `${sidebarWidth}px` }}
-                >
-                  <MemoPanel />
-                </div>
-              )}
+            {activePanel === "memo" && selectedIndex < 9 && (
+              <div
+                className={`fixed right-0 top-[var(--header-height)] h-[calc(100vh - var(--header-height))] bg-white dark:bg-gray-900 shadow-xl p-2 z-40 transform transition-transform duration-300 ease-in-out
+                    ${
+                      activePanel === "memo"
+                        ? "translate-x-0"
+                        : "translate-x-full"
+                    }`}
+                style={{ width: `${sidebarWidth}px` }}
+              >
+                <MemoPanel />
+              </div>
+            )}
           </div>
         </Tab.Panel>
-
         {/* 2. Simulation Tab Panel (메인 콘텐츠가 밀려나는 방식) */}
         <Tab.Panel className="h-full" unmount={false}>
           <div
@@ -435,7 +529,6 @@ export default function EcommerceTabs() {
               )}
           </div>
         </Tab.Panel>
-
         {/* 3. Timeline Tab Panel (좌우/상하 리사이징 유지, 필터/AI 영역 포함) */}
         <Tab.Panel className="h-full">
           <div
@@ -503,15 +596,19 @@ export default function EcommerceTabs() {
                   <MonthlyTarget />
                 </div>
               )}
-              {activePanel === "memo" && selectedIndex < 9 && (
-                <div
-                  className={`fixed right-0 top-[var(--header-height)] h-[calc(100vh - var(--header-height))] bg-white dark:bg-gray-900 shadow-xl p-2 z-40 transform transition-transform duration-300 ease-in-out
-                    ${activePanel === "memo" ? "translate-x-0" : "translate-x-full"}`}
-                  style={{ width: `${sidebarWidth}px` }}
-                >
-                  <MemoPanel />
-                </div>
-              )}
+            {activePanel === "memo" && selectedIndex < 9 && (
+              <div
+                className={`fixed right-0 top-[var(--header-height)] h-[calc(100vh - var(--header-height))] bg-white dark:bg-gray-900 shadow-xl p-2 z-40 transform transition-transform duration-300 ease-in-out
+                    ${
+                      activePanel === "memo"
+                        ? "translate-x-0"
+                        : "translate-x-full"
+                    }`}
+                style={{ width: `${sidebarWidth}px` }}
+              >
+                <MemoPanel />
+              </div>
+            )}
           </div>
         </Tab.Panel>
         {/* 4. 프랑스 지도 */}
@@ -577,7 +674,6 @@ export default function EcommerceTabs() {
             )}
           </div>
         </Tab.Panel>
-
         {/* 5. Exmple2 Tab Panel (좌우/상하 리사이징 유지, 필터/AI 영역 포함) */}
         <Tab.Panel className="h-full">
           <div
@@ -763,7 +859,6 @@ export default function EcommerceTabs() {
             )}
           </div>
         </Tab.Panel>
-
         {/* 7. Exmple4 Tab Panel (좌우/상하 리사이징 유지, 필터/AI 영역 포함) */}
         <Tab.Panel className="h-full">
           <div
@@ -820,9 +915,7 @@ export default function EcommerceTabs() {
             )}
           </div>
         </Tab.Panel>
-
         {/* 8. MultiD */}
-
         <Tab.Panel className="h-full">
           <div
             ref={containerRef}
