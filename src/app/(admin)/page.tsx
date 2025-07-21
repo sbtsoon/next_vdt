@@ -40,6 +40,7 @@ import MultiD from "./_components/MultiD";
 import MultiDHeat from "./_components/MultiDHeat";
 import { useGraphByQuery } from "@/hooks/useGraph";
 import Demo2 from "./_components/Demo2";
+import { extractElementIdsFromPaths } from "@/helpers/extractElementIdsFromPathHelper";
 
 function classNames(...classes: string[]) {
   return classes.filter(Boolean).join(" ");
@@ -73,15 +74,19 @@ export default function EcommerceTabs() {
         setRawRecords(data?.rawRecords);
       } else {
         // ===================================================== path highlight
+        const extractedElementIds = extractElementIdsFromPaths(
+          data?.rawRecords
+        );
+        console.log("=============================", extractedElementIds)
       }
     },
   });
   const [graphData, setGraphData] = useState(null);
   const [, setMetricData] = useAtom(metricMapAtom);
   const [rawRecords, setRawRecords] = useState(null);
+  const [pathData, setPathData] = useState(null);
 
   const [selectedIndex, setSelectedIndex] = useState(0);
-
   const [activePanel, setActivePanel] = useState<string | null>(null);
 
   const tabs = [
