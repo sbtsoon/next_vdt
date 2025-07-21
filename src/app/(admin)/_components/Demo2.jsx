@@ -57,13 +57,13 @@ export default function Demo2({ graphData, pathData }) {
     cy.on("tap", "node", (event) => {
       const node = event.target;
       const nodeId = node.id();
-      console.log("Node tapped:", nodeId);
+      console.log("Node tapped:", node);
     });
 
     cy.on("tap", "edge", (event) => {
       const edge = event.target;
       const edgeId = edge.id();
-      console.log("Edge tapped:", edgeId);
+      console.log("Edge tapped:", edge);
     });
   }, [graphData]);
 
