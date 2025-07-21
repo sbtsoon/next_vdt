@@ -49,25 +49,31 @@ export default function EcommerceTabs() {
   const [aiQuery, setAiQuery] = useAtom(aiQueryAtom);
   const { data } = useGraphByQuery(aiQuery.query, {
     onSuccess: (data) => {
-      if (data?.data?.nodes.length !== 0) {
-        setGraphData(data.data);
-        // metric card 정보 업데이트
-        data.data.nodes.forEach((node) => {
-          const { name, amount } = node.data || {};
-          const parsedAmount = Math.round(parseNeo4jInt(amount) / 1_000_000);
-          const percentage = 0;
-          if (name) {
-            updateMetricDataHelper(
-              name,
-              parsedAmount,
-              percentage,
-              [],
-              setMetricData
-            );
-          }
-        });
+      const isPathQuery = aiQuery.query.toLowerCase().includes("path");
+
+      if (!isPathQuery) {
+        if (data?.data?.nodes.length !== 0) {
+          setGraphData(data.data);
+          // metric card 정보 업데이트
+          data.data.nodes.forEach((node) => {
+            const { name, amount } = node.data || {};
+            const parsedAmount = Math.round(parseNeo4jInt(amount) / 1_000_000);
+            const percentage = 0;
+            if (name) {
+              updateMetricDataHelper(
+                name,
+                parsedAmount,
+                percentage,
+                [],
+                setMetricData
+              );
+            }
+          });
+        }
+        setRawRecords(data?.rawRecords);
+      } else {
+        // ===================================================== path highlight
       }
-      setRawRecords(data?.rawRecords);
     },
   });
   const [graphData, setGraphData] = useState(null);

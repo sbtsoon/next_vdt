@@ -14,6 +14,8 @@ export async function POST(req) {
     }
 
     const result = await session.run(query);
+
+    console.log("===========================>", result);
     const data = formatDataForCytoscape(result.records);
 
     return NextResponse.json({

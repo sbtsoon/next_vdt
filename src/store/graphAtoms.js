@@ -20,4 +20,6 @@ export const metricMapAtom = atom({
 
 export const aiQueryAtom = atom({
   query: "MATCH (n)-[r]->(m) RETURN n, r, m",
+  // query: "MATCH path = (n)-[*]->(m) RETURN path",
 });
+

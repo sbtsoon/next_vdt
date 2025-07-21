@@ -2,6 +2,7 @@
 
 import cytoscape from "@/lib/cytoscape/cytoscapeWithExtensions";
 import { metricMapAtom } from "@/store/graphAtoms";
+import { aiQueryAtom } from "@/store/graphAtoms";
 import { useAtom } from "jotai";
 import { useEffect, useRef } from "react";
 import { formatAmountWithMajorUnits } from "@/helpers/formatAmountWithMajorUnitsHelper";
@@ -15,12 +16,16 @@ import {
 import { updateMetricDataHelper } from "@/helpers/metricHelper";
 import { demo2GraphStyle, networkGraphStyle } from "@/lib/cytoscape/graphStyle";
 import attachCtxMenu from "@/lib/cytoscape/ctxMenu";
-import { applyNetworkGraphLayout } from "@/lib/cytoscape/graphLayout";
+import {
+  applyDemo2GraphLayout,
+  applyNetworkGraphLayout,
+} from "@/lib/cytoscape/graphLayout";
 
 export default function Demo2({ graphData }) {
   const cyRef = useRef(null);
   const cyInstanceRef = useRef(null);
   const [, setMetricData] = useAtom(metricMapAtom);
+  const [, setAiQuery] = useAtom(aiQueryAtom);
 
   useEffect(() => {
     if (!cyRef.current) return;
@@ -47,11 +52,19 @@ export default function Demo2({ graphData }) {
 
     cyInstanceRef.current = cy;
 
-    applyNetworkGraphLayout(cy);
+    applyDemo2GraphLayout(cy);
   }, [graphData]);
 
   return (
     <div className="overflow-hidden  border border-gray-200 bg-white px-5 pt-5 dark:border-gray-800 dark:bg-white/[0.03] sm:px-6 sm:pt-6">
+      <button
+        style={{ backgroundColor: "white" }}
+        onClick={() =>
+          setAiQuery({ query: "MATCH path = (n)-[*]->(m) RETURN path" })
+        }
+      >
+        Change to path cypher query
+      </button>
       <div id="cy" ref={cyRef} style={{ width: "100%", minHeight: "600px" }} />
     </div>
   );

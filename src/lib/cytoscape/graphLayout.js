@@ -1,6 +1,40 @@
 import { parseNeo4jInt } from "@/helpers/parseNeo4jIntHelper";
 import { showNode, showEdge } from "@/helpers/showAndHideHelper";
 
+export function applyDemo2GraphLayout(cy) {
+  cy.nodes().forEach((node) => showNode(node, 0));
+  cy.edges().forEach((edge) => showEdge(edge, 0));
+  const layout = cy
+    .layout({
+      name: "dagre",
+      rankDir: "TB",
+      nodeSep: 50,
+      edgeSep: 10,
+      rankSep: 80,
+      animate: true,
+      animationDuration: 300,
+    })
+    .run();
+
+  cy.style().selector("node").style({ width: "20px", height: "20px" });
+  cy.style()
+    .selector("edge")
+    .style({
+      "curve-style": "taxi",
+      "taxi-direction": "downward",
+      "taxi-turn": 20,
+      "line-color": "#ccc",
+      "target-arrow-shape": "triangle",
+      "target-arrow-color": "#ccc",
+      width: 1,
+    })
+    .update();
+
+  layout.on("layoutstop", () => {
+    cy.center();
+  });
+}
+
 export function applyNetworkGraphLayout(cy) {
   cy.nodes().forEach((node) => showNode(node, 0));
   cy.edges().forEach((edge) => showEdge(edge, 0));
