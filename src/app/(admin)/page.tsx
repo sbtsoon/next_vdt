@@ -18,7 +18,7 @@ import {
   ArchiveBoxIcon,
   ExclamationCircleIcon,
   CubeIcon,
- MagnifyingGlassCircleIcon,
+  MagnifyingGlassCircleIcon,
   ChartPieIcon,
   CubeTransparentIcon,
 } from "@heroicons/react/24/outline";
@@ -37,6 +37,8 @@ import Example3 from "./_components/Example3";
 import Example4 from "./_components/Example4";
 import MultiD from "./_components/MultiD";
 import MultiDHeat from "./_components/MultiDHeat";
+// import Demo2 from "./_components/Demo2";
+import dynamic from "next/dynamic";
 
 function classNames(...classes: string[]) {
   return classes.filter(Boolean).join(" ");
@@ -49,9 +51,13 @@ export default function EcommerceTabs() {
   const [rawRecords, setRawRecords] = useState(null);
   const [isSimple, setIsSimple] = useState(false);
 
-  const [selectedIndex, setSelectedIndex] = useState(0);
+  const [selectedIndex, setSelectedIndex] = useState(9);
 
   const [activePanel, setActivePanel] = useState<string | null>(null);
+
+  const Demo2 = dynamic(() => import("./_components/Demo2"), {
+    ssr: false,
+  });
 
   const tabs = [
     { name: "Network Graph", icon: Squares2X2Icon },
@@ -61,9 +67,9 @@ export default function EcommerceTabs() {
     { name: "Exmple2", icon: ChartBarIcon },
     { name: "Exmple3", icon: ExclamationCircleIcon },
     { name: "Exmple4", icon: MagnifyingGlassCircleIcon },
-    { name: "MultiD", icon:  ArchiveBoxIcon },
-    { name: "MultiDHeat", icon:  CubeIcon },
-
+    { name: "MultiD", icon: ArchiveBoxIcon },
+    { name: "MultiDHeat", icon: CubeIcon },
+    { name: "시연2", icon: CubeIcon },
   ];
 
   const containerRef = useRef<HTMLDivElement>(null);
@@ -218,7 +224,7 @@ export default function EcommerceTabs() {
       </Tab.List>
 
       {/* AI Assistant 토글 버튼 (Network Graph (0) 또는 Simulation (1) 탭일 때만 표시) */}
-      {selectedIndex >= 0 && selectedIndex <= 8 && (
+      {selectedIndex >= 0 && selectedIndex <= 9 && (
         <button
           onClick={() =>
             setActivePanel(activePanel === "aiAssistant" ? null : "aiAssistant")
@@ -245,7 +251,7 @@ export default function EcommerceTabs() {
       )}
 
       {/* Default Inputs 토글 버튼 (Network Graph (0) 또는 Simulation (1) 탭일 때만 표시) */}
-      {selectedIndex >= 0 && selectedIndex <= 8 && (
+      {selectedIndex >= 0 && selectedIndex <= 9 && (
         <button
           onClick={() =>
             setActivePanel(
@@ -274,7 +280,7 @@ export default function EcommerceTabs() {
       )}
 
       {/* Analysis 토글 버튼 (Network Graph (0) 또는 Simulation (7) 탭일 때만 표시) */}
-      {selectedIndex >= 0 && selectedIndex <= 8 && (
+      {selectedIndex >= 0 && selectedIndex <= 9 && (
         <button
           onClick={() =>
             setActivePanel(
@@ -307,15 +313,18 @@ export default function EcommerceTabs() {
         <Tab.Panel className="h-full" unmount={false}>
           <div
             ref={containerRef}
-            className="flex flex-col h-full relative overflow-hidden  " style={{ width: `calc(100% - ${totalOpenedSidebarWidth}px)` }}
+            className="flex flex-col h-full relative overflow-hidden  "
+            style={{ width: `calc(100% - ${totalOpenedSidebarWidth}px)` }}
           >
-           <div style={{ height: `${topHeight}%` }} className="transition-all duration-100  ">
-            <div className="bg-white dark:bg-gray-900 rounded shadow h-full">
-              <GraphMetrics />
-              <NetworkGraph />
+            <div
+              style={{ height: `${topHeight}%` }}
+              className="transition-all duration-100  "
+            >
+              <div className="bg-white dark:bg-gray-900 rounded shadow h-full">
+                <GraphMetrics />
+                <NetworkGraph />
+              </div>
             </div>
-          </div>
-
 
             {/* 수직 크기 조절 막대 */}
             <div
@@ -325,14 +334,15 @@ export default function EcommerceTabs() {
             />
 
             <div className="flex-grow w-full  h-full">
-            <div className="bg-white dark:bg-gray-900 rounded shadow py-4 h-full overflow-x-hidden">
+              <div className="bg-white dark:bg-gray-900 rounded shadow py-4 h-full overflow-x-hidden">
                 <GraphDataTable rawRecords={rawRecords} isSimple={isSimple} />
               </div>
             </div>
 
             {/* 오른쪽 사이드바 - fixed 팝업 방식 (위치 동일) */}
             {activePanel === "aiAssistant" &&
-               selectedIndex >= 0 && selectedIndex <= 6 && (
+              selectedIndex >= 0 &&
+              selectedIndex <= 6 && (
                 <div
                   className={`fixed right-0 top-[var(--header-height)] h-[calc(100vh - var(--header-height))] bg-white dark:bg-gray-900 shadow-xl p-2 z-40 transform transition-transform duration-300 ease-in-out
                   ${
@@ -346,7 +356,8 @@ export default function EcommerceTabs() {
                 </div>
               )}
             {activePanel === "defaultInputs" &&
-               selectedIndex >= 0 && selectedIndex <= 6 && (
+              selectedIndex >= 0 &&
+              selectedIndex <= 6 && (
                 <div
                   className={`fixed right-0 top-[var(--header-height)] h-[calc(100vh - var(--header-height))] bg-white dark:bg-gray-900 shadow-xl p-2 z-40 transform transition-transform duration-300 ease-in-out
                   ${
@@ -360,7 +371,8 @@ export default function EcommerceTabs() {
                 </div>
               )}
             {activePanel === "monthlyTarget" &&
-               selectedIndex >= 0 && selectedIndex <= 6 && (
+              selectedIndex >= 0 &&
+              selectedIndex <= 6 && (
                 <div
                   className={`fixed right-0 top-[var(--header-height)] h-[calc(100vh - var(--header-height))] bg-white dark:bg-gray-900 shadow-xl p-2 z-40 transform transition-transform duration-300 ease-in-out
                   ${
@@ -386,7 +398,7 @@ export default function EcommerceTabs() {
             <div
               className={`flex flex-col h-full w-full transition-all duration-300 ease-in-out`}
             >
-              <div  className="transition-all">
+              <div className="transition-all">
                 <div className="shadow  h-full">
                   <GraphMetrics />
                   <SimulationGraph isActive={selectedIndex === 1} />
@@ -444,7 +456,7 @@ export default function EcommerceTabs() {
 
         {/* 3. Timeline Tab Panel (좌우/상하 리사이징 유지, 필터/AI 영역 포함) */}
         <Tab.Panel className="h-full">
-        <div
+          <div
             ref={containerRef}
             className="flex h-full relative overflow-hidden"
             style={{ width: `calc(100% - ${totalOpenedSidebarWidth}px)` }}
@@ -465,7 +477,8 @@ export default function EcommerceTabs() {
 
             {/* 오른쪽 사이드바 - fixed 팝업 방식 (위치 동일) */}
             {activePanel === "aiAssistant" &&
-              selectedIndex >= 0 && selectedIndex <= 6 && (
+              selectedIndex >= 0 &&
+              selectedIndex <= 6 && (
                 <div
                   className={`fixed right-0 top-[var(--header-height)] h-[calc(100vh - var(--header-height))] bg-white dark:bg-gray-900 shadow-xl p-2 z-40 transform transition-transform duration-300 ease-in-out
                   ${
@@ -479,7 +492,8 @@ export default function EcommerceTabs() {
                 </div>
               )}
             {activePanel === "defaultInputs" &&
-            selectedIndex >= 0 && selectedIndex <= 6 && (
+              selectedIndex >= 0 &&
+              selectedIndex <= 6 && (
                 <div
                   className={`fixed right-0 top-[var(--header-height)] h-[calc(100vh - var(--header-height))] bg-white dark:bg-gray-900 shadow-xl p-2 z-40 transform transition-transform duration-300 ease-in-out
                   ${
@@ -493,7 +507,8 @@ export default function EcommerceTabs() {
                 </div>
               )}
             {activePanel === "monthlyTarget" &&
-               selectedIndex >= 0 && selectedIndex <= 6 && (
+              selectedIndex >= 0 &&
+              selectedIndex <= 6 && (
                 <div
                   className={`fixed right-0 top-[var(--header-height)] h-[calc(100vh - var(--header-height))] bg-white dark:bg-gray-900 shadow-xl p-2 z-40 transform transition-transform duration-300 ease-in-out
                   ${
@@ -514,9 +529,7 @@ export default function EcommerceTabs() {
             ref={containerRef}
             className="flex h-full w-full relative overflow-hidden"
           >
-            <div
-              className="flex flex-col transition-all duration-100 w-full"
-            >
+            <div className="flex flex-col transition-all duration-100 w-full">
               <div
                 style={{ height: `${topHeight}%` }}
                 className="transition-all"
@@ -528,87 +541,86 @@ export default function EcommerceTabs() {
               </div>
             </div>
 
-           {/* 오른쪽 사이드바 - fixed 팝업 방식 (탭 0, 1에서만 활성화) */}
+            {/* 오른쪽 사이드바 - fixed 팝업 방식 (탭 0, 1에서만 활성화) */}
             {/* AIChatPanel 사이드바 */}
             {activePanel === "aiAssistant" && selectedIndex < 7 && (
-                <div
-                  className={`fixed right-0 top-[var(--header-height)] h-[calc(100vh - var(--header-height))] bg-white dark:bg-gray-900 shadow-xl p-2 z-20 transform transition-transform duration-300 ease-in-out
+              <div
+                className={`fixed right-0 top-[var(--header-height)] h-[calc(100vh - var(--header-height))] bg-white dark:bg-gray-900 shadow-xl p-2 z-20 transform transition-transform duration-300 ease-in-out
                   ${
                     activePanel === "aiAssistant"
                       ? "translate-x-0"
                       : "translate-x-full"
                   }`}
-                  style={{ width: `${sidebarWidth}px` }}
-                >
-                  <AIChatPanel />
-                </div>
-              )}
+                style={{ width: `${sidebarWidth}px` }}
+              >
+                <AIChatPanel />
+              </div>
+            )}
             {/* DefaultInputs 사이드바 */}
             {activePanel === "defaultInputs" && selectedIndex < 7 && (
-                <div
-                  className={`fixed right-0 top-[var(--header-height)] h-[calc(100vh - var(--header-height))] bg-white dark:bg-gray-900 shadow-xl p-2 z-20 transform transition-transform duration-300 ease-in-out
+              <div
+                className={`fixed right-0 top-[var(--header-height)] h-[calc(100vh - var(--header-height))] bg-white dark:bg-gray-900 shadow-xl p-2 z-20 transform transition-transform duration-300 ease-in-out
                   ${
                     activePanel === "defaultInputs"
                       ? "translate-x-0"
                       : "translate-x-full"
                   }`}
-                  style={{ width: `${sidebarWidth}px` }}
-                >
-                  <DefaultInputs />
-                </div>
-              )}
+                style={{ width: `${sidebarWidth}px` }}
+              >
+                <DefaultInputs />
+              </div>
+            )}
             {/* MonthlyTarget 사이드바 (탭 0, 1에서만 활성화) */}
             {activePanel === "monthlyTarget" && selectedIndex < 7 && (
-                <div
-                  className={`fixed right-0 top-[var(--header-height)] h-[calc(100vh - var(--header-height))] bg-white dark:bg-gray-900 shadow-xl p-2 z-20 transform transition-transform duration-300 ease-in-out
+              <div
+                className={`fixed right-0 top-[var(--header-height)] h-[calc(100vh - var(--header-height))] bg-white dark:bg-gray-900 shadow-xl p-2 z-20 transform transition-transform duration-300 ease-in-out
                   ${
                     activePanel === "monthlyTarget"
                       ? "translate-x-0"
                       : "translate-x-full"
                   }`}
-                  style={{ width: `${sidebarWidth}px` }}
-                >
-                  <MonthlyTarget />
-                </div>
-              )}
+                style={{ width: `${sidebarWidth}px` }}
+              >
+                <MonthlyTarget />
+              </div>
+            )}
           </div>
         </Tab.Panel>
 
         {/* 5. Exmple2 Tab Panel (좌우/상하 리사이징 유지, 필터/AI 영역 포함) */}
         <Tab.Panel className="h-full">
-        <div
+          <div
             ref={containerRef}
             className="flex h-full  w-full relative overflow-hidden"
           >
-            <div
-              className="flex flex-col transition-all duration-100"
-            >
-              <div
-                style={{ height: `60%` }}
-                className="transition-all"
-              >
+            <div className="flex flex-col transition-all duration-100">
+              <div style={{ height: `60%` }} className="transition-all">
                 <div className="bg-white dark:bg-gray-900 rounded shadow  h-full">
                   <MonthlySalesChart />
-              </div>
-              {/* 여기에 수직 크기 조절 막대를 배치합니다. 상단 div의 바깥, 하단 div의 바로 위입니다. */}
-              <div  onMouseDown={startVerticalDrag}
-                className="h-1 cursor-row-resize bg-gray-100 dark:bg-gray-800 hover:bg-blue-500"
-                style={{ zIndex: 9990 }}
-              />{" "}
-              {/* <--- 이 부분이 위로 이동했습니다. */}
-              <div
-                style={{ height: `${100 - topHeight}%` }}
-                className="transition-all h-full"
-              >
-                <div className="bg-white dark:bg-gray-900 rounded shadow py-4  h-full">
-                  <GraphDataTable rawRecords={rawRecords} isSimple={isSimple} />
+                </div>
+                {/* 여기에 수직 크기 조절 막대를 배치합니다. 상단 div의 바깥, 하단 div의 바로 위입니다. */}
+                <div
+                  onMouseDown={startVerticalDrag}
+                  className="h-1 cursor-row-resize bg-gray-100 dark:bg-gray-800 hover:bg-blue-500"
+                  style={{ zIndex: 9990 }}
+                />{" "}
+                {/* <--- 이 부분이 위로 이동했습니다. */}
+                <div
+                  style={{ height: `${100 - topHeight}%` }}
+                  className="transition-all h-full"
+                >
+                  <div className="bg-white dark:bg-gray-900 rounded shadow py-4  h-full">
+                    <GraphDataTable
+                      rawRecords={rawRecords}
+                      isSimple={isSimple}
+                    />
+                  </div>
                 </div>
               </div>
-            </div>
 
-          {/* 오른쪽 사이드바 - fixed 팝업 방식 (탭 0, 1에서만 활성화) */}
-            {/* AIChatPanel 사이드바 */}
-            {activePanel === "aiAssistant" && selectedIndex < 7 && (
+              {/* 오른쪽 사이드바 - fixed 팝업 방식 (탭 0, 1에서만 활성화) */}
+              {/* AIChatPanel 사이드바 */}
+              {activePanel === "aiAssistant" && selectedIndex < 7 && (
                 <div
                   className={`fixed right-0 top-[var(--header-height)] h-[calc(100vh - var(--header-height))] bg-white dark:bg-gray-900 shadow-xl p-2 z-20 transform transition-transform duration-300 ease-in-out
                   ${
@@ -621,8 +633,8 @@ export default function EcommerceTabs() {
                   <AIChatPanel />
                 </div>
               )}
-            {/* DefaultInputs 사이드바 */}
-            {activePanel === "defaultInputs" && selectedIndex < 7 && (
+              {/* DefaultInputs 사이드바 */}
+              {activePanel === "defaultInputs" && selectedIndex < 7 && (
                 <div
                   className={`fixed right-0 top-[var(--header-height)] h-[calc(100vh - var(--header-height))] bg-white dark:bg-gray-900 shadow-xl p-2 z-20 transform transition-transform duration-300 ease-in-out
                   ${
@@ -635,8 +647,8 @@ export default function EcommerceTabs() {
                   <DefaultInputs />
                 </div>
               )}
-            {/* MonthlyTarget 사이드바 (탭 0, 1에서만 활성화) */}
-            {activePanel === "monthlyTarget" && selectedIndex < 7 && (
+              {/* MonthlyTarget 사이드바 (탭 0, 1에서만 활성화) */}
+              {activePanel === "monthlyTarget" && selectedIndex < 7 && (
                 <div
                   className={`fixed right-0 top-[var(--header-height)] h-[calc(100vh - var(--header-height))] bg-white dark:bg-gray-900 shadow-xl p-2 z-20 transform transition-transform duration-300 ease-in-out
                   ${
@@ -649,22 +661,18 @@ export default function EcommerceTabs() {
                   <MonthlyTarget />
                 </div>
               )}
-          </div>
+            </div>
           </div>
         </Tab.Panel>
         {/* 6. Exmple3 Tab Panel (좌우/상하 리사이징 유지, 필터/AI 영역 포함) */}
         <Tab.Panel className="h-full">
-        <div
+          <div
             ref={containerRef}
-            className="flex flex-col h-full relative overflow-hidden  " style={{ width: `calc(100% - ${totalOpenedSidebarWidth}px)` }}
+            className="flex flex-col h-full relative overflow-hidden  "
+            style={{ width: `calc(100% - ${totalOpenedSidebarWidth}px)` }}
           >
-            <div
-              className="flex flex-col transition-all duration-100"
-            >
-              <div
-                style={{ height: `80%` }}
-                className="transition-all"
-              >
+            <div className="flex flex-col transition-all duration-100">
+              <div style={{ height: `80%` }} className="transition-all">
                 <div className="bg-white dark:bg-gray-900 rounded shadow  h-full">
                   {/* <GraphMetrics /> */}
                   <Example3 />
@@ -693,144 +701,150 @@ export default function EcommerceTabs() {
               style={{ zIndex: 50 }}
             />
 
-           {/* 오른쪽 사이드바 - fixed 팝업 방식 (탭 0, 1에서만 활성화) */}
-            {/* AIChatPanel 사이드바 */}
-            {activePanel === "aiAssistant" && selectedIndex < 7 && (
-                <div
-                  className={`fixed right-0 top-[var(--header-height)] h-[calc(100vh - var(--header-height))] bg-white dark:bg-gray-900 shadow-xl p-2 z-20 transform transition-transform duration-300 ease-in-out
-                  ${
-                    activePanel === "aiAssistant"
-                      ? "translate-x-0"
-                      : "translate-x-full"
-                  }`}
-                  style={{ width: `${sidebarWidth}px` }}
-                >
-                  <AIChatPanel />
-                </div>
-              )}
-            {/* DefaultInputs 사이드바 */}
-            {activePanel === "defaultInputs" && selectedIndex < 7 && (
-                <div
-                  className={`fixed right-0 top-[var(--header-height)] h-[calc(100vh - var(--header-height))] bg-white dark:bg-gray-900 shadow-xl p-2 z-20 transform transition-transform duration-300 ease-in-out
-                  ${
-                    activePanel === "defaultInputs"
-                      ? "translate-x-0"
-                      : "translate-x-full"
-                  }`}
-                  style={{ width: `${sidebarWidth}px` }}
-                >
-                  <DefaultInputs />
-                </div>
-              )}
             {/* 오른쪽 사이드바 - fixed 팝업 방식 (탭 0, 1에서만 활성화) */}
             {/* AIChatPanel 사이드바 */}
             {activePanel === "aiAssistant" && selectedIndex < 7 && (
-                <div
-                  className={`fixed right-0 top-[var(--header-height)] h-[calc(100vh - var(--header-height))] bg-white dark:bg-gray-900 shadow-xl p-2 z-20 transform transition-transform duration-300 ease-in-out
+              <div
+                className={`fixed right-0 top-[var(--header-height)] h-[calc(100vh - var(--header-height))] bg-white dark:bg-gray-900 shadow-xl p-2 z-20 transform transition-transform duration-300 ease-in-out
                   ${
                     activePanel === "aiAssistant"
                       ? "translate-x-0"
                       : "translate-x-full"
                   }`}
-                  style={{ width: `${sidebarWidth}px` }}
-                >
-                  <AIChatPanel />
-                </div>
-              )}
+                style={{ width: `${sidebarWidth}px` }}
+              >
+                <AIChatPanel />
+              </div>
+            )}
             {/* DefaultInputs 사이드바 */}
             {activePanel === "defaultInputs" && selectedIndex < 7 && (
-                <div
-                  className={`fixed right-0 top-[var(--header-height)] h-[calc(100vh - var(--header-height))] bg-white dark:bg-gray-900 shadow-xl p-2 z-20 transform transition-transform duration-300 ease-in-out
+              <div
+                className={`fixed right-0 top-[var(--header-height)] h-[calc(100vh - var(--header-height))] bg-white dark:bg-gray-900 shadow-xl p-2 z-20 transform transition-transform duration-300 ease-in-out
                   ${
                     activePanel === "defaultInputs"
                       ? "translate-x-0"
                       : "translate-x-full"
                   }`}
-                  style={{ width: `${sidebarWidth}px` }}
-                >
-                  <DefaultInputs />
-                </div>
-              )}
+                style={{ width: `${sidebarWidth}px` }}
+              >
+                <DefaultInputs />
+              </div>
+            )}
+            {/* 오른쪽 사이드바 - fixed 팝업 방식 (탭 0, 1에서만 활성화) */}
+            {/* AIChatPanel 사이드바 */}
+            {activePanel === "aiAssistant" && selectedIndex < 7 && (
+              <div
+                className={`fixed right-0 top-[var(--header-height)] h-[calc(100vh - var(--header-height))] bg-white dark:bg-gray-900 shadow-xl p-2 z-20 transform transition-transform duration-300 ease-in-out
+                  ${
+                    activePanel === "aiAssistant"
+                      ? "translate-x-0"
+                      : "translate-x-full"
+                  }`}
+                style={{ width: `${sidebarWidth}px` }}
+              >
+                <AIChatPanel />
+              </div>
+            )}
+            {/* DefaultInputs 사이드바 */}
+            {activePanel === "defaultInputs" && selectedIndex < 7 && (
+              <div
+                className={`fixed right-0 top-[var(--header-height)] h-[calc(100vh - var(--header-height))] bg-white dark:bg-gray-900 shadow-xl p-2 z-20 transform transition-transform duration-300 ease-in-out
+                  ${
+                    activePanel === "defaultInputs"
+                      ? "translate-x-0"
+                      : "translate-x-full"
+                  }`}
+                style={{ width: `${sidebarWidth}px` }}
+              >
+                <DefaultInputs />
+              </div>
+            )}
             {/* MonthlyTarget 사이드바 (탭 0, 1에서만 활성화) */}
             {activePanel === "monthlyTarget" && selectedIndex < 7 && (
-                <div
-                  className={`fixed right-0 top-[var(--header-height)] h-[calc(100vh - var(--header-height))] bg-white dark:bg-gray-900 shadow-xl p-2 z-20 transform transition-transform duration-300 ease-in-out
+              <div
+                className={`fixed right-0 top-[var(--header-height)] h-[calc(100vh - var(--header-height))] bg-white dark:bg-gray-900 shadow-xl p-2 z-20 transform transition-transform duration-300 ease-in-out
                   ${
                     activePanel === "monthlyTarget"
                       ? "translate-x-0"
                       : "translate-x-full"
                   }`}
-                  style={{ width: `${sidebarWidth}px` }}
-                >
-                  <MonthlyTarget />
-                </div>
-              )}
+                style={{ width: `${sidebarWidth}px` }}
+              >
+                <MonthlyTarget />
+              </div>
+            )}
           </div>
         </Tab.Panel>
 
         {/* 7. Exmple4 Tab Panel (좌우/상하 리사이징 유지, 필터/AI 영역 포함) */}
         <Tab.Panel className="h-full">
-        <div
+          <div
             ref={containerRef}
             className="flex h-full relative overflow-hidden"
           >
-           <div className="bg-white dark:bg-gray-900 rounded shadow  h-full w-full">
-                  {/* <GraphMetrics /> */}
-                  <Example4 />
-                </div>
+            <div className="bg-white dark:bg-gray-900 rounded shadow  h-full w-full">
+              {/* <GraphMetrics /> */}
+              <Example4 />
+            </div>
 
-           {/* 오른쪽 사이드바 - fixed 팝업 방식 (탭 0, 1에서만 활성화) */}
+            {/* 오른쪽 사이드바 - fixed 팝업 방식 (탭 0, 1에서만 활성화) */}
             {/* AIChatPanel 사이드바 */}
             {activePanel === "aiAssistant" && selectedIndex < 7 && (
-                <div
-                  className={`fixed right-0 top-[var(--header-height)] h-[calc(100vh - var(--header-height))] bg-white dark:bg-gray-900 shadow-xl p-2 z-20 transform transition-transform duration-300 ease-in-out
+              <div
+                className={`fixed right-0 top-[var(--header-height)] h-[calc(100vh - var(--header-height))] bg-white dark:bg-gray-900 shadow-xl p-2 z-20 transform transition-transform duration-300 ease-in-out
                   ${
                     activePanel === "aiAssistant"
                       ? "translate-x-0"
                       : "translate-x-full"
                   }`}
-                  style={{ width: `${sidebarWidth}px` }}
-                >
-                  <AIChatPanel />
-                </div>
-              )}
+                style={{ width: `${sidebarWidth}px` }}
+              >
+                <AIChatPanel />
+              </div>
+            )}
             {/* DefaultInputs 사이드바 */}
             {activePanel === "defaultInputs" && selectedIndex < 7 && (
-                <div
-                  className={`fixed right-0 top-[var(--header-height)] h-[calc(100vh - var(--header-height))] bg-white dark:bg-gray-900 shadow-xl p-2 z-20 transform transition-transform duration-300 ease-in-out
+              <div
+                className={`fixed right-0 top-[var(--header-height)] h-[calc(100vh - var(--header-height))] bg-white dark:bg-gray-900 shadow-xl p-2 z-20 transform transition-transform duration-300 ease-in-out
                   ${
                     activePanel === "defaultInputs"
                       ? "translate-x-0"
                       : "translate-x-full"
                   }`}
-                  style={{ width: `${sidebarWidth}px` }}
-                >
-                  <DefaultInputs />
-                </div>
-              )}
+                style={{ width: `${sidebarWidth}px` }}
+              >
+                <DefaultInputs />
+              </div>
+            )}
             {/* MonthlyTarget 사이드바 (탭 0, 1에서만 활성화) */}
             {activePanel === "monthlyTarget" && selectedIndex < 7 && (
-                <div
-                  className={`fixed right-0 top-[var(--header-height)] h-[calc(100vh - var(--header-height))] bg-white dark:bg-gray-900 shadow-xl p-2 z-20 transform transition-transform duration-300 ease-in-out
+              <div
+                className={`fixed right-0 top-[var(--header-height)] h-[calc(100vh - var(--header-height))] bg-white dark:bg-gray-900 shadow-xl p-2 z-20 transform transition-transform duration-300 ease-in-out
                   ${
                     activePanel === "monthlyTarget"
                       ? "translate-x-0"
                       : "translate-x-full"
                   }`}
-                  style={{ width: `${sidebarWidth}px` }}
-                >
-                  <MonthlyTarget />
-                </div>
-              )}
+                style={{ width: `${sidebarWidth}px` }}
+              >
+                <MonthlyTarget />
+              </div>
+            )}
           </div>
         </Tab.Panel>
 
         {/* 8. MultiD */}
 
         <Tab.Panel className="h-full">
-        <div ref={containerRef} className="flex h-full  w-full relative overflow-hidden" >
-            <div className="flex flex-col  transition-all duration-100 " >
-              <div className="transition-all"    style={{ height: `${ topHeight}%` }}>
+          <div
+            ref={containerRef}
+            className="flex h-full  w-full relative overflow-hidden"
+          >
+            <div className="flex flex-col  transition-all duration-100 ">
+              <div
+                className="transition-all"
+                style={{ height: `${topHeight}%` }}
+              >
                 <div className="bg-white dark:bg-gray-900 rounded shadow  h-full ">
                   {/* <GraphMetrics /> */}
                   <MultiD />
@@ -853,50 +867,50 @@ export default function EcommerceTabs() {
               </div>
             </div>
 
-      {/* 오른쪽 사이드바 - fixed 팝업 방식 (탭 0, 1에서만 활성화) */}
-                  {/* AIChatPanel 사이드바 */}
-                  {activePanel === "aiAssistant" && selectedIndex < 9 && (
-                      <div
-                        className={`fixed right-0 top-[var(--header-height)] h-[calc(100vh - var(--header-height))] bg-white dark:bg-gray-900 shadow-xl p-2 z-20 transform transition-transform duration-300 ease-in-out
+            {/* 오른쪽 사이드바 - fixed 팝업 방식 (탭 0, 1에서만 활성화) */}
+            {/* AIChatPanel 사이드바 */}
+            {activePanel === "aiAssistant" && selectedIndex < 9 && (
+              <div
+                className={`fixed right-0 top-[var(--header-height)] h-[calc(100vh - var(--header-height))] bg-white dark:bg-gray-900 shadow-xl p-2 z-20 transform transition-transform duration-300 ease-in-out
                         ${
                           activePanel === "aiAssistant"
                             ? "translate-x-0"
                             : "translate-x-full"
                         }`}
-                        style={{ width: `${sidebarWidth}px` }}
-                      >
-                        <AIChatPanel />
-                      </div>
-                    )}
-                  {/* DefaultInputs 사이드바 */}
-                  {activePanel === "defaultInputs" && selectedIndex < 9 && (
-                      <div
-                        className={`fixed right-0 top-[var(--header-height)] h-[calc(100vh - var(--header-height))] bg-white dark:bg-gray-900 shadow-xl p-2 z-20 transform transition-transform duration-300 ease-in-out
+                style={{ width: `${sidebarWidth}px` }}
+              >
+                <AIChatPanel />
+              </div>
+            )}
+            {/* DefaultInputs 사이드바 */}
+            {activePanel === "defaultInputs" && selectedIndex < 9 && (
+              <div
+                className={`fixed right-0 top-[var(--header-height)] h-[calc(100vh - var(--header-height))] bg-white dark:bg-gray-900 shadow-xl p-2 z-20 transform transition-transform duration-300 ease-in-out
                         ${
                           activePanel === "defaultInputs"
                             ? "translate-x-0"
                             : "translate-x-full"
                         }`}
-                        style={{ width: `${sidebarWidth}px` }}
-                      >
-                        <DefaultInputs />
-                      </div>
-                    )}
-                  {/* MonthlyTarget 사이드바 (탭 0, 1에서만 활성화) */}
-                  {activePanel === "monthlyTarget" && selectedIndex < 9 && (
-                      <div
-                        className={`fixed right-0 top-[var(--header-height)] h-[calc(100vh - var(--header-height))] bg-white dark:bg-gray-900 shadow-xl p-2 z-20 transform transition-transform duration-300 ease-in-out
+                style={{ width: `${sidebarWidth}px` }}
+              >
+                <DefaultInputs />
+              </div>
+            )}
+            {/* MonthlyTarget 사이드바 (탭 0, 1에서만 활성화) */}
+            {activePanel === "monthlyTarget" && selectedIndex < 9 && (
+              <div
+                className={`fixed right-0 top-[var(--header-height)] h-[calc(100vh - var(--header-height))] bg-white dark:bg-gray-900 shadow-xl p-2 z-20 transform transition-transform duration-300 ease-in-out
                         ${
                           activePanel === "monthlyTarget"
                             ? "translate-x-0"
                             : "translate-x-full"
                         }`}
-                        style={{ width: `${sidebarWidth}px` }}
-                      >
-                        <MonthlyTarget />
-                      </div>
-                    )}
-                </div>
+                style={{ width: `${sidebarWidth}px` }}
+              >
+                <MonthlyTarget />
+              </div>
+            )}
+          </div>
         </Tab.Panel>
         {/* 9. MultiD Heat */}
         <Tab.Panel className="h-full">
@@ -904,60 +918,136 @@ export default function EcommerceTabs() {
             ref={containerRef}
             className="flex h-full  w-full relative overflow-hidden"
           >
-            <div
-              className="flex flex-col  transition-all duration-100  w-full"
-            >
-              <div className="transition-all" >
+            <div className="flex flex-col  transition-all duration-100  w-full">
+              <div className="transition-all">
                 <div className="bg-white dark:bg-gray-900 rounded shadow  h-full">
                   {/* <GraphMetrics /> */}
                   <MultiDHeat />
                 </div>
               </div>
-             </div>
-      {/* 오른쪽 사이드바 - fixed 팝업 방식 (탭 0, 1에서만 활성화) */}
-                  {/* AIChatPanel 사이드바 */}
-                  {activePanel === "aiAssistant" && selectedIndex < 9 && (
-                      <div
-                        className={`fixed right-0 top-[var(--header-height)] h-[calc(100vh - var(--header-height))] bg-white dark:bg-gray-900 shadow-xl p-2 z-20 transform transition-transform duration-300 ease-in-out
+            </div>
+            {/* 오른쪽 사이드바 - fixed 팝업 방식 (탭 0, 1에서만 활성화) */}
+            {/* AIChatPanel 사이드바 */}
+            {activePanel === "aiAssistant" && selectedIndex < 9 && (
+              <div
+                className={`fixed right-0 top-[var(--header-height)] h-[calc(100vh - var(--header-height))] bg-white dark:bg-gray-900 shadow-xl p-2 z-20 transform transition-transform duration-300 ease-in-out
                         ${
                           activePanel === "aiAssistant"
                             ? "translate-x-0"
                             : "translate-x-full"
                         }`}
-                        style={{ width: `${sidebarWidth}px` }}
-                      >
-                        <AIChatPanel />
-                      </div>
-                    )}
-                  {/* DefaultInputs 사이드바 */}
-                  {activePanel === "defaultInputs" && selectedIndex < 9 && (
-                      <div
-                        className={`fixed right-0 top-[var(--header-height)] h-[calc(100vh - var(--header-height))] bg-white dark:bg-gray-900 shadow-xl p-2 z-20 transform transition-transform duration-300 ease-in-out
+                style={{ width: `${sidebarWidth}px` }}
+              >
+                <AIChatPanel />
+              </div>
+            )}
+            {/* DefaultInputs 사이드바 */}
+            {activePanel === "defaultInputs" && selectedIndex < 9 && (
+              <div
+                className={`fixed right-0 top-[var(--header-height)] h-[calc(100vh - var(--header-height))] bg-white dark:bg-gray-900 shadow-xl p-2 z-20 transform transition-transform duration-300 ease-in-out
                         ${
                           activePanel === "defaultInputs"
                             ? "translate-x-0"
                             : "translate-x-full"
                         }`}
-                        style={{ width: `${sidebarWidth}px` }}
-                      >
-                        <DefaultInputs />
-                      </div>
-                    )}
-                  {/* MonthlyTarget 사이드바 (탭 0, 1에서만 활성화) */}
-                  {activePanel === "monthlyTarget" && selectedIndex < 9 && (
-                      <div
-                        className={`fixed right-0 top-[var(--header-height)] h-[calc(100vh - var(--header-height))] bg-white dark:bg-gray-900 shadow-xl p-2 z-20 transform transition-transform duration-300 ease-in-out
+                style={{ width: `${sidebarWidth}px` }}
+              >
+                <DefaultInputs />
+              </div>
+            )}
+            {/* MonthlyTarget 사이드바 (탭 0, 1에서만 활성화) */}
+            {activePanel === "monthlyTarget" && selectedIndex < 9 && (
+              <div
+                className={`fixed right-0 top-[var(--header-height)] h-[calc(100vh - var(--header-height))] bg-white dark:bg-gray-900 shadow-xl p-2 z-20 transform transition-transform duration-300 ease-in-out
                         ${
                           activePanel === "monthlyTarget"
                             ? "translate-x-0"
                             : "translate-x-full"
                         }`}
-                        style={{ width: `${sidebarWidth}px` }}
-                      >
-                        <MonthlyTarget />
-                      </div>
-                    )}
+                style={{ width: `${sidebarWidth}px` }}
+              >
+                <MonthlyTarget />
+              </div>
+            )}
+          </div>
+        </Tab.Panel>
+
+        {/* 10. 시연2 */}
+        <Tab.Panel className="h-full" unmount={false}>
+          <div
+            ref={containerRef}
+            className="flex flex-col h-full relative overflow-hidden  "
+            style={{ width: `calc(100% - ${totalOpenedSidebarWidth}px)` }}
+          >
+            <div
+              style={{ height: `${topHeight}%` }}
+              className="transition-all duration-100"
+            >
+              <div className="bg-white dark:bg-gray-900 rounded shadow h-full">
+                <Demo2 />
+              </div>
+            </div>
+
+            {/* 수직 크기 조절 막대 */}
+            <div
+              onMouseDown={startVerticalDrag}
+              className="h-1 cursor-row-resize bg-gray-100 dark:bg-gray-800 hover:bg-blue-500 "
+              style={{ zIndex: 9990 }}
+            />
+
+            <div className="flex-grow w-full  h-full">
+              <div className="bg-white dark:bg-gray-900 rounded shadow py-4 h-full overflow-x-hidden">
+                <GraphDataTable rawRecords={rawRecords} isSimple={isSimple} />
+              </div>
+            </div>
+
+            {/* 오른쪽 사이드바 - fixed 팝업 방식 (위치 동일) */}
+            {activePanel === "aiAssistant" &&
+              selectedIndex >= 0 &&
+              selectedIndex <= 9 && (
+                <div
+                  className={`fixed right-0 top-[var(--header-height)] h-[calc(100vh - var(--header-height))] bg-white dark:bg-gray-900 shadow-xl p-2 z-40 transform transition-transform duration-300 ease-in-out
+                  ${
+                    activePanel === "aiAssistant"
+                      ? "translate-x-0"
+                      : "translate-x-full"
+                  }`}
+                  style={{ width: `${sidebarWidth}px` }}
+                >
+                  <AIChatPanel />
                 </div>
+              )}
+            {activePanel === "defaultInputs" &&
+              selectedIndex >= 0 &&
+              selectedIndex <= 9 && (
+                <div
+                  className={`fixed right-0 top-[var(--header-height)] h-[calc(100vh - var(--header-height))] bg-white dark:bg-gray-900 shadow-xl p-2 z-40 transform transition-transform duration-300 ease-in-out
+                  ${
+                    activePanel === "defaultInputs"
+                      ? "translate-x-0"
+                      : "translate-x-full"
+                  }`}
+                  style={{ width: `${sidebarWidth}px` }}
+                >
+                  <DefaultInputs />
+                </div>
+              )}
+            {activePanel === "monthlyTarget" &&
+              selectedIndex >= 0 &&
+              selectedIndex <= 6 && (
+                <div
+                  className={`fixed right-0 top-[var(--header-height)] h-[calc(100vh - var(--header-height))] bg-white dark:bg-gray-900 shadow-xl p-2 z-40 transform transition-transform duration-300 ease-in-out
+                  ${
+                    activePanel === "monthlyTarget"
+                      ? "translate-x-0"
+                      : "translate-x-full"
+                  }`}
+                  style={{ width: `${sidebarWidth}px` }}
+                >
+                  <MonthlyTarget />
+                </div>
+              )}
+          </div>
         </Tab.Panel>
       </Tab.Panels>
     </Tab.Group>
