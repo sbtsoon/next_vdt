@@ -110,7 +110,7 @@ export default function Demo2({ graphData, pathData }) {
   const queryArr = [
     "MATCH (n)-[r]->(m) RETURN n, r, m",
     "MATCH path = (n)-[*]->(m) RETURN path",
-    "MATCH path = (n)-[*]->(m) WHERE id(n) = 16 AND id(m) = 26 RETURN path",
+    "MATCH path = (n)-[*]->(m) WHERE id(n) = 16 AND id(m) = 24 RETURN path",
   ];
 
   return (
