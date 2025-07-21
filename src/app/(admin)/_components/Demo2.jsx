@@ -68,7 +68,13 @@ export default function Demo2({ graphData, pathData }) {
   }, [graphData]);
 
   useEffect(() => {
-    if (!pathData || !cyInstanceRef.current) return;
+    if (!cyInstanceRef.current) return;
+
+    if (pathData == null) {
+      cyInstanceRef.current.nodes().removeClass("highlighted");
+      cyInstanceRef.current.edges().removeClass("highlighted");
+      return;
+    }
 
     // 기존 하이라이트 제거
     cyInstanceRef.current.nodes().removeClass("highlighted");
@@ -93,6 +99,7 @@ export default function Demo2({ graphData, pathData }) {
         cyInstanceRef.current.edges(".highlighted").forEach((edge) => {
           edge.style("line-dash-offset", offset);
         });
+
         offset = (offset - 1 + 100) % 100; // 천천히 흐르게 조정
       }
     }, 50); // 50ms마다 업데이트 (애니메이션 속도 조절 가능)
@@ -102,6 +109,14 @@ export default function Demo2({ graphData, pathData }) {
 
   return (
     <div className="overflow-hidden  border border-gray-200 bg-white px-5 pt-5 dark:border-gray-800 dark:bg-white/[0.03] sm:px-6 sm:pt-6">
+      <button
+        style={{ backgroundColor: "white" }}
+        onClick={() =>
+          setAiQuery({ query: "MATCH (n)-[r]->(m) RETURN n, r, m" })
+        }
+      >
+        Change to cypher query
+      </button>
       <button
         style={{ backgroundColor: "white" }}
         onClick={() =>

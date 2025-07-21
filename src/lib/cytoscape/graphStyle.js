@@ -24,11 +24,11 @@ export const demo2GraphStyle = [
         const type = ele.data("type") || "";
         return type;
       },
-      // color: "white",
       width: 0.1,
       "text-wrap": "wrap",
-      "line-color": "#ccc",
-      "target-arrow-color": "#ccc",
+      color: "#f00",
+      "line-color": "#f00",
+      "target-arrow-color": "#f00",
       "target-arrow-shape": "triangle",
       "arrow-scale": "0.2",
       "font-size": "4px",
