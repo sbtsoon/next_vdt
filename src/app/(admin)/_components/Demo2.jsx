@@ -14,7 +14,11 @@ import {
   hideEdge,
 } from "@/helpers/showAndHideHelper";
 import { updateMetricDataHelper } from "@/helpers/metricHelper";
-import { demo2GraphStyle, networkGraphStyle } from "@/lib/cytoscape/graphStyle";
+import {
+  demo2GraphStyle,
+  getDemo2GraphStyle,
+  networkGraphStyle,
+} from "@/lib/cytoscape/graphStyle";
 import attachCtxMenu from "@/lib/cytoscape/ctxMenu";
 import {
   applyDemo2GraphLayout,
@@ -39,9 +43,31 @@ export default function Demo2({ graphData, pathData }) {
     const panzoom = require("cytoscape-panzoom");
     panzoom(cytoscape);
 
+    // labelSet → labelColorMap 만들기
+    const labelSet = new Set();
+    graphData.nodes.forEach((node) => {
+      const labels = node.data.labels;
+      if (labels?.[0]) labelSet.add(labels[0]);
+    });
+
+    const colorPalette = [
+      "#60a5fa",
+      "#34d399",
+      "#facc15",
+      "#f87171",
+      "#a78bfa",
+      "#fb923c",
+      "#f472b6",
+    ];
+
+    const labelColorMap = new Map();
+    Array.from(labelSet).forEach((label, idx) => {
+      labelColorMap.set(label, colorPalette[idx % colorPalette.length]);
+    });
+
     const cy = cytoscape({
       container: cyRef.current,
-      style: demo2GraphStyle,
+      style: getDemo2GraphStyle(labelColorMap),
     });
 
     const deepCopyData = structuredClone(graphData);

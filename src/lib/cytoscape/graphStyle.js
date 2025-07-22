@@ -1,7 +1,7 @@
 import { parseNeo4jInt } from "@/helpers/parseNeo4jIntHelper";
 import { GRAPH_ICON_MAP } from "@/constants/graphConstant";
 
-export const demo2GraphStyle = [
+export const getDemo2GraphStyle = (labelColorMap) => [
   {
     selector: "node",
     style: {
@@ -10,7 +10,11 @@ export const demo2GraphStyle = [
       shape: "ellipse",
       label: (ele) => ele.data("id"),
       "background-color": "#1f2937", // 다크 그레이
-      "border-color": "#60a5fa", // 밝은 블루
+      "border-color": (ele) => {
+        const labels = ele.data("labels");
+        const label = labels?.[0];
+        return labelColorMap.get(label) || "#999";
+      },
       "border-width": 1,
       "text-valign": "center",
       "text-halign": "center",
@@ -27,8 +31,9 @@ export const demo2GraphStyle = [
     style: {
       width: 0.4,
       label: (ele) => {
-        const type = ele.data("type") || "";
-        return type;
+        // const type = ele.data("type");
+        const menge = ele.data("MENGE");
+        return `${menge}`;
       },
       "font-size": "4px",
       color: "#93c5fd", // 연한 블루
