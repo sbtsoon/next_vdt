@@ -19,9 +19,9 @@ const formatDataForCytoscape = (records) => {
           nodes.set(id, {
             data: {
               ...existing,
-              id,
               labels: value.labels,
               ...props,
+              id,
             },
             classes: value.labels.join(" "), // TODO: node 색상 변경을 위한 클래스 문자열 추가
           });
@@ -29,11 +29,11 @@ const formatDataForCytoscape = (records) => {
           if (!edges.has(id)) {
             edges.set(id, {
               data: {
-                id: "edge_" + id,
                 source: value.start.toString(),
                 target: value.end.toString(),
                 type: value.type,
                 ...props,
+                id: "edge_" + id,
               },
             });
 
