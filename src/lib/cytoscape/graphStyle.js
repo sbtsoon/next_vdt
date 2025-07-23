@@ -37,7 +37,7 @@ export const getDemo2GraphStyle = (labelColorMap) => [
       },
       "font-size": "4px",
       color: "#93c5fd", // 연한 블루
-      "text-rotation": "autorotate",
+      // "text-rotation": "autorotate",
       // "text-margin-y": -5,
       "text-wrap": "wrap",
       "text-background-shape": "roundrectangle",
