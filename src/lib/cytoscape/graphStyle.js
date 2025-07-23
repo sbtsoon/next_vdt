@@ -38,6 +38,7 @@ export const getDemo2GraphStyle = (labelColorMap) => [
       "font-size": "4px",
       color: "#93c5fd", // 연한 블루
       "text-rotation": "autorotate",
+      // "text-margin-y": -5,
       "text-wrap": "wrap",
       "text-background-shape": "roundrectangle",
       "text-background-opacity": 0.4,
@@ -50,7 +51,7 @@ export const getDemo2GraphStyle = (labelColorMap) => [
       "target-arrow-shape": "triangle",
       "arrow-scale": "0.25",
 
-      "curve-style": "taxi",
+      "curve-style": "bezier",
       "taxi-direction": "downward",
       "taxi-turn": 20,
     },
