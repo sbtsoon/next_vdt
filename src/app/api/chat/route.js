@@ -4,16 +4,13 @@ export async function POST(req) {
   const body = await req.json();
   const { assistant, query } = body;
 
-  const formBody = new URLSearchParams();
-  formBody.append("assistant", assistant);
-  formBody.append("query", query);
+  const form = new FormData();
+  form.append("assistant", assistant);
+  form.append("query", query);
 
-  const res = await fetch("http://121.133.205.199:14803/chat", {
+  const res = await fetch("http://192.168.1.154:14803/chat", {
     method: "POST",
-    headers: {
-      "Content-Type": "application/x-www-form-urlencoded",
-    },
-    body: formBody.toString(),
+    body: form,
   });
 
   const data = await res.json();

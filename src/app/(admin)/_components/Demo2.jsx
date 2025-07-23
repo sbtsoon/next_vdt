@@ -133,28 +133,8 @@ export default function Demo2({ graphData, pathData }) {
     return () => clearInterval(interval); // 컴포넌트 언마운트 시 정리
   }, []);
 
-  const queryArr = [
-    "MATCH (n)-[r]->(m) RETURN n, r, m",
-    "MATCH path = (n)-[*]->(m) RETURN path",
-    "MATCH path = (n)-[*]->(m) WHERE id(n) = 203 AND id(m) = 360 RETURN path",
-  ];
-
   return (
     <div className="overflow-hidden  border border-gray-200 bg-white px-5 pt-5 dark:border-gray-800 dark:bg-white/[0.03] sm:px-6 sm:pt-6">
-      {queryArr.map((query, idx) => (
-        <button
-          key={idx}
-          style={{
-            backgroundColor: "white",
-            marginRight: "8px",
-            marginBottom: "8px",
-          }}
-          onClick={() => setAiQuery({ query })}
-        >
-          {query}
-        </button>
-      ))}
-
       <div id="cy" ref={cyRef} style={{ width: "100%", minHeight: "600px" }} />
     </div>
   );

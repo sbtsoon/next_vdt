@@ -6,23 +6,54 @@ import { useAtom } from "jotai";
 import { aiQueryAtom } from "@/store/graphAtoms";
 import { useAiAssistantChatMutation } from "@/hooks/useAiAssistant";
 
-interface Message {
-  role: "user" | "assistant";
-  content: string;
-}
+// interface Message {
+//   role: "user" | "assistant";
+//   content: string;
+// }
 
 const AIChatPanel: React.FC = () => {
-  const [messages, setMessages] = useState<Message[]>([]);
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const [messages, setMessages] = useState<any[]>([]);
   const [input, setInput] = useState("");
   const [, setAiQuery] = useAtom(aiQueryAtom);
   const messagesEndRef = useRef<HTMLDivElement | null>(null);
 
   const { mutate: sendAiQuery, isPending } = useAiAssistantChatMutation();
 
+  function parseStep(steps: string) {
+    if (!steps)
+      return {
+        question: "",
+        thought: "",
+        action: "",
+        actionInput: "",
+      };
+
+    const parsedSteps = {
+      question: "",
+      thought: "",
+      action: "",
+      actionInput: "",
+    };
+
+    // 섹션별로 잘라내기
+    const questionSplit = steps.split("Thought:");
+    parsedSteps.question = questionSplit[0].replace("Question:", "").trim();
+
+    const thoughtSplit = questionSplit[1].split("Action:");
+    parsedSteps.thought = thoughtSplit[0].trim();
+
+    const actionSplit = thoughtSplit[1].split("Action Input:");
+    parsedSteps.action = actionSplit[0].trim();
+    parsedSteps.actionInput = actionSplit[1].trim();
+
+    return parsedSteps;
+  }
+
   const handleSend = () => {
     if (!input.trim()) return;
 
-    const userMessage: Message = { role: "user", content: input };
+    const userMessage = { role: "user", content: input };
     setMessages((prev) => [...prev, userMessage]);
 
     const currentInput = input;
@@ -32,11 +63,22 @@ const AIChatPanel: React.FC = () => {
       onSuccess: (data) => {
         const cypher = data?.response?.cypher;
         const reply = data?.response?.response || "(No response)";
+        const steps: string = data?.response?.intermediate_steps[0];
+
+        const parsedSteps = parseStep(steps);
+        const stepMessage = {
+          role: "assistant",
+          content: `🧩 Reasoning:
+          ❓ Question: ${parsedSteps?.question}
+          💭 Thought: ${parsedSteps.thought}
+          🛠️ Action: ${parsedSteps.action}
+          📥 Action Input: ${parsedSteps.actionInput}`,
+        };
 
         setAiQuery({ query: cypher });
 
-        const assistantMessage: Message = { role: "assistant", content: reply };
-        setMessages((prev) => [...prev, assistantMessage]);
+        const assistantMessage = { role: "assistant", content: reply };
+        setMessages((prev) => [...prev, stepMessage, assistantMessage]);
       },
       onError: () => {
         setMessages((prev) => [

@@ -5,7 +5,7 @@ export async function postAiAssistantChatQuery(query) {
       "Content-Type": "application/json",
     },
     body: JSON.stringify({
-      assistant: "text2cypher",
+      assistant: "ontology",
       query: query,
     }),
   });
