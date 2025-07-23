@@ -68,11 +68,12 @@ const AIChatPanel: React.FC = () => {
         const parsedSteps = parseStep(steps);
         const stepMessage = {
           role: "assistant",
-          content: `🧩 Reasoning:
-          ❓ Question: ${parsedSteps?.question}
-          💭 Thought: ${parsedSteps.thought}
-          🛠️ Action: ${parsedSteps.action}
-          📥 Action Input: ${parsedSteps.actionInput}`,
+          content:
+            `💭 생각하는 과정\n` +
+            `1. Question: ${parsedSteps?.question}\n` +
+            `2. Thought: ${parsedSteps.thought}\n` +
+            `3. Action: ${parsedSteps.action}\n` +
+            `4. Action Input: ${parsedSteps.actionInput}`,
         };
 
         setAiQuery({ query: cypher });
