@@ -126,11 +126,10 @@ const AIChatPanel: React.FC = () => {
             <MicrophoneIcon className="h-5 w-5" />
           </button>
           <button
-            className={`p-2 rounded-full transition text-white ${
-              input.trim()
-                ? "bg-brand-500 hover:bg-brand-600"
-                : "bg-gray-700 cursor-not-allowed"
-            }`}
+            className={`p-2 rounded-full transition text-white ${input.trim()
+              ? "bg-brand-500 hover:bg-brand-600"
+              : "bg-gray-700 cursor-not-allowed"
+              }`}
             onClick={handleSend}
             aria-label="Send Message"
             disabled={!input.trim()}
@@ -139,7 +138,7 @@ const AIChatPanel: React.FC = () => {
           </button>
         </div>
       </div>
-      <div className="h-[350px] overflow-y-auto p-4 custom-scrollbar space-y-3 border dark:border-gray-700">
+      <div className=" h-[700px] overflow-y-auto p-4 custom-scrollbar space-y-3 border dark:border-gray-700">
         {messages.length === 0 ? (
           <p className="text-gray-500 dark:text-gray-400 text-sm">
             Start a conversation...
@@ -149,11 +148,10 @@ const AIChatPanel: React.FC = () => {
             {messages.map((msg, idx) => (
               <div
                 key={idx}
-                className={`p-2 rounded-lg w-[80%]  whitespace-pre-wrap text-sm ${
-                  msg.role === "user"
-                    ? "ml-auto bg-brand-500/50 text-gray-200"
-                    : "bg-gray-100 dark:bg-gray-600 text-gray-800 dark:text-white"
-                }`}
+                className={`p-2 rounded-lg w-[80%]  whitespace-pre-wrap text-sm ${msg.role === "user"
+                  ? "ml-auto bg-brand-500/30 text-gray-200"
+                  : "bg-gray-100 dark:bg-gray-600 text-gray-800 dark:text-white"
+                  }`}
               >
                 {msg.content}
               </div>

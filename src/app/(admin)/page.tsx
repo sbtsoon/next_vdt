@@ -53,7 +53,7 @@ export default function EcommerceTabs() {
       const isPathQuery = aiQuery.query.toLowerCase().includes("path");
 
       if (!isPathQuery) {
-        if (data?.data?.nodes.length !== 0) {          
+        if (data?.data?.nodes.length !== 0) {
           setGraphData(data.data);
           // metric card 정보 업데이트
           data.data.nodes.forEach((node) => {
@@ -88,15 +88,15 @@ export default function EcommerceTabs() {
 
   const tabs = [
     { name: "demo", icon: Squares2X2Icon },
-    { name: "Network Graph", icon: Squares2X2Icon },
-    { name: "Simulation", icon: BellIcon },
-    { name: "Timeline", icon: WalletIcon },
-    { name: "3D Graph", icon: CubeTransparentIcon },
-    { name: "Exmple2", icon: ChartBarIcon },
-    { name: "Exmple3", icon: ExclamationCircleIcon },
-    { name: "Exmple4", icon: MagnifyingGlassCircleIcon },
-    { name: "MultiD", icon: ArchiveBoxIcon },
-    { name: "MultiDHeat", icon: CubeIcon },
+    // { name: "Network Graph", icon: Squares2X2Icon },
+    //{ name: "Simulation", icon: BellIcon },
+    //{ name: "Timeline", icon: WalletIcon },
+    //{ name: "3D Graph", icon: CubeTransparentIcon },
+    //{ name: "Exmple2", icon: ChartBarIcon },
+    //{ name: "Exmple3", icon: ExclamationCircleIcon },
+    //{ name: "Exmple4", icon: MagnifyingGlassCircleIcon },
+    //{ name: "MultiD", icon: ArchiveBoxIcon },
+    //{ name: "MultiDHeat", icon: CubeIcon },
   ];
 
   const containerRef = useRef<HTMLDivElement>(null);
@@ -153,7 +153,7 @@ export default function EcommerceTabs() {
     setActivePanel(null);
   }, [selectedIndex]);
 
-  const sidebarWidth = 350; // ✨ 변경: 각 사이드바 패널의 너비를 320px로 설정
+  const sidebarWidth = 450; // ✨ 변경: 각 사이드바 패널의 너비를 320px로 설정
   const totalOpenedSidebarWidth = activePanel ? sidebarWidth : 0;
 
   return (
@@ -323,11 +323,10 @@ export default function EcommerceTabs() {
               selectedIndex <= 6 && (
                 <div
                   className={`fixed right-0 top-[var(--header-height)] h-[calc(100vh - var(--header-height))] bg-white dark:bg-gray-900 shadow-xl p-2 z-40 transform transition-transform duration-300 ease-in-out
-                  ${
-                    activePanel === "aiAssistant"
+                  ${activePanel === "aiAssistant"
                       ? "translate-x-0"
                       : "translate-x-full"
-                  }`}
+                    }`}
                   style={{ width: `${sidebarWidth}px` }}
                 >
                   <AIChatPanel />
@@ -338,11 +337,10 @@ export default function EcommerceTabs() {
               selectedIndex <= 6 && (
                 <div
                   className={`fixed right-0 top-[var(--header-height)] h-[calc(100vh - var(--header-height))] bg-white dark:bg-gray-900 shadow-xl p-2 z-40 transform transition-transform duration-300 ease-in-out
-                  ${
-                    activePanel === "defaultInputs"
+                  ${activePanel === "defaultInputs"
                       ? "translate-x-0"
                       : "translate-x-full"
-                  }`}
+                    }`}
                   style={{ width: `${sidebarWidth}px` }}
                 >
                   <DefaultInputs />
@@ -353,11 +351,10 @@ export default function EcommerceTabs() {
               selectedIndex <= 6 && (
                 <div
                   className={`fixed right-0 top-[var(--header-height)] h-[calc(100vh - var(--header-height))] bg-white dark:bg-gray-900 shadow-xl p-2 z-40 transform transition-transform duration-300 ease-in-out
-                  ${
-                    activePanel === "monthlyTarget"
+                  ${activePanel === "monthlyTarget"
                       ? "translate-x-0"
                       : "translate-x-full"
-                  }`}
+                    }`}
                   style={{ width: `${sidebarWidth}px` }}
                 >
                   <MonthlyTarget />
@@ -366,11 +363,10 @@ export default function EcommerceTabs() {
             {activePanel === "memo" && selectedIndex < 9 && (
               <div
                 className={`fixed right-0 top-[var(--header-height)] h-[calc(100vh - var(--header-height))] bg-white dark:bg-gray-900 shadow-xl p-2 z-40 transform transition-transform duration-300 ease-in-out
-                    ${
-                      activePanel === "memo"
-                        ? "translate-x-0"
-                        : "translate-x-full"
-                    }`}
+                    ${activePanel === "memo"
+                    ? "translate-x-0"
+                    : "translate-x-full"
+                  }`}
                 style={{ width: `${sidebarWidth}px` }}
               >
                 <MemoPanel />
@@ -414,11 +410,10 @@ export default function EcommerceTabs() {
               selectedIndex <= 6 && (
                 <div
                   className={`fixed right-0 top-[var(--header-height)] h-[calc(100vh - var(--header-height))] bg-white dark:bg-gray-900 shadow-xl p-2 z-40 transform transition-transform duration-300 ease-in-out
-                  ${
-                    activePanel === "aiAssistant"
+                  ${activePanel === "aiAssistant"
                       ? "translate-x-0"
                       : "translate-x-full"
-                  }`}
+                    }`}
                   style={{ width: `${sidebarWidth}px` }}
                 >
                   <AIChatPanel />
@@ -429,11 +424,10 @@ export default function EcommerceTabs() {
               selectedIndex <= 6 && (
                 <div
                   className={`fixed right-0 top-[var(--header-height)] h-[calc(100vh - var(--header-height))] bg-white dark:bg-gray-900 shadow-xl p-2 z-40 transform transition-transform duration-300 ease-in-out
-                  ${
-                    activePanel === "defaultInputs"
+                  ${activePanel === "defaultInputs"
                       ? "translate-x-0"
                       : "translate-x-full"
-                  }`}
+                    }`}
                   style={{ width: `${sidebarWidth}px` }}
                 >
                   <DefaultInputs />
@@ -444,11 +438,10 @@ export default function EcommerceTabs() {
               selectedIndex <= 6 && (
                 <div
                   className={`fixed right-0 top-[var(--header-height)] h-[calc(100vh - var(--header-height))] bg-white dark:bg-gray-900 shadow-xl p-2 z-40 transform transition-transform duration-300 ease-in-out
-                  ${
-                    activePanel === "monthlyTarget"
+                  ${activePanel === "monthlyTarget"
                       ? "translate-x-0"
                       : "translate-x-full"
-                  }`}
+                    }`}
                   style={{ width: `${sidebarWidth}px` }}
                 >
                   <MonthlyTarget />
@@ -457,11 +450,10 @@ export default function EcommerceTabs() {
             {activePanel === "memo" && selectedIndex < 9 && (
               <div
                 className={`fixed right-0 top-[var(--header-height)] h-[calc(100vh - var(--header-height))] bg-white dark:bg-gray-900 shadow-xl p-2 z-40 transform transition-transform duration-300 ease-in-out
-                    ${
-                      activePanel === "memo"
-                        ? "translate-x-0"
-                        : "translate-x-full"
-                    }`}
+                    ${activePanel === "memo"
+                    ? "translate-x-0"
+                    : "translate-x-full"
+                  }`}
                 style={{ width: `${sidebarWidth}px` }}
               >
                 <MemoPanel />
@@ -495,11 +487,10 @@ export default function EcommerceTabs() {
               (selectedIndex === 0 || selectedIndex === 1) && (
                 <div
                   className={`fixed right-0 top-[var(--header-height)] h-[calc(100vh - var(--header-height))] bg-white dark:bg-gray-900 shadow-xl p-2 z-20 transform transition-transform duration-300 ease-in-out
-                  ${
-                    activePanel === "aiAssistant"
+                  ${activePanel === "aiAssistant"
                       ? "translate-x-0"
                       : "translate-x-full"
-                  }`}
+                    }`}
                   style={{ width: `${sidebarWidth}px` }}
                 >
                   <AIChatPanel />
@@ -510,11 +501,10 @@ export default function EcommerceTabs() {
               (selectedIndex === 0 || selectedIndex === 1) && (
                 <div
                   className={`fixed right-0 top-[var(--header-height)] h-[calc(100vh - var(--header-height))] bg-white dark:bg-gray-900 shadow-xl p-2 z-20 transform transition-transform duration-300 ease-in-out
-                  ${
-                    activePanel === "defaultInputs"
+                  ${activePanel === "defaultInputs"
                       ? "translate-x-0"
                       : "translate-x-full"
-                  }`}
+                    }`}
                   style={{ width: `${sidebarWidth}px` }}
                 >
                   <DefaultInputs />
@@ -525,11 +515,10 @@ export default function EcommerceTabs() {
               (selectedIndex === 0 || selectedIndex === 1) && (
                 <div
                   className={`fixed right-0 top-[var(--header-height)] h-[calc(100vh - var(--header-height))] bg-white dark:bg-gray-900 shadow-xl p-2 z-20 transform transition-transform duration-300 ease-in-out
-                  ${
-                    activePanel === "monthlyTarget"
+                  ${activePanel === "monthlyTarget"
                       ? "translate-x-0"
                       : "translate-x-full"
-                  }`}
+                    }`}
                   style={{ width: `${sidebarWidth}px` }}
                 >
                   <MonthlyTarget />
@@ -564,11 +553,10 @@ export default function EcommerceTabs() {
               selectedIndex <= 6 && (
                 <div
                   className={`fixed right-0 top-[var(--header-height)] h-[calc(100vh - var(--header-height))] bg-white dark:bg-gray-900 shadow-xl p-2 z-40 transform transition-transform duration-300 ease-in-out
-                  ${
-                    activePanel === "aiAssistant"
+                  ${activePanel === "aiAssistant"
                       ? "translate-x-0"
                       : "translate-x-full"
-                  }`}
+                    }`}
                   style={{ width: `${sidebarWidth}px` }}
                 >
                   <AIChatPanel />
@@ -579,11 +567,10 @@ export default function EcommerceTabs() {
               selectedIndex <= 6 && (
                 <div
                   className={`fixed right-0 top-[var(--header-height)] h-[calc(100vh - var(--header-height))] bg-white dark:bg-gray-900 shadow-xl p-2 z-40 transform transition-transform duration-300 ease-in-out
-                  ${
-                    activePanel === "defaultInputs"
+                  ${activePanel === "defaultInputs"
                       ? "translate-x-0"
                       : "translate-x-full"
-                  }`}
+                    }`}
                   style={{ width: `${sidebarWidth}px` }}
                 >
                   <DefaultInputs />
@@ -594,11 +581,10 @@ export default function EcommerceTabs() {
               selectedIndex <= 6 && (
                 <div
                   className={`fixed right-0 top-[var(--header-height)] h-[calc(100vh - var(--header-height))] bg-white dark:bg-gray-900 shadow-xl p-2 z-40 transform transition-transform duration-300 ease-in-out
-                  ${
-                    activePanel === "monthlyTarget"
+                  ${activePanel === "monthlyTarget"
                       ? "translate-x-0"
                       : "translate-x-full"
-                  }`}
+                    }`}
                   style={{ width: `${sidebarWidth}px` }}
                 >
                   <MonthlyTarget />
@@ -607,11 +593,10 @@ export default function EcommerceTabs() {
             {activePanel === "memo" && selectedIndex < 9 && (
               <div
                 className={`fixed right-0 top-[var(--header-height)] h-[calc(100vh - var(--header-height))] bg-white dark:bg-gray-900 shadow-xl p-2 z-40 transform transition-transform duration-300 ease-in-out
-                    ${
-                      activePanel === "memo"
-                        ? "translate-x-0"
-                        : "translate-x-full"
-                    }`}
+                    ${activePanel === "memo"
+                    ? "translate-x-0"
+                    : "translate-x-full"
+                  }`}
                 style={{ width: `${sidebarWidth}px` }}
               >
                 <MemoPanel />
@@ -642,10 +627,9 @@ export default function EcommerceTabs() {
             {activePanel === "aiAssistant" && selectedIndex < 7 && (
               <div
                 className={`fixed right-0 top-[var(--header-height)] h-[calc(100vh - var(--header-height))] bg-white dark:bg-gray-900 shadow-xl p-2 z-20 transform transition-transform duration-300 ease-in-out
-                  ${
-                    activePanel === "aiAssistant"
-                      ? "translate-x-0"
-                      : "translate-x-full"
+                  ${activePanel === "aiAssistant"
+                    ? "translate-x-0"
+                    : "translate-x-full"
                   }`}
                 style={{ width: `${sidebarWidth}px` }}
               >
@@ -656,10 +640,9 @@ export default function EcommerceTabs() {
             {activePanel === "defaultInputs" && selectedIndex < 7 && (
               <div
                 className={`fixed right-0 top-[var(--header-height)] h-[calc(100vh - var(--header-height))] bg-white dark:bg-gray-900 shadow-xl p-2 z-20 transform transition-transform duration-300 ease-in-out
-                  ${
-                    activePanel === "defaultInputs"
-                      ? "translate-x-0"
-                      : "translate-x-full"
+                  ${activePanel === "defaultInputs"
+                    ? "translate-x-0"
+                    : "translate-x-full"
                   }`}
                 style={{ width: `${sidebarWidth}px` }}
               >
@@ -670,10 +653,9 @@ export default function EcommerceTabs() {
             {activePanel === "monthlyTarget" && selectedIndex < 7 && (
               <div
                 className={`fixed right-0 top-[var(--header-height)] h-[calc(100vh - var(--header-height))] bg-white dark:bg-gray-900 shadow-xl p-2 z-20 transform transition-transform duration-300 ease-in-out
-                  ${
-                    activePanel === "monthlyTarget"
-                      ? "translate-x-0"
-                      : "translate-x-full"
+                  ${activePanel === "monthlyTarget"
+                    ? "translate-x-0"
+                    : "translate-x-full"
                   }`}
                 style={{ width: `${sidebarWidth}px` }}
               >
@@ -715,11 +697,10 @@ export default function EcommerceTabs() {
               {activePanel === "aiAssistant" && selectedIndex < 7 && (
                 <div
                   className={`fixed right-0 top-[var(--header-height)] h-[calc(100vh - var(--header-height))] bg-white dark:bg-gray-900 shadow-xl p-2 z-20 transform transition-transform duration-300 ease-in-out
-                  ${
-                    activePanel === "aiAssistant"
+                  ${activePanel === "aiAssistant"
                       ? "translate-x-0"
                       : "translate-x-full"
-                  }`}
+                    }`}
                   style={{ width: `${sidebarWidth}px` }}
                 >
                   <AIChatPanel />
@@ -729,11 +710,10 @@ export default function EcommerceTabs() {
               {activePanel === "defaultInputs" && selectedIndex < 7 && (
                 <div
                   className={`fixed right-0 top-[var(--header-height)] h-[calc(100vh - var(--header-height))] bg-white dark:bg-gray-900 shadow-xl p-2 z-20 transform transition-transform duration-300 ease-in-out
-                  ${
-                    activePanel === "defaultInputs"
+                  ${activePanel === "defaultInputs"
                       ? "translate-x-0"
                       : "translate-x-full"
-                  }`}
+                    }`}
                   style={{ width: `${sidebarWidth}px` }}
                 >
                   <DefaultInputs />
@@ -743,11 +723,10 @@ export default function EcommerceTabs() {
               {activePanel === "monthlyTarget" && selectedIndex < 7 && (
                 <div
                   className={`fixed right-0 top-[var(--header-height)] h-[calc(100vh - var(--header-height))] bg-white dark:bg-gray-900 shadow-xl p-2 z-20 transform transition-transform duration-300 ease-in-out
-                  ${
-                    activePanel === "monthlyTarget"
+                  ${activePanel === "monthlyTarget"
                       ? "translate-x-0"
                       : "translate-x-full"
-                  }`}
+                    }`}
                   style={{ width: `${sidebarWidth}px` }}
                 >
                   <MonthlyTarget />
@@ -798,10 +777,9 @@ export default function EcommerceTabs() {
             {activePanel === "aiAssistant" && selectedIndex < 7 && (
               <div
                 className={`fixed right-0 top-[var(--header-height)] h-[calc(100vh - var(--header-height))] bg-white dark:bg-gray-900 shadow-xl p-2 z-20 transform transition-transform duration-300 ease-in-out
-                  ${
-                    activePanel === "aiAssistant"
-                      ? "translate-x-0"
-                      : "translate-x-full"
+                  ${activePanel === "aiAssistant"
+                    ? "translate-x-0"
+                    : "translate-x-full"
                   }`}
                 style={{ width: `${sidebarWidth}px` }}
               >
@@ -812,10 +790,9 @@ export default function EcommerceTabs() {
             {activePanel === "defaultInputs" && selectedIndex < 7 && (
               <div
                 className={`fixed right-0 top-[var(--header-height)] h-[calc(100vh - var(--header-height))] bg-white dark:bg-gray-900 shadow-xl p-2 z-20 transform transition-transform duration-300 ease-in-out
-                  ${
-                    activePanel === "defaultInputs"
-                      ? "translate-x-0"
-                      : "translate-x-full"
+                  ${activePanel === "defaultInputs"
+                    ? "translate-x-0"
+                    : "translate-x-full"
                   }`}
                 style={{ width: `${sidebarWidth}px` }}
               >
@@ -827,10 +804,9 @@ export default function EcommerceTabs() {
             {activePanel === "aiAssistant" && selectedIndex < 7 && (
               <div
                 className={`fixed right-0 top-[var(--header-height)] h-[calc(100vh - var(--header-height))] bg-white dark:bg-gray-900 shadow-xl p-2 z-20 transform transition-transform duration-300 ease-in-out
-                  ${
-                    activePanel === "aiAssistant"
-                      ? "translate-x-0"
-                      : "translate-x-full"
+                  ${activePanel === "aiAssistant"
+                    ? "translate-x-0"
+                    : "translate-x-full"
                   }`}
                 style={{ width: `${sidebarWidth}px` }}
               >
@@ -841,10 +817,9 @@ export default function EcommerceTabs() {
             {activePanel === "defaultInputs" && selectedIndex < 7 && (
               <div
                 className={`fixed right-0 top-[var(--header-height)] h-[calc(100vh - var(--header-height))] bg-white dark:bg-gray-900 shadow-xl p-2 z-20 transform transition-transform duration-300 ease-in-out
-                  ${
-                    activePanel === "defaultInputs"
-                      ? "translate-x-0"
-                      : "translate-x-full"
+                  ${activePanel === "defaultInputs"
+                    ? "translate-x-0"
+                    : "translate-x-full"
                   }`}
                 style={{ width: `${sidebarWidth}px` }}
               >
@@ -855,10 +830,9 @@ export default function EcommerceTabs() {
             {activePanel === "monthlyTarget" && selectedIndex < 7 && (
               <div
                 className={`fixed right-0 top-[var(--header-height)] h-[calc(100vh - var(--header-height))] bg-white dark:bg-gray-900 shadow-xl p-2 z-20 transform transition-transform duration-300 ease-in-out
-                  ${
-                    activePanel === "monthlyTarget"
-                      ? "translate-x-0"
-                      : "translate-x-full"
+                  ${activePanel === "monthlyTarget"
+                    ? "translate-x-0"
+                    : "translate-x-full"
                   }`}
                 style={{ width: `${sidebarWidth}px` }}
               >
@@ -883,10 +857,9 @@ export default function EcommerceTabs() {
             {activePanel === "aiAssistant" && selectedIndex < 7 && (
               <div
                 className={`fixed right-0 top-[var(--header-height)] h-[calc(100vh - var(--header-height))] bg-white dark:bg-gray-900 shadow-xl p-2 z-20 transform transition-transform duration-300 ease-in-out
-                  ${
-                    activePanel === "aiAssistant"
-                      ? "translate-x-0"
-                      : "translate-x-full"
+                  ${activePanel === "aiAssistant"
+                    ? "translate-x-0"
+                    : "translate-x-full"
                   }`}
                 style={{ width: `${sidebarWidth}px` }}
               >
@@ -897,10 +870,9 @@ export default function EcommerceTabs() {
             {activePanel === "defaultInputs" && selectedIndex < 7 && (
               <div
                 className={`fixed right-0 top-[var(--header-height)] h-[calc(100vh - var(--header-height))] bg-white dark:bg-gray-900 shadow-xl p-2 z-20 transform transition-transform duration-300 ease-in-out
-                  ${
-                    activePanel === "defaultInputs"
-                      ? "translate-x-0"
-                      : "translate-x-full"
+                  ${activePanel === "defaultInputs"
+                    ? "translate-x-0"
+                    : "translate-x-full"
                   }`}
                 style={{ width: `${sidebarWidth}px` }}
               >
@@ -911,10 +883,9 @@ export default function EcommerceTabs() {
             {activePanel === "monthlyTarget" && selectedIndex < 7 && (
               <div
                 className={`fixed right-0 top-[var(--header-height)] h-[calc(100vh - var(--header-height))] bg-white dark:bg-gray-900 shadow-xl p-2 z-20 transform transition-transform duration-300 ease-in-out
-                  ${
-                    activePanel === "monthlyTarget"
-                      ? "translate-x-0"
-                      : "translate-x-full"
+                  ${activePanel === "monthlyTarget"
+                    ? "translate-x-0"
+                    : "translate-x-full"
                   }`}
                 style={{ width: `${sidebarWidth}px` }}
               >
@@ -961,11 +932,10 @@ export default function EcommerceTabs() {
             {activePanel === "aiAssistant" && selectedIndex < 9 && (
               <div
                 className={`fixed right-0 top-[var(--header-height)] h-[calc(100vh - var(--header-height))] bg-white dark:bg-gray-900 shadow-xl p-2 z-20 transform transition-transform duration-300 ease-in-out
-                        ${
-                          activePanel === "aiAssistant"
-                            ? "translate-x-0"
-                            : "translate-x-full"
-                        }`}
+                        ${activePanel === "aiAssistant"
+                    ? "translate-x-0"
+                    : "translate-x-full"
+                  }`}
                 style={{ width: `${sidebarWidth}px` }}
               >
                 <AIChatPanel />
@@ -975,11 +945,10 @@ export default function EcommerceTabs() {
             {activePanel === "defaultInputs" && selectedIndex < 9 && (
               <div
                 className={`fixed right-0 top-[var(--header-height)] h-[calc(100vh - var(--header-height))] bg-white dark:bg-gray-900 shadow-xl p-2 z-20 transform transition-transform duration-300 ease-in-out
-                        ${
-                          activePanel === "defaultInputs"
-                            ? "translate-x-0"
-                            : "translate-x-full"
-                        }`}
+                        ${activePanel === "defaultInputs"
+                    ? "translate-x-0"
+                    : "translate-x-full"
+                  }`}
                 style={{ width: `${sidebarWidth}px` }}
               >
                 <DefaultInputs />
@@ -989,11 +958,10 @@ export default function EcommerceTabs() {
             {activePanel === "monthlyTarget" && selectedIndex < 9 && (
               <div
                 className={`fixed right-0 top-[var(--header-height)] h-[calc(100vh - var(--header-height))] bg-white dark:bg-gray-900 shadow-xl p-2 z-20 transform transition-transform duration-300 ease-in-out
-                        ${
-                          activePanel === "monthlyTarget"
-                            ? "translate-x-0"
-                            : "translate-x-full"
-                        }`}
+                        ${activePanel === "monthlyTarget"
+                    ? "translate-x-0"
+                    : "translate-x-full"
+                  }`}
                 style={{ width: `${sidebarWidth}px` }}
               >
                 <MonthlyTarget />
@@ -1020,11 +988,10 @@ export default function EcommerceTabs() {
             {activePanel === "aiAssistant" && selectedIndex < 9 && (
               <div
                 className={`fixed right-0 top-[var(--header-height)] h-[calc(100vh - var(--header-height))] bg-white dark:bg-gray-900 shadow-xl p-2 z-20 transform transition-transform duration-300 ease-in-out
-                        ${
-                          activePanel === "aiAssistant"
-                            ? "translate-x-0"
-                            : "translate-x-full"
-                        }`}
+                        ${activePanel === "aiAssistant"
+                    ? "translate-x-0"
+                    : "translate-x-full"
+                  }`}
                 style={{ width: `${sidebarWidth}px` }}
               >
                 <AIChatPanel />
@@ -1034,11 +1001,10 @@ export default function EcommerceTabs() {
             {activePanel === "defaultInputs" && selectedIndex < 9 && (
               <div
                 className={`fixed right-0 top-[var(--header-height)] h-[calc(100vh - var(--header-height))] bg-white dark:bg-gray-900 shadow-xl p-2 z-20 transform transition-transform duration-300 ease-in-out
-                        ${
-                          activePanel === "defaultInputs"
-                            ? "translate-x-0"
-                            : "translate-x-full"
-                        }`}
+                        ${activePanel === "defaultInputs"
+                    ? "translate-x-0"
+                    : "translate-x-full"
+                  }`}
                 style={{ width: `${sidebarWidth}px` }}
               >
                 <DefaultInputs />
@@ -1048,11 +1014,10 @@ export default function EcommerceTabs() {
             {activePanel === "monthlyTarget" && selectedIndex < 9 && (
               <div
                 className={`fixed right-0 top-[var(--header-height)] h-[calc(100vh - var(--header-height))] bg-white dark:bg-gray-900 shadow-xl p-2 z-20 transform transition-transform duration-300 ease-in-out
-                        ${
-                          activePanel === "monthlyTarget"
-                            ? "translate-x-0"
-                            : "translate-x-full"
-                        }`}
+                        ${activePanel === "monthlyTarget"
+                    ? "translate-x-0"
+                    : "translate-x-full"
+                  }`}
                 style={{ width: `${sidebarWidth}px` }}
               >
                 <MonthlyTarget />
