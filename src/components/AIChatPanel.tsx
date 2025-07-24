@@ -161,7 +161,7 @@ const AIChatPanel: React.FC = () => {
           </button>
         </div>
       </div>
-      <div className=" h-[700px] overflow-y-auto p-4 custom-scrollbar space-y-3 border dark:border-gray-700">
+      <div className=" h-[650px] overflow-y-auto p-4 custom-scrollbar space-y-3 border dark:border-gray-700">
         {messages.length === 0 ? (
           <p className="text-gray-500 dark:text-gray-400 text-sm">
             Start a conversation...
