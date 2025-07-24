@@ -33,7 +33,7 @@ export default function GraphDataTable({ rawRecords }) {
   }, [rawRecords]);
 
   if (!rawRecords || rawRecords.length === 0) {
-    return <p>no data</p>;
+    return;
   }
 
   const headers = rawRecords[0].keys;

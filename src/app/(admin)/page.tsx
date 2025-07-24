@@ -375,7 +375,7 @@ export default function EcommerceTabs() {
             )}
           </div>
         </Tab.Panel>
-        1. Network Graph Tab Panel (팝업 사이드바)
+        {/* 1. Network Graph Tab Panel (팝업 사이드바) */}
         <Tab.Panel className="h-full" unmount={false}>
           <div
             ref={containerRef}
