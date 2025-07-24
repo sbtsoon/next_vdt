@@ -75,6 +75,7 @@ export default function EcommerceTabs() {
         setRawRecords(data?.rawRecords);
       } else {
         setPathData(data?.path);
+        setRawRecords(data?.rawRecords);
       }
     },
   });

@@ -21,14 +21,6 @@ const AIChatPanel: React.FC = () => {
   const { mutate: sendAiQuery, isPending } = useAiAssistantChatMutation();
 
   function parseStep(steps: string) {
-    if (!steps)
-      return {
-        question: "",
-        thought: "",
-        action: "",
-        actionInput: "",
-      };
-
     const parsedSteps = {
       question: "",
       thought: "",
@@ -36,19 +28,41 @@ const AIChatPanel: React.FC = () => {
       actionInput: "",
     };
 
-    // 섹션별로 잘라내기
-    const questionSplit = steps.split("Thought:");
-    parsedSteps.question = questionSplit[0].replace("Question:", "").trim();
+    if (!steps || typeof steps !== "string") return parsedSteps;
 
-    const thoughtSplit = questionSplit[1].split("Action:");
-    parsedSteps.thought = thoughtSplit[0].trim();
+    // Question
+    const questionMatch = steps.match(
+      /Question:\s*([\s\S]*?)(?=\nThought:|\nAction:|\nAction Input:|\n?$)/
+    );
+    if (questionMatch) {
+      parsedSteps.question = questionMatch[1].trim();
+    }
 
-    const actionSplit = thoughtSplit[1].split("Action Input:");
-    parsedSteps.action = actionSplit[0].trim();
-    parsedSteps.actionInput = actionSplit[1].trim();
+    // Thought
+    const thoughtMatch = steps.match(
+      /Thought:\s*([\s\S]*?)(?=\nAction:|\nAction Input:|\n?$)/
+    );
+    if (thoughtMatch) {
+      parsedSteps.thought = thoughtMatch[1].trim();
+    }
+
+    // Action
+    const actionMatch = steps.match(
+      /Action:\s*([\s\S]*?)(?=\nAction Input:|\n?$)/
+    );
+    if (actionMatch) {
+      parsedSteps.action = actionMatch[1].trim();
+    }
+
+    // Action Input
+    const inputMatch = steps.match(/Action Input:\s*"?([\s\S]*?)"?\s*$/);
+    if (inputMatch) {
+      parsedSteps.actionInput = inputMatch[1].trim();
+    }
 
     return parsedSteps;
   }
+
 
   const handleSend = () => {
     if (!input.trim()) return;
@@ -63,24 +77,33 @@ const AIChatPanel: React.FC = () => {
       onSuccess: (data) => {
         const cypher = data?.response?.cypher;
         const reply = data?.response?.response || "(No response)";
+        const assistantMessage = { role: "assistant", content: reply };
 
-        const steps: string = data?.response?.intermediate_steps[0];
-
-        const parsedSteps = parseStep(steps);
-        const stepMessage = {
-          role: "assistant",
-          content:
-            `💭 생각하는 과정\n` +
-            `1. Question: ${parsedSteps?.question}\n` +
-            `2. Thought: ${parsedSteps.thought}\n` +
-            `3. Action: ${parsedSteps.action}\n` +
-            `4. Action Input: ${parsedSteps.actionInput}`,
-        };
+        const steps: string[] = data?.response?.intermediate_steps || [];
+        const parsedSteps = steps.map((step) => parseStep(step));
+        if (parsedSteps.length > 0) {
+          const stepMessage = {
+            role: "assistant",
+            content:
+              `💭 생각하는 과정\n` +
+              parsedSteps
+                .map((s, i) => {
+                  return (
+                    `🔹 Step ${i + 1}\n` +
+                    (s.question && `- Question: ${s.question}\n`) +
+                    (s.thought && `- Thought: ${s.thought}\n`) +
+                    (s.action && `- Action: ${s.action}\n`) +
+                    (s.actionInput && `- Action Input: ${s.actionInput}\n`)
+                  );
+                })
+                .join("\n"),
+          };
+          setMessages((prev) => [...prev, stepMessage, assistantMessage]);
+        } else {
+          setMessages((prev) => [...prev, assistantMessage]);
+        }
 
         setAiQuery({ query: cypher });
-
-        const assistantMessage = { role: "assistant", content: reply };
-        setMessages((prev) => [...prev, stepMessage, assistantMessage]);
       },
       onError: () => {
         setMessages((prev) => [
