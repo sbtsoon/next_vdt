@@ -63,7 +63,6 @@ const AIChatPanel: React.FC = () => {
     return parsedSteps;
   }
 
-
   const handleSend = () => {
     if (!input.trim()) return;
 
@@ -149,10 +148,11 @@ const AIChatPanel: React.FC = () => {
             <MicrophoneIcon className="h-5 w-5" />
           </button>
           <button
-            className={`p-2 rounded-full transition text-white ${input.trim()
-              ? "bg-brand-500 hover:bg-brand-600"
-              : "bg-gray-700 cursor-not-allowed"
-              }`}
+            className={`p-2 rounded-full transition text-white ${
+              input.trim()
+                ? "bg-brand-500 hover:bg-brand-600"
+                : "bg-gray-700 cursor-not-allowed"
+            }`}
             onClick={handleSend}
             aria-label="Send Message"
             disabled={!input.trim()}
@@ -171,10 +171,11 @@ const AIChatPanel: React.FC = () => {
             {messages.map((msg, idx) => (
               <div
                 key={idx}
-                className={`p-2 rounded-lg w-[80%]  whitespace-pre-wrap text-sm ${msg.role === "user"
-                  ? "ml-auto bg-brand-500/30 text-gray-200"
-                  : "bg-gray-100 dark:bg-gray-600 text-gray-800 dark:text-white"
-                  }`}
+                className={`p-2 rounded-lg w-[80%]  whitespace-pre-wrap break-words text-sm ${
+                  msg.role === "user"
+                    ? "ml-auto bg-brand-500/30 text-gray-200"
+                    : "bg-gray-100 dark:bg-gray-600 text-gray-800 dark:text-white"
+                }`}
               >
                 {msg.content}
               </div>
