@@ -98,10 +98,11 @@ export default function Demo2({ graphData, pathData }) {
 
     const cy = cyInstanceRef.current;
 
-    // 기존 하이라이트 제거
+    // 항상 기존 하이라이트 제거
     cy.nodes().removeClass("highlighted");
     cy.edges().removeClass("highlighted");
 
+    // pathData가 null이면 여기서 종료
     if (pathData == null) return;
 
     // 새로운 하이라이트 적용

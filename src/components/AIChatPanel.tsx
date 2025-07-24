@@ -63,6 +63,7 @@ const AIChatPanel: React.FC = () => {
       onSuccess: (data) => {
         const cypher = data?.response?.cypher;
         const reply = data?.response?.response || "(No response)";
+
         const steps: string = data?.response?.intermediate_steps[0];
 
         const parsedSteps = parseStep(steps);

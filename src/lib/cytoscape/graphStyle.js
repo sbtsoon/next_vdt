@@ -11,9 +11,10 @@ export const getDemo2GraphStyle = (labelColorMap) => [
       label: (ele) => ele.data("id"),
       "background-color": "#1f2937", // 다크 그레이
       "border-color": (ele) => {
-        const labels = ele.data("labels");
-        const label = labels?.[0];
-        return labelColorMap.get(label) || "#999";
+        // const labels = ele.data("labels");
+        // const label = labels?.[0];
+        // return labelColorMap.get(label) || "#999";
+        return "#60a5fa";
       },
       "border-width": 1,
       "text-valign": "center",

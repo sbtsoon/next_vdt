@@ -53,8 +53,7 @@ export default function EcommerceTabs() {
       const isPathQuery = aiQuery.query.toLowerCase().includes("path");
 
       if (!isPathQuery) {
-        if (data?.data?.nodes.length !== 0) {
-          setPathData(null);
+        if (data?.data?.nodes.length !== 0) {          
           setGraphData(data.data);
           // metric card 정보 업데이트
           data.data.nodes.forEach((node) => {
@@ -72,9 +71,9 @@ export default function EcommerceTabs() {
             }
           });
         }
+        setPathData(null);
         setRawRecords(data?.rawRecords);
       } else {
-        // ===================================================== path highlight
         setPathData(data?.path);
       }
     },
