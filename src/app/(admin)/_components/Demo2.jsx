@@ -96,26 +96,30 @@ export default function Demo2({ graphData, pathData }) {
   useEffect(() => {
     if (!cyInstanceRef.current) return;
 
-    if (pathData == null) {
-      cyInstanceRef.current.nodes().removeClass("highlighted");
-      cyInstanceRef.current.edges().removeClass("highlighted");
-      return;
-    }
+    const cy = cyInstanceRef.current;
 
     // 기존 하이라이트 제거
-    cyInstanceRef.current.nodes().removeClass("highlighted");
-    cyInstanceRef.current.edges().removeClass("highlighted");
+    cy.nodes().removeClass("highlighted");
+    cy.edges().removeClass("highlighted");
+
+    if (pathData == null) return;
 
     // 새로운 하이라이트 적용
     pathData.nodeIds.forEach((id) => {
-      const node = cyInstanceRef.current.getElementById(id);
+      const node = cy.getElementById(id);
       if (node) node.addClass("highlighted");
     });
 
     pathData.edgeIds.forEach((id) => {
-      const edge = cyInstanceRef.current.getElementById(id);
+      const edge = cy.getElementById(id);
       if (edge) edge.addClass("highlighted");
     });
+
+    // fit to highlighted elements
+    const highlighted = cy.elements(".highlighted");
+    if (highlighted.length > 0) {
+      cy.fit(highlighted, 50); // padding 50px
+    }
   }, [pathData]);
 
   useEffect(() => {
