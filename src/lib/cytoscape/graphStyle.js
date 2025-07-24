@@ -8,7 +8,7 @@ export const getDemo2GraphStyle = (labelColorMap) => [
       width: "24px",
       height: "24px",
       shape: "ellipse",
-      label: (ele) => ele.data("id"),
+      label: (ele) => ele.data("MATNR") || ele.data("id"),
       "background-color": "#1f2937", // 다크 그레이
       "border-color": (ele) => {
         // const labels = ele.data("labels");
